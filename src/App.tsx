@@ -10,11 +10,11 @@ import {
   faqItems,
   navItems,
   platformBenefits,
-  platformPlans,
   promises
 } from './data';
 import ReferencesSection from './components/ReferencesSection';
-import PlatformPreview from './components/PlatformPreview';
+import PortalCanvas from './components/PortalCanvas';
+import type { GalleryItem } from './components/PartnersEventsGallery';
 
 const checkout = {
   complete: 'https://pay.kiwify.com.br/nyBH9vq',
@@ -271,78 +271,7 @@ function useLoadingExperience(page: Page) {
 }
 
 
-function SkeletonBlock({ className = '' }: { className?: string }) {
-  return <span className={`skeleton-block ${className}`} />;
-}
-
-function LoadingSkeleton({ page, compact }: { page: Page; compact: boolean }) {
-  if (page === 'home') return null;
-
-  if (page === 'estude') {
-    return (
-      <div className={`loading-skeleton loading-skeleton--estude ${compact ? 'loading-skeleton--compact' : ''}`}>
-        <div className="loading-skeleton__grid loading-skeleton__grid--estude">
-          <div className="loading-skeleton__copy">
-            <SkeletonBlock className="skeleton-kicker" />
-            <SkeletonBlock className="skeleton-title skeleton-title--estude" />
-            <SkeletonBlock className="skeleton-line skeleton-line--wide" />
-            <SkeletonBlock className="skeleton-line skeleton-line--medium" />
-            <SkeletonBlock className="skeleton-button" />
-          </div>
-          <div className="loading-phone">
-            <SkeletonBlock className="loading-phone__device" />
-            <SkeletonBlock className="loading-chip loading-chip--one" />
-            <SkeletonBlock className="loading-chip loading-chip--two" />
-            <SkeletonBlock className="loading-chip loading-chip--three" />
-          </div>
-        </div>
-        <div className="loading-estude-body">
-          <div className="loading-problem-card">
-            <SkeletonBlock className="skeleton-line skeleton-line--medium" />
-            <SkeletonBlock className="skeleton-line skeleton-line--wide" />
-            <SkeletonBlock className="skeleton-line skeleton-line--short" />
-          </div>
-          <div className="loading-estude-panel">
-            <SkeletonBlock className="skeleton-title skeleton-title--compact" />
-            <SkeletonBlock className="loading-phone__device loading-phone__device--small" />
-            <SkeletonBlock className="loading-chip loading-chip--panel-one" />
-            <SkeletonBlock className="loading-chip loading-chip--panel-two" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (page === 'partners') {
-    return (
-      <div className={`loading-skeleton loading-skeleton--partners ${compact ? 'loading-skeleton--compact' : ''}`}>
-        <div className="loading-skeleton__grid loading-skeleton__grid--partners">
-          <div className="loading-skeleton__copy">
-            <SkeletonBlock className="skeleton-kicker" />
-            <SkeletonBlock className="skeleton-title skeleton-title--partners" />
-            <SkeletonBlock className="skeleton-line skeleton-line--wide" />
-            <SkeletonBlock className="skeleton-line skeleton-line--medium" />
-            <div className="skeleton-action-row">
-              <SkeletonBlock className="skeleton-button" />
-              <SkeletonBlock className="skeleton-link" />
-            </div>
-          </div>
-          <div className="loading-partners-map">
-            <SkeletonBlock className="skeleton-kicker" />
-            <SkeletonBlock className="skeleton-line skeleton-line--name" />
-            <SkeletonBlock className="skeleton-line skeleton-line--wide" />
-            <SkeletonBlock className="loading-partners-map__shape" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
-}
-
 function LoadingExperience({ state }: { state: LoadingExperienceState }) {
-  const compact = state.variant !== 'intro';
   const [present, setPresent] = useState(state.active);
   const [visible, setVisible] = useState(false);
 
@@ -353,28 +282,23 @@ function LoadingExperience({ state }: { state: LoadingExperienceState }) {
       return () => window.cancelAnimationFrame(frame);
     }
 
+    // O portal executa o zoom-in dimensional antes do overlay ser removido.
     setVisible(false);
     const timer = window.setTimeout(
       () => setPresent(false),
-      560
+      980
     );
 
     return () => window.clearTimeout(timer);
   }, [state.active]);
 
   return (
-    <div className={`loading-experience loading-experience--${state.variant} ${visible ? 'loading-experience--active' : ''} ${present ? 'loading-experience--animating' : ''}`} aria-hidden="true">
+    <div className={`loading-experience loading-experience--${state.variant} ${visible ? 'loading-experience--active' : ''} ${!state.active && present ? 'loading-experience--zooming' : ''} ${present ? 'loading-experience--animating' : ''}`} aria-hidden="true">
       <div className="loading-experience__ambient" />
-      <div className="loading-experience__brand">
-        <div className="loading-experience__mark">N<span>+</span></div>
-        <div className={`loading-experience__process ${compact ? 'loading-experience__process--compact' : ''}`}>
-          <svg className="nw-spinner" viewBox="25 25 50 50" aria-hidden="true">
-            <circle className="nw-spinner__track" cx="50" cy="50" r="20" />
-            <circle className="nw-spinner__arc" cx="50" cy="50" r="20" />
-          </svg>
-        </div>
+      <div className="loading-portal">
+        {present && <PortalCanvas mode="loader" className="loading-portal__canvas" />}
+        <div className="loading-portal__mark">N<span>+</span></div>
       </div>
-      <LoadingSkeleton page={state.page} compact={compact} />
     </div>
   );
 }
@@ -481,59 +405,23 @@ function SectionHeading({ children, accent = false }: { children: ReactNode; acc
 }
 
 
-function HeroMonitor() {
-  const stageRef = useRef<HTMLDivElement>(null);
+const heroOrbitPhotos = [
+  '/assets/anniversary/memory-team.jpg',
+  '/assets/partners-events/event-02.webp',
+  '/assets/anniversary/memory-podcast.jpg',
+  '/assets/partners-events/event-13.webp'
+];
 
-  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (window.matchMedia('(max-width: 720px)').matches) return;
-
-    const stage = stageRef.current;
-    if (!stage) return;
-
-    const rect = stage.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-
-    stage.style.setProperty('--hero-tilt-x', `${y * -1.4}deg`);
-    stage.style.setProperty('--hero-tilt-y', `${x * 2.8}deg`);
-    stage.style.setProperty('--hero-shift-x', `${x * 2}px`);
-    stage.style.setProperty('--hero-shift-y', `${y * 1.5}px`);
-  };
-
-  const resetPointer = () => {
-    const stage = stageRef.current;
-    if (!stage) return;
-
-    stage.style.setProperty('--hero-tilt-x', '0deg');
-    stage.style.setProperty('--hero-tilt-y', '0deg');
-    stage.style.setProperty('--hero-shift-x', '0px');
-    stage.style.setProperty('--hero-shift-y', '0px');
-  };
-
+function HeroPortal() {
   return (
-    <div
-      ref={stageRef}
-      className="hero-monitor-stage"
-      onPointerMove={handlePointerMove}
-      onPointerLeave={resetPointer}
-    >
-      <div className="hero-monitor-stage__glow" aria-hidden="true" />
-      <div className="hero-monitor" role="group" aria-label="Prévia interativa fictícia do Nutriwork Plus em um monitor 3D">
-        <div className="hero-monitor-cue" aria-hidden="true">
-          <span className="hero-monitor-cue__label">
-            <svg className="hero-monitor-cue__arrow" viewBox="0 0 18 18" fill="none">
-              <path d="M4.5 13.5h9v-9M13.5 13.5 4.5 4.5" />
-            </svg>
-            <span className="hero-monitor-cue__desktop">Clique para explorar</span>
-            <span className="hero-monitor-cue__mobile">Toque para explorar</span>
-          </span>
+    <div className="hero-portal" aria-hidden="true">
+      <div className="hero-portal__tilt">
+        <PortalCanvas mode="hero" className="hero-portal__canvas" />
+        <div className="hero-portal__orbit">
+          {heroOrbitPhotos.map((src, index) => (
+            <img key={src} className={`hero-portal__photo hero-portal__photo--${index + 1}`} src={src} alt="" width="360" height="240" loading="lazy" decoding="async" draggable="false" />
+          ))}
         </div>
-        <div className="hero-monitor__frame">
-          <div className="hero-monitor__screen">
-            <PlatformPreview />
-          </div>
-        </div>
-        <div className="hero-monitor__shadow" aria-hidden="true" />
       </div>
     </div>
   );
@@ -623,20 +511,35 @@ function HeroSocialProof() {
 }
 
 function Hero() {
+  const [warping, setWarping] = useState(false);
+
+  const enterPortal = () => {
+    if (warping) return;
+    setWarping(true);
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.setTimeout(() => {
+      window.location.hash = '#/aniversario';
+    }, reducedMotion ? 0 : 540);
+  };
+
   return (
-    <section id="inicio" className="hero">
+    <section id="inicio" className={`hero hero--time ${warping ? 'hero--warping' : ''}`}>
       <div className="hero__eclipse" aria-hidden="true" />
       <div className="hero__glow" aria-hidden="true" />
-      <Reveal className="hero__layout">
-        <div className="hero__content">
-          <h1>Nutriwork<span>plus.<HeroSocialProof /></span></h1>
-          <p>A plataforma feita para todo estudante de Nutrição.</p>
+      <HeroPortal />
+      <Reveal className="hero__layout hero__layout--time">
+        <div className="hero__content hero__content--time">
+          <p className="hero-time-kicker">Especial de 1 ano <HeroSocialProof /></p>
+          <h1 className="hero-time-title">O Nutriwork<br /><strong>voltou no tempo.</strong></h1>
+          <p>Para celebrar nosso primeiro ano, trouxemos de volta o valor que marcou o começo de tudo.</p>
           <div className="hero-actions">
-            <Button href="/#planos" variant="outline">Venha fazer parte</Button>
+            <button type="button" className="button hero-time-cta cta-glow" onClick={enterPortal}>
+              Saiba mais
+              <span className="cta-sparks" aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>
+            </button>
             <Button href="https://plus.gruponutriwork.com.br/" variant="outline" className="member-cta" external>Já sou membro(a)</Button>
           </div>
         </div>
-        <HeroMonitor />
       </Reveal>
     </section>
   );
@@ -989,14 +892,41 @@ function Price({ value, monthly = false }: { value: string; monthly?: boolean })
   return <div className="price"><span>R$</span>{whole}<small>,{cents}{monthly ? '/mês' : ''}</small></div>;
 }
 
+function CampaignPlans({ tone }: { tone: 'home' | 'anniversary' }) {
+  return (
+    <div className={`plans-duo plans-duo--${tone}`}>
+      <Reveal className="plans-duo__card plans-duo__card--annual">
+        <img className="featured-badge plans-duo__badge" src="/assets/featured-badge-labeled.webp" alt="Plano em destaque" width="790" height="1000" loading="lazy" decoding="async" />
+        <h3 className="plans-duo__title">Nutriwork Plus Anual +<br/><span>livro ESTUDE!</span></h3>
+        <p className="plans-duo__subtitle">Acesso completo à formação que você sempre quis.</p>
+        <Price value="24,90" monthly/>
+        <ul>{['Cursos de todas as áreas da Nutrição.','E-book ESTUDE para resolver sua rotina de estudos.','Aulas ao vivo com especialistas.','Comunidade ativa para trocar dúvidas e obter oportunidades de trabalho.','Análises de artigo, podcasts, Espaço de Conforto e outros recursos.'].map((item) => <li key={item}><PricingCheck />{item}</li>)}</ul>
+        <div className="pricing-actions">
+          <Button href={checkout.complete} external className="cta-glow">QUERO A EXPERIÊNCIA COMPLETA</Button>
+          <Button href="/#/estude" variant="outline" className="pricing-card__secondary">CONHECER O ESTUDE</Button>
+        </div>
+        <div className="scarcity">🔥 últimas vagas restantes!</div>
+      </Reveal>
+      <Reveal className="plans-duo__card plans-duo__card--semiannual">
+        <span className="plans-duo__tag">À vista</span>
+        <h3 className="plans-duo__title">Nutriwork Plus<br/><span>Semestral</span></h3>
+        <p className="plans-duo__subtitle">A plataforma completa no seu ritmo.</p>
+        <Price value="24,90" monthly/>
+        <ul>{platformBenefits.map((item) => <li key={item}><PricingCheck />{item}</li>)}</ul>
+        <div className="pricing-actions">
+          <Button href={checkout.semiannual} variant="outline" external>Quero assinar</Button>
+        </div>
+      </Reveal>
+    </div>
+  );
+}
+
 function Pricing() {
-  const planLinks = [checkout.monthly, checkout.quarterly, checkout.semiannual];
   return (
     <section id="planos" className="section pricing-section">
-      <div className="page-width page-width--narrow">
+      <div className="page-width">
         <Reveal><SectionHeading>Planos pensados para se adaptar à sua<br/>rotina de estudos</SectionHeading></Reveal>
-        <Reveal className="pricing-card pricing-card--featured"><img className="featured-badge" src="/assets/featured-badge-labeled.webp" alt="Plano destaque" width="790" height="1000" loading="lazy" decoding="async"/><h2>Nutriwork Plus Anual +<br/><span>livro ESTUDE!</span></h2><h3>Acesso completo à formação que você sempre quis.</h3><Price value="24,90" monthly/><ul>{['Cursos de todas as áreas da Nutrição.','E-book ESTUDE para resolver sua rotina de estudos.','Aulas ao vivo com especialistas.','Comunidade ativa para trocar dúvidas e obter oportunidades de trabalho.','Análises de artigo, podcasts, Espaço de Conforto e outros recursos.'].map((item) => <li key={item}><PricingCheck />{item}</li>)}</ul><div className="pricing-actions"><Button href={checkout.complete} external>QUERO A EXPERIÊNCIA COMPLETA</Button><Button href="/#/estude" variant="outline" className="pricing-card__secondary">CONHECER O ESTUDE</Button></div><div className="scarcity">🔥 últimas vagas restantes!</div></Reveal>
-        <Reveal className="platform-pricing"><header><div><h2>Planos Nutriwork Plus</h2><p>Opções flexíveis para acessar a plataforma no seu ritmo.</p></div><span>À vista</span></header><div className="mini-plans">{platformPlans.map((plan, index) => <article key={plan.title}><h3>{plan.title}</h3><Price value={plan.price}/><p>por mês.</p><Button href={planLinks[index]} external>Quero assinar</Button></article>)}</div><ul>{platformBenefits.map((item) => <li key={item}><PricingCheck />{item}</li>)}</ul></Reveal>
+        <CampaignPlans tone="home" />
       </div>
     </section>
   );
@@ -1111,74 +1041,166 @@ const anniversaryBenefits = [
   'Edição limitada de aniversário'
 ];
 
+const anniversaryMemoryItems: GalleryItem[] = [
+  { number: 'm1', src: '/assets/anniversary/memory-team.jpg', caption: 'A primeira turma reunida em sala de aula, onde tudo começou.', width: 1143, height: 914, tone: 'hero' },
+  { number: 'm2', src: '/assets/anniversary/memory-stage.jpg', caption: 'Apresentação oficial do Nutriwork para a comunidade.', width: 1163, height: 765, tone: 'wide' },
+  { number: 'm3', src: '/assets/anniversary/memory-podcast.jpg', caption: 'Gravação do NW Cast, o podcast que aproximou a comunidade.', width: 1152, height: 775, tone: 'wide' },
+  { number: 'm4', src: '/assets/partners-events/event-01.webp', caption: 'A Equipe Nutriwork, responsável por tudo que foi construído até aqui.', width: 1800, height: 1200, tone: 'hero' },
+  { number: 'm5', src: '/assets/partners-events/event-11.webp', caption: 'Roda de conversa em um evento oficial Nutriwork.', width: 1400, height: 1867, tone: 'tall' },
+  { number: 'm6', src: '/assets/partners-events/event-13.webp', caption: 'Primeira apresentação oficial na Universidade Federal de Uberlândia, 2024.', width: 1400, height: 788, tone: 'wide' }
+];
+
+const anniversaryFilmReelPhotos = [
+  '/assets/partners-events/event-01.webp',
+  '/assets/anniversary/memory-podcast.jpg',
+  '/assets/partners-events/event-05.webp',
+  '/assets/anniversary/memory-team.jpg',
+  '/assets/partners-events/event-08.webp',
+  '/assets/partners-events/event-14.webp'
+];
+
+// Comercial de 1 ano: preencha com o ID do vídeo no YouTube para exibir o bloco cinematográfico.
+const anniversaryCommercialYoutubeId = '';
+
 function FilmStrip() {
   return <div className="anniversary-filmstrip" aria-hidden="true"><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/></div>;
 }
 
-function AnniversaryPage() {
+function FilmReel() {
   return (
-    <main className="anniversary-page">
-      <section className="anniversary-hero">
-        <img className="anniversary-hero__image" src="/assets/anniversary/team-hero.jpg" alt="Equipe Nutriwork reunida na celebração de um ano" />
-        <div className="anniversary-hero__shade" />
-        <div className="page-width anniversary-hero__content">
-          <Reveal>
-            <p className="anniversary-kicker">1 ano de Nutriwork</p>
-            <h1>Nosso aniversário.<br/><strong>O seu presente.</strong></h1>
-            <Button href="#oferta-aniversario" className="anniversary-hero__cta">Conhecer a oferta</Button>
-          </Reveal>
-          <p className="anniversary-script" aria-hidden="true">Especial de<br/>1 ano</p>
-        </div>
-        <FilmStrip />
-      </section>
+    <div className="anniversary-filmreel" aria-hidden="true">
+      <div className="anniversary-filmreel__strip">
+        {anniversaryFilmReelPhotos.map((src) => (
+          <span className="anniversary-filmreel__frame" key={src}>
+            <img src={src} alt="" width="280" height="187" loading="lazy" decoding="async" draggable="false" />
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-      <section className="anniversary-story">
-        <div className="page-width--narrow">
-          <Reveal className="anniversary-story__intro">
-            <p>Em nosso primeiro dia, acreditávamos que uma plataforma feita por estudantes e para estudantes poderia <strong>transformar a rotina acadêmica.</strong></p>
-            <p>Um ano depois, continuamos crescendo, aprendendo e inovando, mas sem esquecer de onde viemos.</p>
-            <h2>1 ano de história, um presente para você.</h2>
-            <p>Reviva o início da nossa jornada e garanta benefícios que permanecem para sempre.</p>
-          </Reveal>
-          <div className="anniversary-polaroids">
-            <Reveal><article><span className="anniversary-clip"/><h3>Preço garantido<br/>para sempre</h3><p>Entre durante a campanha e mantenha sua assinatura nesse valor de forma vitalícia.</p></article></Reveal>
-            <Reveal><article><span className="anniversary-clip"/><h3>Nutriwork Plus</h3><p>Tenha acesso aos conteúdos, materiais e recursos exclusivos da plataforma.</p></article></Reveal>
-            <Reveal><article><span className="anniversary-clip"/><h3>Comunidade<br/>que cresce</h3><p>Faça parte de uma plataforma construída por estudantes e para estudantes, evoluindo a cada ano.</p></article></Reveal>
+function AnniversaryFilm() {
+  const [playing, setPlaying] = useState(false);
+  if (!anniversaryCommercialYoutubeId) return null;
+
+  return (
+    <section className="anniversary-film" aria-label="Comercial de 1 ano do Nutriwork">
+      <div className="page-width page-width--narrow">
+        <Reveal className="anniversary-film__frame">
+          {playing ? (
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${anniversaryCommercialYoutubeId}?autoplay=1&rel=0`}
+              title="Comercial de 1 ano do Nutriwork"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <button type="button" className="anniversary-film__poster" onClick={() => setPlaying(true)} aria-label="Assistir ao comercial de 1 ano do Nutriwork">
+              <img src="/assets/anniversary/memory-podcast.jpg" alt="" width="1152" height="775" loading="lazy" decoding="async" />
+              <span className="anniversary-film__play" aria-hidden="true" />
+              <span className="anniversary-film__label">Assista ao comercial de 1 ano</span>
+            </button>
+          )}
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function AnniversaryPage() {
+  const [arrived, setArrived] = useState(false);
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const timer = window.setTimeout(() => setArrived(true), reducedMotion ? 0 : 1050);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return (
+    <main className={`anniversary-page ${arrived ? '' : 'anniversary-page--arriving'}`}>
+      {!arrived && (
+        <div className="anniversary-warp" aria-hidden="true">
+          <PortalCanvas mode="burst" className="anniversary-warp__portal" />
+        </div>
+      )}
+      <div className="anniversary-world">
+        <section className="anniversary-hero">
+          <img className="anniversary-hero__image" src="/assets/anniversary/team-hero-hd.webp" alt="Equipe Nutriwork reunida na celebração de um ano" width="1686" height="1124" decoding="async" />
+          <div className="anniversary-hero__shade" />
+          <div className="page-width anniversary-hero__content">
+            <Reveal>
+              <p className="anniversary-kicker">1 ano de Nutriwork</p>
+              <h1>Nosso aniversário.<br/><strong>O seu presente.</strong></h1>
+              <Button href="#oferta-aniversario" className="anniversary-hero__cta cta-glow">Acesso imediato<span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span></Button>
+            </Reveal>
+            <p className="anniversary-script" aria-hidden="true">especial de<br/>1 ano</p>
           </div>
-        </div>
-      </section>
+          <FilmStrip />
+        </section>
 
-      <section className="anniversary-memories" aria-labelledby="memories-title">
-        <div className="page-width">
-          <Reveal><h2 id="memories-title">Memórias que<br/><strong>construíram o Nutriwork</strong></h2></Reveal>
-          <div className="anniversary-gallery">
-            <img src="/assets/anniversary/memory-stage.jpg" alt="Apresentação da equipe Nutriwork" />
-            <img src="/assets/anniversary/memory-team.jpg" alt="Equipe Nutriwork reunida" />
-            <img src="/assets/anniversary/memory-podcast.jpg" alt="Gravação do podcast Nutriwork" />
+        <section className="anniversary-story">
+          <img className="anniversary-ink anniversary-ink--story" src="/assets/anniversary/ink-texture.webp" alt="" width="460" height="688" loading="lazy" decoding="async" />
+          <div className="page-width--narrow">
+            <Reveal className="anniversary-story__intro">
+              <p>Em nosso primeiro dia, acreditávamos que uma plataforma feita por estudantes e para estudantes poderia <strong>transformar a rotina acadêmica.</strong></p>
+              <p>Um ano depois, continuamos crescendo, aprendendo e inovando, mas sem esquecer de onde viemos.</p>
+              <h2>1 ano de história, um presente para você.</h2>
+              <p>Reviva o início da nossa jornada e garanta benefícios que permanecem para sempre.</p>
+            </Reveal>
+            <div className="anniversary-polaroids">
+              <Reveal><article><span className="anniversary-clip"/><h3>Preço garantido<br/>para sempre</h3><p>Entre durante a campanha e mantenha sua assinatura nesse valor de forma <strong>vitalícia.</strong></p></article></Reveal>
+              <Reveal><article><span className="anniversary-clip"/><h3>Nutriwork Plus</h3><p>Tenha acesso aos conteúdos, materiais e recursos exclusivos da plataforma.</p></article></Reveal>
+              <Reveal><article><span className="anniversary-clip"/><h3>Comunidade<br/>que cresce</h3><p>Faça parte de uma plataforma construída por estudantes e para estudantes, evoluindo a cada ano.</p></article></Reveal>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="oferta-aniversario" className="anniversary-offer">
-        <div className="page-width--narrow anniversary-offer__layout">
-          <Reveal className="anniversary-offer__copy">
-            <p>Há 1 ano, o <strong>Nutriwork</strong> nasceu com um propósito: tornar o conhecimento em nutrição acessível para todos.</p>
-            <p>Para celebrar essa trajetória, trouxemos de volta o valor que marcou o nosso começo.</p>
-            <h2>Aproveite a campanha e tenha acesso a todos nossos conteúdos</h2>
-          </Reveal>
-          <Reveal className="anniversary-price-card">
-            <p>Por apenas</p>
-            <div className="anniversary-price"><span>R$</span><strong>9<sup>,90</sup></strong><small>/ mês</small></div>
-            <ul>{anniversaryBenefits.map((benefit) => <li key={benefit}><PricingCheck/>{benefit}</li>)}</ul>
-            <Button href={checkout.monthly} external>Assinar agora</Button>
-            <small>*Oferta por tempo limitado</small>
-          </Reveal>
-          <Reveal className="anniversary-offer__closing">
-            <h2>O preço é para sempre. A condição, não.</h2>
-            <p>Garanta seu acesso ao Nutriwork Plus.</p>
-          </Reveal>
-        </div>
-      </section>
+        <section className="anniversary-memories" aria-labelledby="anniversary-memories-title">
+          <div className="page-width">
+            <Reveal><h2 id="anniversary-memories-title">Memórias que<br/><strong>construíram o Nutriwork</strong></h2></Reveal>
+          </div>
+          <Suspense fallback={<div className="anniversary-memories__fallback" aria-hidden="true" />}>
+            <PartnersEventsGallery variant="anniversary" items={anniversaryMemoryItems} />
+          </Suspense>
+        </section>
+
+        <AnniversaryFilm />
+
+        <section id="oferta-aniversario" className="anniversary-offer">
+          <img className="anniversary-camera" src="/assets/anniversary/camera-vintage.webp" alt="" width="880" height="858" loading="lazy" decoding="async" />
+          <img className="anniversary-ink anniversary-ink--offer" src="/assets/anniversary/ink-texture.webp" alt="" width="460" height="688" loading="lazy" decoding="async" />
+          <div className="page-width--narrow anniversary-offer__layout">
+            <Reveal className="anniversary-offer__copy">
+              <p>Há 1 ano, o <strong>Nutriwork</strong> nasceu com um propósito: tornar o conhecimento em nutrição acessível para todos.</p>
+              <p>Para celebrar essa trajetória, trouxemos de volta o valor que marcou o nosso começo.</p>
+              <h2>Aproveite a campanha e tenha acesso a todos nossos conteúdos</h2>
+            </Reveal>
+            <Reveal className="anniversary-price-card">
+              <p>Por apenas</p>
+              <div className="anniversary-price"><span>R$</span><strong>9<sup>,90</sup></strong><small>/ mês</small></div>
+              <ul>{anniversaryBenefits.map((benefit) => <li key={benefit}><PricingCheck/>{benefit}</li>)}</ul>
+              <Button href={checkout.monthly} external className="cta-glow">Assinar agora<span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span></Button>
+              <small>*Oferta por tempo limitado</small>
+            </Reveal>
+            <Reveal className="anniversary-offer__closing">
+              <h2>O preço é para sempre. A condição, não.</h2>
+              <p>Garanta seu acesso ao Nutriwork Plus.</p>
+            </Reveal>
+          </div>
+          <div className="anniversary-grain" aria-hidden="true" />
+        </section>
+
+        <section className="anniversary-plans" aria-labelledby="anniversary-plans-title">
+          <div className="page-width">
+            <Reveal className="anniversary-plans__heading">
+              <h2 id="anniversary-plans-title">Prefere outro formato?<br/><strong>Os planos continuam com você.</strong></h2>
+            </Reveal>
+            <CampaignPlans tone="anniversary" />
+          </div>
+          <FilmReel />
+        </section>
+      </div>
     </main>
   );
 }
