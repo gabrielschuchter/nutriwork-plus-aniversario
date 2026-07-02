@@ -1125,7 +1125,7 @@ function AnniversaryPage() {
           <Reveal>
             <p className="anniversary-kicker">1 ano de Nutriwork</p>
             <h1>Nosso aniversário.<br/><strong>O seu presente.</strong></h1>
-            <Button href="#oferta-aniversario" className="anniversary-hero__cta">Conhecer a oferta</Button>
+            <Button href="#oferta-aniversario" className="anniversary-hero__cta">Acesso imediato</Button>
           </Reveal>
           <p className="anniversary-script" aria-hidden="true">Especial de<br/>1 ano</p>
         </div>
