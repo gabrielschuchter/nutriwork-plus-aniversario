@@ -3,6 +3,7 @@ export const navItems = [
   { label: 'benefícios', href: '/#beneficios' },
   { label: 'estude', href: '/#/estude' },
   { label: 'parceiros', href: '/#/parceiros' },
+  { label: '1 ano', href: '/#/aniversario', featured: true },
   { label: 'planos', href: '/#planos' },
   { label: 'dúvidas', href: '/#duvidas' },
   { label: 'contatos', href: '/#contatos' }

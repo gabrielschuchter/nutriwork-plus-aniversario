@@ -28,7 +28,7 @@ const contactEmail = 'equipenutriwork@gmail.com';
 const partnerForm = 'https://forms.gle/avn9yrBdbEHkaGg8A';
 const whatsappContact = `https://wa.me/5512997505188?text=${encodeURIComponent('Olá, equipe Nutriwork! Vim pelo site e gostaria de tirar uma dúvida sobre o Nutriwork Plus.')}`;
 type Theme = 'light' | 'dark';
-type Page = 'home' | 'estude' | 'partners';
+type Page = 'home' | 'estude' | 'partners' | 'anniversary';
 type LoadingVariant = 'intro' | 'return' | 'route';
 type LoadingExperienceState = { active: boolean; variant: LoadingVariant; page: Page };
 
@@ -89,6 +89,7 @@ function useMobileCtaVisibility(refreshKey: unknown) {
 function getCurrentPage(): Page {
   if (window.location.hash === '#/estude') return 'estude';
   if (window.location.hash === '#/parceiros') return 'partners';
+  if (window.location.hash === '#/aniversario' || window.location.hash === '#oferta-aniversario') return 'anniversary';
   return 'home';
 }
 
@@ -420,14 +421,14 @@ function Header() {
   const [theme, setTheme] = useState<Theme>(() => document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
   const [activeNavHref, setActiveNavHref] = useState(() => {
     const hash = window.location.hash;
-    return hash && hash !== '#' ? `/${hash}` : '/#inicio';
+    return hash === '#oferta-aniversario' ? '/#/aniversario' : hash && hash !== '#' ? `/${hash}` : '/#inicio';
   });
   const nextTheme = theme === 'dark' ? 'light' : 'dark';
 
   useEffect(() => {
     const updateActiveNav = () => {
       const hash = window.location.hash;
-      setActiveNavHref(hash && hash !== '#' ? `/${hash}` : '/#inicio');
+      setActiveNavHref(hash === '#oferta-aniversario' ? '/#/aniversario' : hash && hash !== '#' ? `/${hash}` : '/#inicio');
     };
 
     window.addEventListener('hashchange', updateActiveNav);
@@ -455,7 +456,8 @@ function Header() {
       <nav className={`nav ${open ? 'nav--open' : ''}`} aria-label="Navegação principal">
         {navItems.map((item) => {
           const active = activeNavHref === item.href;
-          return <a key={item.href} className={active ? 'is-active' : undefined} href={item.href} aria-current={active ? 'page' : undefined} onClick={() => setOpen(false)}>{item.label}</a>;
+          const className = [active ? 'is-active' : '', item.featured ? 'nav__anniversary' : ''].filter(Boolean).join(' ');
+          return <a key={item.href} className={className || undefined} href={item.href} aria-current={active ? 'page' : undefined} onClick={() => setOpen(false)}>{item.featured && <span aria-hidden="true">✦</span>}{item.label}</a>;
         })}
       </nav>
       <div className="header-actions">
@@ -1102,6 +1104,85 @@ function PartnersPage() {
   );
 }
 
+const anniversaryBenefits = [
+  'Nutriwork Plus completo',
+  'Valor vitalício sem reajustes futuros',
+  'Benefícios e atualizações futuras',
+  'Edição limitada de aniversário'
+];
+
+function FilmStrip() {
+  return <div className="anniversary-filmstrip" aria-hidden="true"><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/></div>;
+}
+
+function AnniversaryPage() {
+  return (
+    <main className="anniversary-page">
+      <section className="anniversary-hero">
+        <img className="anniversary-hero__image" src="/assets/anniversary/team-hero.jpg" alt="Equipe Nutriwork reunida na celebração de um ano" />
+        <div className="anniversary-hero__shade" />
+        <div className="page-width anniversary-hero__content">
+          <Reveal>
+            <p className="anniversary-kicker">1 ano de Nutriwork</p>
+            <h1>Nosso aniversário.<br/><strong>O seu presente.</strong></h1>
+            <Button href="#oferta-aniversario" className="anniversary-hero__cta">Conhecer a oferta</Button>
+          </Reveal>
+          <p className="anniversary-script" aria-hidden="true">Especial de<br/>1 ano</p>
+        </div>
+        <FilmStrip />
+      </section>
+
+      <section className="anniversary-story">
+        <div className="page-width--narrow">
+          <Reveal className="anniversary-story__intro">
+            <p>Em nosso primeiro dia, acreditávamos que uma plataforma feita por estudantes e para estudantes poderia <strong>transformar a rotina acadêmica.</strong></p>
+            <p>Um ano depois, continuamos crescendo, aprendendo e inovando, mas sem esquecer de onde viemos.</p>
+            <h2>1 ano de história, um presente para você.</h2>
+            <p>Reviva o início da nossa jornada e garanta benefícios que permanecem para sempre.</p>
+          </Reveal>
+          <div className="anniversary-polaroids">
+            <Reveal><article><span className="anniversary-clip"/><h3>Preço garantido<br/>para sempre</h3><p>Entre durante a campanha e mantenha sua assinatura nesse valor de forma vitalícia.</p></article></Reveal>
+            <Reveal><article><span className="anniversary-clip"/><h3>Nutriwork Plus</h3><p>Tenha acesso aos conteúdos, materiais e recursos exclusivos da plataforma.</p></article></Reveal>
+            <Reveal><article><span className="anniversary-clip"/><h3>Comunidade<br/>que cresce</h3><p>Faça parte de uma plataforma construída por estudantes e para estudantes, evoluindo a cada ano.</p></article></Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section className="anniversary-memories" aria-labelledby="memories-title">
+        <div className="page-width">
+          <Reveal><h2 id="memories-title">Memórias que<br/><strong>construíram o Nutriwork</strong></h2></Reveal>
+          <div className="anniversary-gallery">
+            <img src="/assets/anniversary/memory-stage.jpg" alt="Apresentação da equipe Nutriwork" />
+            <img src="/assets/anniversary/memory-team.jpg" alt="Equipe Nutriwork reunida" />
+            <img src="/assets/anniversary/memory-podcast.jpg" alt="Gravação do podcast Nutriwork" />
+          </div>
+        </div>
+      </section>
+
+      <section id="oferta-aniversario" className="anniversary-offer">
+        <div className="page-width--narrow anniversary-offer__layout">
+          <Reveal className="anniversary-offer__copy">
+            <p>Há 1 ano, o <strong>Nutriwork</strong> nasceu com um propósito: tornar o conhecimento em nutrição acessível para todos.</p>
+            <p>Para celebrar essa trajetória, trouxemos de volta o valor que marcou o nosso começo.</p>
+            <h2>Aproveite a campanha e tenha acesso a todos nossos conteúdos</h2>
+          </Reveal>
+          <Reveal className="anniversary-price-card">
+            <p>Por apenas</p>
+            <div className="anniversary-price"><span>R$</span><strong>9<sup>,90</sup></strong><small>/ mês</small></div>
+            <ul>{anniversaryBenefits.map((benefit) => <li key={benefit}><PricingCheck/>{benefit}</li>)}</ul>
+            <Button href={checkout.monthly} external>Assinar agora</Button>
+            <small>*Oferta por tempo limitado</small>
+          </Reveal>
+          <Reveal className="anniversary-offer__closing">
+            <h2>O preço é para sempre. A condição, não.</h2>
+            <p>Garanta seu acesso ao Nutriwork Plus.</p>
+          </Reveal>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 export default function App() {
   const page = useCurrentPage();
   const { loading, renderedPage } = useLoadingExperience(page);
@@ -1114,8 +1195,8 @@ export default function App() {
       <LoadingExperience state={loading} />
       <div className={`app-shell ${loading.active ? 'app-shell--loading' : ''}`}>
         <Header/>
-        {renderedPage === 'estude' ? <EstudePage/> : renderedPage === 'partners' ? <PartnersPage/> : <HomePage/>}
-        <Footer showStatement={renderedPage !== 'partners'} />
+        {renderedPage === 'estude' ? <EstudePage/> : renderedPage === 'partners' ? <PartnersPage/> : renderedPage === 'anniversary' ? <AnniversaryPage/> : <HomePage/>}
+        <Footer showStatement={renderedPage !== 'partners' && renderedPage !== 'anniversary'} />
         {renderedPage === 'home' && <Button href="/#planos" className="mobile-cta">Ver planos</Button>}
       </div>
     </>
