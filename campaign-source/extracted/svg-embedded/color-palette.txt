@@ -1,0 +1,6 @@
+#000000
+#223d7c
+#cdc2b7
+#e0dad4
+#f2f2f2
+#ffffff
