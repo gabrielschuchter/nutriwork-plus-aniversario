@@ -2,7 +2,7 @@ import './PartnersEventsGallery.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties, FocusEvent as ReactFocusEvent } from 'react';
 
-type GalleryItem = {
+export type GalleryItem = {
   number: string;
   src: string;
   caption: string;
@@ -10,6 +10,11 @@ type GalleryItem = {
   height: number;
   tone: 'hero' | 'wide' | 'tall' | 'standard';
   focus?: string;
+};
+
+type PartnersEventsGalleryProps = {
+  variant?: 'partners' | 'anniversary';
+  items?: GalleryItem[];
 };
 
 const eventGalleryItems: GalleryItem[] = [
@@ -134,12 +139,12 @@ function getShortestOffset(index: number, activeIndex: number, total: number) {
   return offset;
 }
 
-export default function PartnersEventsGallery() {
+export default function PartnersEventsGallery({ variant = 'partners', items = eventGalleryItems }: PartnersEventsGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const isVisibleRef = useRef(true);
-  const totalItems = eventGalleryItems.length;
+  const totalItems = items.length;
 
   const move = useCallback((direction: -1 | 1) => {
     setActiveIndex((current) => (current + direction + totalItems) % totalItems);
@@ -179,12 +184,18 @@ export default function PartnersEventsGallery() {
   }, [isPaused, move]);
 
   return (
-    <section className="section partners-events" aria-labelledby="partners-events-title">
+    <section
+      className={`section partners-events ${variant === 'anniversary' ? 'partners-events--anniversary' : ''}`}
+      aria-labelledby={variant === 'partners' ? 'partners-events-title' : undefined}
+      aria-label={variant === 'anniversary' ? 'Galeria de memórias do primeiro ano do Nutriwork' : undefined}
+    >
       <div className="page-width">
-        <div className="partners-events__heading">
-          <h2 id="partners-events-title">Presença da Comunidade Nutriwork em espaços de formação, ensino e networking</h2>
-          <span>Uma seleção de palestras, simpósios, encontros e momentos de troca que mostram o Nutriwork em movimento.</span>
-        </div>
+        {variant === 'partners' && (
+          <div className="partners-events__heading">
+            <h2 id="partners-events-title">Presença da Comunidade Nutriwork em espaços de formação, ensino e networking</h2>
+            <span>Uma seleção de palestras, simpósios, encontros e momentos de troca que mostram o Nutriwork em movimento.</span>
+          </div>
+        )}
         <div
           className="partners-events__carousel"
           ref={carouselRef}
@@ -201,7 +212,7 @@ export default function PartnersEventsGallery() {
             Carrossel automático de imagens. Use os botões de imagem anterior e próxima imagem para navegar.
           </p>
           <div className="partners-events__stage" aria-live="polite">
-            {eventGalleryItems.map((item, index) => {
+            {items.map((item, index) => {
               const offset = getShortestOffset(index, activeIndex, totalItems);
               const absOffset = Math.abs(offset);
               const placement = absOffset === 0 ? 'center' : absOffset === 1 ? 'side' : absOffset === 2 ? 'outer' : 'hidden';

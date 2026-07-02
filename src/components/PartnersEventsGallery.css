@@ -402,3 +402,113 @@ html[data-theme='light'] .partners-events__controls button {
     --carousel-step: clamp(172px, 55vw, 214px);
   }
 }
+
+/* Pele vintage: memórias da campanha de 1 ano (polaroids sobre papel rasgado). */
+.partners-events--anniversary,
+html[data-theme='light'] .partners-events--anniversary {
+  position: relative;
+  z-index: 1;
+  padding-top: 0;
+  padding-bottom: 0;
+  background: none;
+  overflow: visible;
+}
+
+.partners-events--anniversary::before,
+html[data-theme='light'] .partners-events--anniversary::before {
+  display: none;
+}
+
+.partners-events--anniversary .partners-events__carousel::before {
+  background: radial-gradient(ellipse at center, rgba(205, 173, 126, .22), transparent 66%);
+}
+
+.partners-events--anniversary .partners-events__item,
+html[data-theme='light'] .partners-events--anniversary .partners-events__item {
+  border: 1px solid rgba(255, 255, 255, .85);
+  border-radius: 8px;
+  padding: 12px 12px clamp(52px, 5.4vw, 64px);
+  background: #f7f3ed;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, .5);
+}
+
+.partners-events--anniversary .partners-events__item--center,
+html[data-theme='light'] .partners-events--anniversary .partners-events__item--center {
+  box-shadow: 0 34px 80px rgba(0, 0, 0, .58);
+}
+
+.partners-events--anniversary .partners-events__item--side,
+html[data-theme='light'] .partners-events--anniversary .partners-events__item--side {
+  box-shadow: 0 16px 38px rgba(0, 0, 0, .38);
+}
+
+.partners-events--anniversary .partners-events__item--outer,
+html[data-theme='light'] .partners-events--anniversary .partners-events__item--outer {
+  box-shadow: 0 12px 26px rgba(0, 0, 0, .3);
+}
+
+.partners-events--anniversary .partners-events__media {
+  border-radius: 4px;
+  background: #14110d;
+}
+
+.partners-events--anniversary .partners-events__media img {
+  filter: sepia(.22) saturate(.76) contrast(1.02);
+}
+
+.partners-events--anniversary .partners-events__item::after,
+html[data-theme='light'] .partners-events--anniversary .partners-events__item::after {
+  inset: 12px 12px clamp(52px, 5.4vw, 64px);
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .05), transparent 30%, rgba(23, 17, 10, .14) 100%),
+    linear-gradient(105deg, rgba(255, 255, 255, .09), transparent 26%, transparent 74%, rgba(60, 45, 26, .06));
+}
+
+.partners-events--anniversary .partners-events__item figcaption {
+  left: 16px;
+  right: 16px;
+  bottom: 14px;
+  color: #2b261f;
+}
+
+.partners-events--anniversary .partners-events__controls button,
+html[data-theme='light'] .partners-events--anniversary .partners-events__controls button {
+  border-color: rgba(238, 231, 222, .3);
+  color: #f0eae2;
+  background: rgba(16, 14, 11, .72);
+  box-shadow: inset 0 1px rgba(255, 255, 255, .08), 0 14px 30px rgba(0, 0, 0, .32);
+}
+
+.partners-events--anniversary .partners-events__controls button:hover,
+.partners-events--anniversary .partners-events__controls button:focus-visible {
+  border-color: rgba(226, 198, 157, .6);
+  color: #e9c997;
+  background: rgba(28, 24, 18, .85);
+}
+
+.partners-events--anniversary .partners-events__progress-track {
+  background: rgba(238, 231, 222, .22);
+}
+
+.partners-events--anniversary .partners-events__progress-track i {
+  background: linear-gradient(90deg, #cdc2b7, #f1e9dd);
+}
+
+@media (max-width: 760px) {
+  .partners-events--anniversary,
+  html[data-theme='light'] .partners-events--anniversary {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .partners-events--anniversary .partners-events__item,
+  html[data-theme='light'] .partners-events--anniversary .partners-events__item {
+    padding: 8px 8px 58px;
+  }
+
+  .partners-events--anniversary .partners-events__item::after,
+  html[data-theme='light'] .partners-events--anniversary .partners-events__item::after {
+    inset: 8px 8px 58px;
+  }
+}
