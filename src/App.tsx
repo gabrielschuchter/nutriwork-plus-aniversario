@@ -1,0 +1,1123 @@
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import {
+  comparison,
+  courses,
+  estudeAudience,
+  estudeBenefits,
+  estudeObjections,
+  evidenceLearning,
+  extras,
+  faqItems,
+  navItems,
+  platformBenefits,
+  platformPlans,
+  promises
+} from './data';
+import ReferencesSection from './components/ReferencesSection';
+import PlatformPreview from './components/PlatformPreview';
+
+const checkout = {
+  complete: 'https://pay.kiwify.com.br/nyBH9vq',
+  guide: 'https://pay.kiwify.com.br/fPEAkDX',
+  monthly: 'https://pay.kiwify.com.br/pO6p0QM',
+  quarterly: 'https://pay.kiwify.com.br/bfYt1Pt',
+  semiannual: 'https://pay.kiwify.com.br/TbFu6TD'
+};
+
+const contactEmail = 'equipenutriwork@gmail.com';
+const partnerForm = 'https://forms.gle/avn9yrBdbEHkaGg8A';
+const whatsappContact = `https://wa.me/5512997505188?text=${encodeURIComponent('Olá, equipe Nutriwork! Vim pelo site e gostaria de tirar uma dúvida sobre o Nutriwork Plus.')}`;
+type Theme = 'light' | 'dark';
+type Page = 'home' | 'estude' | 'partners';
+type LoadingVariant = 'intro' | 'return' | 'route';
+type LoadingExperienceState = { active: boolean; variant: LoadingVariant; page: Page };
+
+const loaderStorageKey = 'nutriwork-loading-experience-seen';
+const loaderMinimumDuration: Record<LoadingVariant, number> = {
+  intro: 1350,
+  return: 1000,
+  route: 1100
+};
+const loaderContentSwapDelay = 260;
+
+const PartnersMapCard = lazy(() => import('./components/PartnersMapCard'));
+const PartnersEventsGallery = lazy(() => import('./components/PartnersEventsGallery'));
+
+function Reveal({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <div className={`reveal ${className}`}>{children}</div>;
+}
+
+function useScrollReveal(refreshKey: unknown) {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
+    );
+
+    document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, [refreshKey]);
+}
+
+function useMobileCtaVisibility(refreshKey: unknown) {
+  useEffect(() => {
+    const cta = document.querySelector<HTMLElement>('.mobile-cta');
+    const protectedSections = document.querySelectorAll('.pricing-section, .faq-section, .footer');
+    if (!cta || !protectedSections.length) return;
+
+    const visibleSections = new Set<Element>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => entry.isIntersecting ? visibleSections.add(entry.target) : visibleSections.delete(entry.target));
+        cta.classList.toggle('mobile-cta--hidden', visibleSections.size > 0);
+      },
+      { threshold: 0.04 }
+    );
+
+    protectedSections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [refreshKey]);
+}
+
+function getCurrentPage(): Page {
+  if (window.location.hash === '#/estude') return 'estude';
+  if (window.location.hash === '#/parceiros') return 'partners';
+  return 'home';
+}
+
+function useCurrentPage() {
+  const [page, setPage] = useState<Page>(() => getCurrentPage());
+
+  useEffect(() => {
+    const updatePage = () => setPage(getCurrentPage());
+    window.addEventListener('hashchange', updatePage);
+    return () => window.removeEventListener('hashchange', updatePage);
+  }, []);
+
+  return page;
+}
+
+function useHashScroll(page: Page) {
+  useEffect(() => {
+    if (page !== 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const hash = window.location.hash;
+    if (!hash || hash.startsWith('#/')) return;
+
+    window.requestAnimationFrame(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start' });
+    });
+  }, [page]);
+}
+
+function hasSeenLoadingExperience() {
+  try {
+    return localStorage.getItem(loaderStorageKey) === '1' || sessionStorage.getItem(loaderStorageKey) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function markLoadingExperienceSeen() {
+  try {
+    localStorage.setItem(loaderStorageKey, '1');
+    sessionStorage.setItem(loaderStorageKey, '1');
+  } catch {
+    // The experience should still complete when storage is unavailable.
+  }
+}
+
+function waitForDelay(delay: number) {
+  return new Promise<void>((resolve) => window.setTimeout(resolve, Math.max(0, delay)));
+}
+
+function waitForNextPaint() {
+  return new Promise<void>((resolve) => {
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => resolve()));
+  });
+}
+
+async function waitForRenderedPage() {
+  await waitForNextPaint();
+
+  const fontsReady = document.fonts?.ready ?? Promise.resolve();
+  const images = Array.from(document.querySelectorAll<HTMLImageElement>('main img'))
+    .filter((image) => image.loading !== 'lazy');
+  const imagesReady = images.map((image) => {
+    if (image.complete) return image.decode?.().catch(() => undefined) ?? Promise.resolve();
+
+    return new Promise<void>((resolve) => {
+      image.addEventListener('load', () => resolve(), { once: true });
+      image.addEventListener('error', () => resolve(), { once: true });
+    });
+  });
+
+  await Promise.allSettled([fontsReady, ...imagesReady]);
+}
+
+function useLoadingExperience(page: Page) {
+  const hasHandledFirstPage = useRef(false);
+  const currentPageRef = useRef(page);
+  const initialStartedAt = useRef(performance.now());
+  const [renderedPage, setRenderedPage] = useState(page);
+  const [loading, setLoading] = useState<LoadingExperienceState>(() => {
+    const seen = hasSeenLoadingExperience();
+    return { active: true, variant: seen ? 'return' : 'intro', page };
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('loading-active', loading.active);
+    return () => root.classList.remove('loading-active');
+  }, [loading.active]);
+
+  useEffect(() => {
+    const initialVariant = loading.variant;
+    let cancelled = false;
+    let removeLoadListener = () => {};
+
+    const windowReady = document.readyState === 'complete'
+      ? Promise.resolve()
+      : new Promise<void>((resolve) => {
+          const handleLoad = () => resolve();
+          window.addEventListener('load', handleLoad, { once: true });
+          removeLoadListener = () => window.removeEventListener('load', handleLoad);
+        });
+
+    const minimumVisible = waitForDelay(
+      loaderMinimumDuration[initialVariant] - (performance.now() - initialStartedAt.current)
+    );
+
+    void Promise.all([
+      windowReady,
+      document.fonts?.ready ?? Promise.resolve(),
+      minimumVisible
+    ]).then(() => {
+      if (cancelled) return;
+      markLoadingExperienceSeen();
+      setLoading((current) => (
+        current.variant === initialVariant && current.active
+          ? { ...current, active: false }
+          : current
+      ));
+    });
+
+    return () => {
+      cancelled = true;
+      removeLoadListener();
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!hasHandledFirstPage.current) {
+      hasHandledFirstPage.current = true;
+      currentPageRef.current = page;
+      return;
+    }
+
+    if (currentPageRef.current === page) {
+      return;
+    }
+
+    currentPageRef.current = page;
+
+    const root = document.documentElement;
+    const transitionStartedAt = performance.now();
+    let cancelled = false;
+    let routeClassTimer = 0;
+    root.classList.add('route-transition');
+    setLoading({ active: true, variant: 'route', page });
+
+    const swapTimer = window.setTimeout(() => {
+      setRenderedPage(page);
+
+      void Promise.all([
+        waitForRenderedPage(),
+        waitForDelay(loaderMinimumDuration.route - (performance.now() - transitionStartedAt))
+      ]).then(() => {
+        if (cancelled) return;
+        setLoading((current) => (
+          current.variant === 'route' && current.page === page
+            ? { ...current, active: false }
+            : current
+        ));
+        routeClassTimer = window.setTimeout(
+          () => root.classList.remove('route-transition'),
+          680
+        );
+      });
+    }, loaderContentSwapDelay);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(swapTimer);
+      window.clearTimeout(routeClassTimer);
+      root.classList.remove('route-transition');
+    };
+  }, [page]);
+
+  return { loading, renderedPage };
+}
+
+
+function SkeletonBlock({ className = '' }: { className?: string }) {
+  return <span className={`skeleton-block ${className}`} />;
+}
+
+function LoadingSkeleton({ page, compact }: { page: Page; compact: boolean }) {
+  if (page === 'home') return null;
+
+  if (page === 'estude') {
+    return (
+      <div className={`loading-skeleton loading-skeleton--estude ${compact ? 'loading-skeleton--compact' : ''}`}>
+        <div className="loading-skeleton__grid loading-skeleton__grid--estude">
+          <div className="loading-skeleton__copy">
+            <SkeletonBlock className="skeleton-kicker" />
+            <SkeletonBlock className="skeleton-title skeleton-title--estude" />
+            <SkeletonBlock className="skeleton-line skeleton-line--wide" />
+            <SkeletonBlock className="skeleton-line skeleton-line--medium" />
+            <SkeletonBlock className="skeleton-button" />
+          </div>
+          <div className="loading-phone">
+            <SkeletonBlock className="loading-phone__device" />
+            <SkeletonBlock className="loading-chip loading-chip--one" />
+            <SkeletonBlock className="loading-chip loading-chip--two" />
+            <SkeletonBlock className="loading-chip loading-chip--three" />
+          </div>
+        </div>
+        <div className="loading-estude-body">
+          <div className="loading-problem-card">
+            <SkeletonBlock className="skeleton-line skeleton-line--medium" />
+            <SkeletonBlock className="skeleton-line skeleton-line--wide" />
+            <SkeletonBlock className="skeleton-line skeleton-line--short" />
+          </div>
+          <div className="loading-estude-panel">
+            <SkeletonBlock className="skeleton-title skeleton-title--compact" />
+            <SkeletonBlock className="loading-phone__device loading-phone__device--small" />
+            <SkeletonBlock className="loading-chip loading-chip--panel-one" />
+            <SkeletonBlock className="loading-chip loading-chip--panel-two" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (page === 'partners') {
+    return (
+      <div className={`loading-skeleton loading-skeleton--partners ${compact ? 'loading-skeleton--compact' : ''}`}>
+        <div className="loading-skeleton__grid loading-skeleton__grid--partners">
+          <div className="loading-skeleton__copy">
+            <SkeletonBlock className="skeleton-kicker" />
+            <SkeletonBlock className="skeleton-title skeleton-title--partners" />
+            <SkeletonBlock className="skeleton-line skeleton-line--wide" />
+            <SkeletonBlock className="skeleton-line skeleton-line--medium" />
+            <div className="skeleton-action-row">
+              <SkeletonBlock className="skeleton-button" />
+              <SkeletonBlock className="skeleton-link" />
+            </div>
+          </div>
+          <div className="loading-partners-map">
+            <SkeletonBlock className="skeleton-kicker" />
+            <SkeletonBlock className="skeleton-line skeleton-line--name" />
+            <SkeletonBlock className="skeleton-line skeleton-line--wide" />
+            <SkeletonBlock className="loading-partners-map__shape" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function LoadingExperience({ state }: { state: LoadingExperienceState }) {
+  const compact = state.variant !== 'intro';
+  const [present, setPresent] = useState(state.active);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (state.active) {
+      setPresent(true);
+      const frame = window.requestAnimationFrame(() => setVisible(true));
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    setVisible(false);
+    const timer = window.setTimeout(
+      () => setPresent(false),
+      560
+    );
+
+    return () => window.clearTimeout(timer);
+  }, [state.active]);
+
+  return (
+    <div className={`loading-experience loading-experience--${state.variant} ${visible ? 'loading-experience--active' : ''} ${present ? 'loading-experience--animating' : ''}`} aria-hidden="true">
+      <div className="loading-experience__ambient" />
+      <div className="loading-experience__brand">
+        <div className="loading-experience__mark">N<span>+</span></div>
+        <div className={`loading-experience__process ${compact ? 'loading-experience__process--compact' : ''}`}>
+          <svg className="nw-spinner" viewBox="25 25 50 50" aria-hidden="true">
+            <circle className="nw-spinner__track" cx="50" cy="50" r="20" />
+            <circle className="nw-spinner__arc" cx="50" cy="50" r="20" />
+          </svg>
+        </div>
+      </div>
+      <LoadingSkeleton page={state.page} compact={compact} />
+    </div>
+  );
+}
+
+function Icon({ name }: { name: string }) {
+  const paths: Record<string, ReactNode> = {
+    brain: <><path d="M9 5.2a3.2 3.2 0 0 0-5.2 2.5 3.1 3.1 0 0 0 .8 5.9A3.3 3.3 0 0 0 9 18.5V5.2Z"/><path d="M15 5.2a3.2 3.2 0 0 1 5.2 2.5 3.1 3.1 0 0 1-.8 5.9 3.3 3.3 0 0 1-4.4 4.9V5.2Z"/><path d="M9 9H7.2M15 9h1.8M9 14H7m8 0h2"/></>,
+    student: <><circle cx="12" cy="7" r="3"/><path d="M5 20v-2.4A5.6 5.6 0 0 1 10.6 12h2.8a5.6 5.6 0 0 1 5.6 5.6V20M3 6l9-4 9 4-9 4-9-4Z"/></>,
+    structure: <><rect x="4" y="3" width="16" height="5" rx="1.5"/><rect x="4" y="16" width="7" height="5" rx="1.5"/><rect x="13" y="16" width="7" height="5" rx="1.5"/><path d="M12 8v4M7.5 12h9M7.5 12v4M16.5 12v4"/></>,
+    evidence: <><rect x="4" y="3" width="12" height="16" rx="2"/><path d="M8 7h4M8 11h5M8 15h3"/><circle cx="17" cy="16" r="3"/><path d="m19.3 18.3 2.2 2.2"/></>,
+    trend: <path d="m3 17 6-6 4 4 8-9M16 6h5v5"/>,
+    cap: <><path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11.5V16c3.5 2.5 8.5 2.5 12 0v-4.5M22 9v7"/></>,
+    light: <><path d="M9 18h6M10 22h4"/><path d="M8.2 14.5A7 7 0 1 1 15.8 14.5 5 5 0 0 0 14 18h-4a5 5 0 0 0-1.8-3.5Z"/></>,
+    book: <><path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H12v18H7.5A3.5 3.5 0 0 0 4 23V5.5ZM20 5.5A3.5 3.5 0 0 0 16.5 2H12v18h4.5A3.5 3.5 0 0 1 20 23V5.5Z"/></>,
+    podcast: <><circle cx="12" cy="11" r="3"/><path d="M7.2 15.8a6.8 6.8 0 1 1 9.6 0M4.5 18.5a10.5 10.5 0 1 1 15 0M12 14v8M9 22h6"/></>,
+    play: <><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3V9Z"/></>,
+    analysis: <><path d="M5 3h10l4 4v14H5V3Z"/><path d="M15 3v5h5M8 12h7M8 16h4"/><circle cx="16.5" cy="16.5" r="2.5"/></>,
+    heart: <path d="M20.8 5.7a5.4 5.4 0 0 0-7.6 0L12 6.9l-1.2-1.2a5.4 5.4 0 1 0-7.6 7.6L12 22l8.8-8.7a5.4 5.4 0 0 0 0-7.6Z"/>,
+    check: <path d="m4 12 5 5L20 6"/>,
+    instagram: <><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></>,
+    phone: <><path d="M8 3h8l1 3-2 2a15 15 0 0 0 3 3l2-2 3 1v8c0 1.1-.9 2-2 2C11.1 20 4 12.9 4 4a2 2 0 0 1 2-2l2 1Z"/></>,
+    whatsapp: <path fill="currentColor" stroke="none" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 1.82c2.16 0 4.19.84 5.72 2.37a8.04 8.04 0 0 1 2.37 5.72c0 4.46-3.63 8.09-8.1 8.09a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.36c0-4.46 3.63-8.09 8.1-8.09Zm-3.34 4.4c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32 .98 2.48c.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.19 1.11.16 1.53.1.47-.07 1.43-.59 1.63-1.15.2-.56.2-1.05.14-1.15-.06-.1-.22-.16-.46-.28-.24-.12-1.43-.7-1.65-.79-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.93-1.19-.71-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.41-.14-.01-.3-.01-.46-.01Z"/>,
+    mail: <><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></>,
+    sun: <><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></>,
+    moon: <path d="M20.7 15.2A8.6 8.6 0 0 1 8.8 3.3 9 9 0 1 0 20.7 15.2Z"/>,
+    pause: <><rect x="7" y="5" width="3.5" height="14" rx="1"/><rect x="13.5" y="5" width="3.5" height="14" rx="1"/></>,
+    gauge: <><path d="M4 14a8 8 0 0 1 16 0"/><path d="M6.2 19a9.8 9.8 0 0 1-2.2-6 8 8 0 0 1 16 0 9.8 9.8 0 0 1-2.2 6Z"/><path d="m12 14 4-5"/><circle cx="12" cy="14" r="1"/></>,
+    volume: <><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></>,
+    volumeOff: <><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="m18 9-5 5M13 9l5 5"/></>
+  };
+  return <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
+}
+
+function PricingCheck() {
+  return <span className="pricing-check" aria-hidden="true" />;
+}
+
+function Button({ href, children, variant = 'primary', className = '', external = false }: { href: string; children: ReactNode; variant?: 'primary' | 'outline'; className?: string; external?: boolean }) {
+  return <a className={`button button--${variant} ${className}`} href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}>{children}</a>;
+}
+
+function Header() {
+  const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useState<Theme>(() => document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+  const [activeNavHref, setActiveNavHref] = useState(() => {
+    const hash = window.location.hash;
+    return hash && hash !== '#' ? `/${hash}` : '/#inicio';
+  });
+  const nextTheme = theme === 'dark' ? 'light' : 'dark';
+
+  useEffect(() => {
+    const updateActiveNav = () => {
+      const hash = window.location.hash;
+      setActiveNavHref(hash && hash !== '#' ? `/${hash}` : '/#inicio');
+    };
+
+    window.addEventListener('hashchange', updateActiveNav);
+    return () => window.removeEventListener('hashchange', updateActiveNav);
+  }, []);
+
+  const toggleTheme = () => {
+    const root = document.documentElement;
+    root.classList.add('theme-transition');
+    root.dataset.theme = nextTheme;
+    root.style.colorScheme = nextTheme;
+    document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', nextTheme === 'light' ? '#f4f7fc' : '#02040a');
+    try {
+      localStorage.setItem('nutriwork-theme', nextTheme);
+    } catch {
+      // The selected theme still applies when storage is unavailable.
+    }
+    setTheme(nextTheme);
+    window.setTimeout(() => root.classList.remove('theme-transition'), 350);
+  };
+
+  return (
+    <header className="site-header">
+      <a className="brand" href="/#inicio" aria-label="Nutriwork Plus, voltar ao início">NUTRIWORK<span>+</span></a>
+      <nav className={`nav ${open ? 'nav--open' : ''}`} aria-label="Navegação principal">
+        {navItems.map((item) => {
+          const active = activeNavHref === item.href;
+          return <a key={item.href} className={active ? 'is-active' : undefined} href={item.href} aria-current={active ? 'page' : undefined} onClick={() => setOpen(false)}>{item.label}</a>;
+        })}
+      </nav>
+      <div className="header-actions">
+        <button className="theme-toggle" type="button" aria-label={`Tema atual: ${theme === 'dark' ? 'escuro' : 'claro'}. Alternar para tema ${nextTheme === 'dark' ? 'escuro' : 'claro'}.`} title={`Alternar para tema ${nextTheme === 'dark' ? 'escuro' : 'claro'}`} onClick={toggleTheme}>
+          <span className="theme-toggle__track" aria-hidden="true">
+            <span className="theme-toggle__icon theme-toggle__icon--sun"><Icon name="sun"/></span>
+            <span className="theme-toggle__icon theme-toggle__icon--moon"><Icon name="moon"/></span>
+            <span className="theme-toggle__thumb"><Icon name={theme === 'dark' ? 'moon' : 'sun'}/></span>
+          </span>
+        </button>
+        <button className="menu-button" type="button" aria-label={open ? 'Fechar menu' : 'Abrir menu'} aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+          <span/><span/><span/>
+        </button>
+      </div>
+    </header>
+  );
+}
+
+function SectionHeading({ children, accent = false }: { children: ReactNode; accent?: boolean }) {
+  return <h2 className={`section-heading ${accent ? 'section-heading--accent' : ''}`}>{children}</h2>;
+}
+
+
+function HeroMonitor() {
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (window.matchMedia('(max-width: 720px)').matches) return;
+
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const rect = stage.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+    stage.style.setProperty('--hero-tilt-x', `${y * -1.4}deg`);
+    stage.style.setProperty('--hero-tilt-y', `${x * 2.8}deg`);
+    stage.style.setProperty('--hero-shift-x', `${x * 2}px`);
+    stage.style.setProperty('--hero-shift-y', `${y * 1.5}px`);
+  };
+
+  const resetPointer = () => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    stage.style.setProperty('--hero-tilt-x', '0deg');
+    stage.style.setProperty('--hero-tilt-y', '0deg');
+    stage.style.setProperty('--hero-shift-x', '0px');
+    stage.style.setProperty('--hero-shift-y', '0px');
+  };
+
+  return (
+    <div
+      ref={stageRef}
+      className="hero-monitor-stage"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetPointer}
+    >
+      <div className="hero-monitor-stage__glow" aria-hidden="true" />
+      <div className="hero-monitor" role="group" aria-label="Prévia interativa fictícia do Nutriwork Plus em um monitor 3D">
+        <div className="hero-monitor-cue" aria-hidden="true">
+          <span className="hero-monitor-cue__label">
+            <svg className="hero-monitor-cue__arrow" viewBox="0 0 18 18" fill="none">
+              <path d="M4.5 13.5h9v-9M13.5 13.5 4.5 4.5" />
+            </svg>
+            <span className="hero-monitor-cue__desktop">Clique para explorar</span>
+            <span className="hero-monitor-cue__mobile">Toque para explorar</span>
+          </span>
+        </div>
+        <div className="hero-monitor__frame">
+          <div className="hero-monitor__screen">
+            <PlatformPreview />
+          </div>
+        </div>
+        <div className="hero-monitor__shadow" aria-hidden="true" />
+      </div>
+    </div>
+  );
+}
+
+function useCountUp(target: number, duration = 3000) {
+  const [value, setValue] = useState(0);
+  const ref = useRef<HTMLElement>(null);
+  const startedRef = useRef(false);
+  const completedRef = useRef(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    let frame = 0;
+    let fallbackTimer = 0;
+
+    const animate = () => {
+      if (startedRef.current) return;
+      startedRef.current = true;
+      window.clearTimeout(fallbackTimer);
+
+      const start = performance.now();
+      const step = (now: number) => {
+        const progress = Math.min((now - start) / duration, 1);
+        // easeInOutCubic: aceleração e desaceleração suaves, sem contagem brusca.
+        const eased = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        setValue(Math.round(eased * target));
+        if (progress < 1) {
+          frame = window.requestAnimationFrame(step);
+        } else {
+          completedRef.current = true;
+        }
+      };
+      frame = window.requestAnimationFrame(step);
+    };
+
+    const rect = node.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      animate();
+      return () => {
+        window.cancelAnimationFrame(frame);
+        if (!completedRef.current) startedRef.current = false;
+      };
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      animate();
+      return () => {
+        window.cancelAnimationFrame(frame);
+        if (!completedRef.current) startedRef.current = false;
+      };
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animate();
+          observer.disconnect();
+        }
+      }),
+      { threshold: 0.08, rootMargin: '0px 0px -8% 0px' }
+    );
+    observer.observe(node);
+    fallbackTimer = window.setTimeout(animate, 1200);
+
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(fallbackTimer);
+      window.cancelAnimationFrame(frame);
+      if (!completedRef.current) startedRef.current = false;
+    };
+  }, [target, duration]);
+
+  return { value, ref };
+}
+
+function HeroSocialProof() {
+  const { value, ref } = useCountUp(300);
+  return (
+    <small className="hero__proof" ref={ref} aria-label="Mais de 300 alunos">
+      <b>+{value}</b> alunos
+    </small>
+  );
+}
+
+function Hero() {
+  return (
+    <section id="inicio" className="hero">
+      <div className="hero__eclipse" aria-hidden="true" />
+      <div className="hero__glow" aria-hidden="true" />
+      <Reveal className="hero__layout">
+        <div className="hero__content">
+          <h1>Nutriwork<span>plus.<HeroSocialProof /></span></h1>
+          <p>A plataforma feita para todo estudante de Nutrição.</p>
+          <div className="hero-actions">
+            <Button href="/#planos" variant="outline">Venha fazer parte</Button>
+            <Button href="https://plus.gruponutriwork.com.br/" variant="outline" className="member-cta" external>Já sou membro(a)</Button>
+          </div>
+        </div>
+        <HeroMonitor />
+      </Reveal>
+    </section>
+  );
+}
+
+function Platform() {
+  return (
+    <section id="sobre" className="section platform-section">
+      <div className="page-width">
+        <Reveal className="intro-copy">
+          <h3>Estudar Nutrição não deveria parecer tão confuso.</h3>
+          <p className="intro-copy__support">Existem muitos conteúdos, muitas opiniões e pouca clareza sobre o que realmente merece sua atenção.</p>
+          <div className="purpose-callout">
+            <p><strong>O Nutriwork existe para dar direção aos seus estudos em Nutrição.</strong></p>
+            <span>Uma comunidade para quem quer aprender aquilo que importa com clareza e pensamento crítico.</span>
+          </div>
+          <p className="promise-kicker">Na prática, isso significa:</p>
+        </Reveal>
+        <div className="promise-grid">
+          {promises.map((item) => <Reveal key={item.title} className="glass-card promise-card"><Icon name={item.icon}/><div><h3>{item.title}</h3><p>{item.description}</p></div></Reveal>)}
+        </div>
+        <Reveal><p className="mission">Se você já sente que <strong>estuda bastante</strong>, mas ainda não sabe se está <strong>estudando certo</strong>, o Nutriwork foi feito para você.</p></Reveal>
+      </div>
+    </section>
+  );
+}
+
+function JoinCta() {
+  return (
+    <section className="join-cta-section" aria-labelledby="join-cta-title">
+      <div className="page-width page-width--narrow">
+        <Reveal className="join-cta">
+          <div>
+            <p className="eyebrow">Seu próximo passo</p>
+            <h2 id="join-cta-title">Pare de estudar no improviso.</h2>
+            <p className="join-cta__copy">Você não precisa salvar mais 50 posts para sentir que está evoluindo.<br/><br/>Entre no Nutriwork e estude com aulas, materiais e discussões que mostram <strong>o que estudar</strong>, <strong>por que estudar</strong> e <strong>como usar isso na prática</strong>.</p>
+          </div>
+          <Button href="/#planos" variant="outline">Quero fazer parte</Button>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Courses() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const firstGroupRef = useRef<HTMLDivElement>(null);
+  const carouselVisibleRef = useRef(true);
+  const offsetRef = useRef(0);
+  const groupWidthRef = useRef(0);
+  const draggingRef = useRef(false);
+  const hoverPausedRef = useRef(false);
+  const focusPausedRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartOffsetRef = useRef(0);
+  const lastPointerXRef = useRef(0);
+  const lastPointerTimeRef = useRef(0);
+  const momentumRef = useRef(0);
+
+  const applyOffset = (nextOffset: number) => {
+    const width = groupWidthRef.current;
+    if (width > 0) {
+      while (nextOffset <= -width) nextOffset += width;
+      while (nextOffset > 0) nextOffset -= width;
+    }
+    offsetRef.current = nextOffset;
+    if (trackRef.current) trackRef.current.style.transform = `translate3d(${nextOffset}px, 0, 0)`;
+  };
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const firstGroup = firstGroupRef.current;
+    if (!track || !firstGroup) return;
+
+    const measure = () => {
+      groupWidthRef.current = firstGroup.offsetWidth;
+      applyOffset(offsetRef.current);
+    };
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(firstGroup);
+    measure();
+
+    let visibilityObserver: IntersectionObserver | undefined;
+    if ('IntersectionObserver' in window) {
+      carouselVisibleRef.current = false;
+      visibilityObserver = new IntersectionObserver(
+        ([entry]) => {
+          carouselVisibleRef.current = entry.isIntersecting;
+        },
+        { rootMargin: '320px 0px', threshold: 0.01 }
+      );
+      visibilityObserver.observe(track);
+    }
+
+    let frame = 0;
+    let previousTime = performance.now();
+    const animate = (time: number) => {
+      const elapsed = Math.min((time - previousTime) / 1000, 0.05);
+      previousTime = time;
+      const paused = draggingRef.current || hoverPausedRef.current || focusPausedRef.current;
+
+      if (carouselVisibleRef.current && !paused && groupWidthRef.current > 0) {
+        const cycleDuration = window.innerWidth <= 720 ? 44 : 54;
+        const autoSpeed = groupWidthRef.current / cycleDuration;
+        applyOffset(offsetRef.current + momentumRef.current * elapsed - autoSpeed * elapsed);
+        momentumRef.current *= Math.exp(-5 * elapsed);
+        if (Math.abs(momentumRef.current) < 2) momentumRef.current = 0;
+      }
+
+      frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      visibilityObserver?.disconnect();
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    draggingRef.current = true;
+    focusPausedRef.current = false;
+    momentumRef.current = 0;
+    dragStartXRef.current = event.clientX;
+    dragStartOffsetRef.current = offsetRef.current;
+    lastPointerXRef.current = event.clientX;
+    lastPointerTimeRef.current = event.timeStamp;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.currentTarget.classList.add('is-dragging');
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    const elapsed = Math.max(event.timeStamp - lastPointerTimeRef.current, 1);
+    const delta = event.clientX - lastPointerXRef.current;
+    momentumRef.current = Math.max(-700, Math.min(700, (delta / elapsed) * 1000));
+    lastPointerXRef.current = event.clientX;
+    lastPointerTimeRef.current = event.timeStamp;
+    applyOffset(dragStartOffsetRef.current + event.clientX - dragStartXRef.current);
+  };
+
+  const stopDragging = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    event.currentTarget.classList.remove('is-dragging');
+    if (event.pointerType === 'touch') event.currentTarget.blur();
+  };
+
+  return (
+    <section className="section courses-section">
+      <div className="page-width">
+        <Reveal><SectionHeading>Enquanto muitos alunos acumulam conteúdo, <strong className="section-heading__soft-strong">você aprende o que realmente importa</strong>:</SectionHeading></Reveal>
+        <Reveal>
+          <div className="courses-carousel" role="region" aria-roledescription="carrossel" aria-label="Especializações Nutriwork" aria-describedby="courses-help">
+            <p className="sr-only" id="courses-help">Carrossel automático com nove especializações. Arraste para navegar. Passe o mouse ou mantenha o foco no carrossel para pausar.</p>
+            <div
+              className="courses-track"
+              ref={trackRef}
+              tabIndex={0}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={stopDragging}
+              onPointerCancel={stopDragging}
+              onPointerEnter={(event) => { if (event.pointerType === 'mouse') hoverPausedRef.current = true; }}
+              onPointerLeave={(event) => { if (event.pointerType === 'mouse') hoverPausedRef.current = false; }}
+              onFocus={(event) => { focusPausedRef.current = event.currentTarget.matches(':focus-visible'); }}
+              onBlur={() => { focusPausedRef.current = false; }}
+            >
+              {[0, 1].map((group) => (
+                <div className="courses-group" ref={group === 0 ? firstGroupRef : undefined} role={group === 0 ? 'list' : undefined} aria-hidden={group === 1} key={group}>
+                  {courses.map((course, index) => (
+                    <article className="course-card" role={group === 0 ? 'listitem' : undefined} key={`${group}-${course.title}`}>
+                      <img src={course.image} alt={group === 0 ? `Capa do curso ${course.title}` : ''} width="536" height="800" loading="lazy" decoding="async" draggable="false" />
+                      <div className="course-card__shade" aria-hidden="true" />
+                      <div className="course-card__overlay">
+                        <span>Especialização {String(index + 1).padStart(2, '0')}</span>
+                        <h3>{course.title}</h3>
+                        <p>{course.description}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Extras() {
+  return (
+    <section id="beneficios" className="section extras-section">
+      <div className="page-width">
+        <Reveal><SectionHeading>Aprenda Nutrição entre uma aula,<br/>um estágio ou uma prova</SectionHeading></Reveal>
+        <Reveal><p className="extras-lead">Quando a rotina aperta, você não precisa parar de estudar. Tenha acesso a diferentes formatos para aprender do seu jeito.</p></Reveal>
+        <div className="extras-grid">
+          {extras.map((extra) => <Reveal key={extra.title}><article className="extra-card"><Icon name={extra.icon}/><div><h3>{extra.title}</h3><p>{extra.label}</p></div></article></Reveal>)}
+        </div>
+        <Reveal className="path-intro"><p>O que muda quando você estuda com o Nutriwork?</p><h2>Dois caminhos.</h2><span>resultados diferentes.</span></Reveal>
+        <Reveal><Comparison /></Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Comparison() {
+  return (
+    <div className="comparison-card" role="table" aria-label="Comparacao entre estudar com e sem o Nutriwork">
+      <div className="comparison-grid">
+        <div className="comparison-header" role="row">
+          <strong className="comparison-heading comparison-heading--foundation" role="columnheader">Fundamentos</strong>
+          <span className="comparison-heading comparison-heading--positive" role="columnheader">Com Nutriwork</span>
+          <span className="comparison-heading comparison-heading--negative" role="columnheader">Sem Nutriwork</span>
+        </div>
+        {comparison.map((row) => (
+          <div className="comparison-row" role="row" key={row.area}>
+            <strong className="comparison-cell comparison-foundation" role="rowheader">{row.area}</strong>
+            <p className="comparison-cell comparison-positive" role="cell" data-label="Com Nutriwork"><Icon name="check"/>{row.with}</p>
+            <p className="comparison-cell comparison-negative" role="cell" data-label="Sem Nutriwork">{row.without}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EstudeBookMockup({ variant, decorative = false }: { variant: 'hero' | 'scene'; decorative?: boolean }) {
+  return (
+    <div
+      className={`estude-book-mockup estude-book-mockup--${variant}`}
+      aria-hidden={decorative || undefined}
+      role={decorative ? undefined : 'img'}
+      aria-label={decorative ? undefined : 'Livro ESTUDE em apresentação tridimensional'}
+    >
+      <div className="estude-book-mockup__body">
+        <div className="estude-book-mockup__pages" aria-hidden="true" />
+        <div className="estude-book-mockup__spine" aria-hidden="true" />
+        <div className="estude-book-mockup__front"><img src="/assets/estude-cover.webp" alt="" width="1200" height="1600" decoding="async" /></div>
+      </div>
+    </div>
+  );
+}
+
+function EstudeLandingHero() {
+  return (
+    <section className="section estude-page-hero">
+      <div className="page-width">
+        <Reveal className="estude-page-hero__grid">
+          <div className="estude-page-hero__copy">
+            <h1>Pare de estudar no improviso. Construa sua rotina de estudos baseada em evidências.</h1>
+            <p>O ESTUDE ajuda você a decidir prioridades, organizar o tempo disponível e transformar esforço em progresso, com estratégias fundamentadas na ciência.</p>
+            <div className="estude-page-hero__actions">
+              <Button href={checkout.guide} external>Quero organizar meus estudos</Button>
+            </div>
+          </div>
+          <div className="estude-page-hero__visual" aria-hidden="true">
+            <EstudeBookMockup variant="hero" decorative />
+            <span>prioridades claras</span>
+            <span>menos sobrecarga</span>
+            <span>constância possível</span>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Estude() {
+  const audienceIcons = ['trend', 'cap', 'light', 'book'];
+  return (
+    <section id="estude" className="section estude-section">
+      <div className="page-width">
+        <Reveal className="problem-card glass-card"><h2>Quando tudo parece prioridade, estudar vira um ciclo de sobrecarga:</h2><ul><li>Muito conteúdo disputando atenção;</li><li>Pouca clareza sobre o que fazer e como manter o ritmo.</li></ul></Reveal>
+        <Reveal><p className="method-copy">O problema nem sempre é falta de esforço. <strong>Muitas vezes,<br/>é a ausência de um método que funcione na vida real.</strong></p></Reveal>
+        <Reveal className="estude-hero">
+          <div className="estude-hero__copy"><p>Para transformar intenção<br/>em uma rotina possível</p><h2>Estude</h2></div>
+          <img className="estude-cover" src="/assets/estude-cover.webp" alt="Capa do guia Estude" width="1200" height="1600" loading="lazy" decoding="async" />
+          <span className="note note--one">Organização<br/>eficiente</span><span className="note note--two">Aplicação prática<br/>na rotina</span><span className="note note--three">Planejamento<br/>consciente</span><span className="note note--four">Constância sem<br/>sobrecarga</span>
+          <p className="estude-description">Um livro digital prático para você estruturar uma rotina <strong>clara, eficiente e sustentável</strong>, sem depender de motivação constante para continuar avançando.</p>
+        </Reveal>
+        <Reveal><p className="estude-detail">Você entende como se preparar melhor para provas e como sono, ambiente, exercício, nutrição, cafeína, suplementos e redes sociais interferem no desempenho. Assim, suas escolhas deixam de ser tentativas isoladas e passam a seguir critérios mais conscientes.</p></Reveal>
+        <Reveal className="audience"><h2>O ESTUDE foi pensado para quem:</h2>{estudeAudience.map((item, index) => <div key={item}><Icon name={audienceIcons[index]}/><p>{item}</p></div>)}</Reveal>
+        <Reveal className="objections"><h2>Especialmente se hoje você...</h2><div>{estudeObjections.map((item, index) => <article className="glass-card" key={item}><span>×</span><Icon name={['evidence','light','gauge'][index]}/><h3>{item}</h3></article>)}</div><p>Você não precisa continuar estudando no improviso.</p></Reveal>
+      </div>
+    </section>
+  );
+}
+
+function StudyBenefits() {
+  return (
+    <section className="section study-benefits">
+      <div className="page-width page-width--narrow">
+        <Reveal><h2 className="blue-title">Para transformar clareza em prática:</h2><div className="benefits-panel">{estudeBenefits.map((benefit, index) => <article key={benefit.title}><Icon name={['light','evidence','book'][index]}/><div><h3>{benefit.title}</h3><p>{benefit.text}</p></div></article>)}<Button href={checkout.guide} external>Quero organizar meus estudos</Button></div></Reveal>
+      </div>
+    </section>
+  );
+}
+
+function EstudePlan() {
+  return (
+    <section className="section estude-plan-section">
+      <div className="page-width page-width--narrow">
+        <Reveal className="pricing-card pricing-card--estude">
+          <span className="corner-badge">À vista</span>
+          <h2>Livro Digital ESTUDE!</h2>
+          <h3>Um método prático para organizar sua rotina<br/>e estudar com mais direção.</h3>
+          <Price value="77,90"/>
+          <ul>{['Conteúdo completo sobre fatores que influenciam o rendimento nos estudos;','Critérios para definir prioridades, invés de tentar estudar tudo;','Estratégias para construir uma rotina de estudos possível de ser mantida;','Tudo isso de forma prática, direta e baseada em evidências.'].map((item) => <li key={item}><PricingCheck />{item}</li>)}</ul>
+          <Button href={checkout.guide} external>Quero o livro ESTUDE</Button>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Evidence() {
+  return (
+    <section className="section evidence-section">
+      <div className="evidence-glow" aria-hidden="true" />
+      <img className="evidence-shape" src="/assets/evidence-shape.webp" alt="" aria-hidden="true" width="1185" height="1248" loading="lazy" decoding="async" />
+      <div className="page-width page-width--narrow">
+        <Reveal className="evidence-heading"><h2>Aprenda a usar evidências sem se perder em termos difíceis.</h2><p>No módulo de Nutrição Baseada em Evidências, você aprende a:</p></Reveal>
+        <div className="evidence-list">{evidenceLearning.map((item) => <Reveal key={item}><p>{item}</p></Reveal>)}</div>
+      </div>
+    </section>
+  );
+}
+
+function Mentor() {
+  return (
+    <section className="section mentor-section">
+      <div className="page-width page-width--narrow">
+        <Reveal><p className="mentor-kicker">Com acompanhamento especial e <strong>direto</strong> de</p></Reveal>
+        <Reveal className="mentor-card">
+          <div className="mentor-copy"><h2>Gabriel Schuchter</h2><h3>Fundador e professor do Nutriwork</h3><p>Bacharel em Nutrição pela Universidade Federal de Uberlândia (UFU), pesquisador com atuação em revisões sistemáticas e meta-análises, dois dos métodos mais importantes para sintetizar evidências na área da saúde.</p><p>É analista do Reviews, plataforma especializada em análise crítica e interpretação técnica de artigos científicos para profissionais da saúde. Também atua como mentor em Prática Baseada em Evidências, orientando estudantes e profissionais na leitura crítica da literatura, construção de raciocínio científico e tomada de decisão clínica.</p><p>Ao longo da sua trajetória, já ministrou aulas e formações para cursos e profissionais de Nutrição, Medicina, Psicologia, Fisioterapia e Enfermagem, levando a Prática Baseada em Evidências para diferentes áreas da saúde.</p><p>No Nutriwork, Gabriel aproxima a ciência da rotina real de quem estuda Nutrição. Ele mostra como olhar para um artigo sem medo, entender o peso de uma evidência e pensar antes de repetir uma conduta pronta.</p></div>
+          <figure className="mentor-photo"><img src="/assets/mentor-gabriel.webp" alt="Gabriel Schuchter, fundador e professor do Nutriwork" width="1070" height="1600" loading="lazy" decoding="async" /></figure>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Price({ value, monthly = false }: { value: string; monthly?: boolean }) {
+  const [whole, cents] = value.split(',');
+  return <div className="price"><span>R$</span>{whole}<small>,{cents}{monthly ? '/mês' : ''}</small></div>;
+}
+
+function Pricing() {
+  const planLinks = [checkout.monthly, checkout.quarterly, checkout.semiannual];
+  return (
+    <section id="planos" className="section pricing-section">
+      <div className="page-width page-width--narrow">
+        <Reveal><SectionHeading>Planos pensados para se adaptar à sua<br/>rotina de estudos</SectionHeading></Reveal>
+        <Reveal className="pricing-card pricing-card--featured"><img className="featured-badge" src="/assets/featured-badge-labeled.webp" alt="Plano destaque" width="790" height="1000" loading="lazy" decoding="async"/><h2>Nutriwork Plus Anual +<br/><span>livro ESTUDE!</span></h2><h3>Acesso completo à formação que você sempre quis.</h3><Price value="24,90" monthly/><ul>{['Cursos de todas as áreas da Nutrição.','E-book ESTUDE para resolver sua rotina de estudos.','Aulas ao vivo com especialistas.','Comunidade ativa para trocar dúvidas e obter oportunidades de trabalho.','Análises de artigo, podcasts, Espaço de Conforto e outros recursos.'].map((item) => <li key={item}><PricingCheck />{item}</li>)}</ul><div className="pricing-actions"><Button href={checkout.complete} external>QUERO A EXPERIÊNCIA COMPLETA</Button><Button href="/#/estude" variant="outline" className="pricing-card__secondary">CONHECER O ESTUDE</Button></div><div className="scarcity">🔥 últimas vagas restantes!</div></Reveal>
+        <Reveal className="platform-pricing"><header><div><h2>Planos Nutriwork Plus</h2><p>Opções flexíveis para acessar a plataforma no seu ritmo.</p></div><span>À vista</span></header><div className="mini-plans">{platformPlans.map((plan, index) => <article key={plan.title}><h3>{plan.title}</h3><Price value={plan.price}/><p>por mês.</p><Button href={planLinks[index]} external>Quero assinar</Button></article>)}</div><ul>{platformBenefits.map((item) => <li key={item}><PricingCheck />{item}</li>)}</ul></Reveal>
+      </div>
+    </section>
+  );
+}
+
+function FaqItem({ item, index }: { item: typeof faqItems[number]; index: number }) {
+  const [open, setOpen] = useState(false);
+  const contentId = `faq-answer-${index}`;
+
+  return (
+    <Reveal>
+      <article className={`faq-item ${open ? 'faq-item--open' : ''}`}>
+        <button type="button" aria-expanded={open} aria-controls={contentId} onClick={() => setOpen((value) => !value)}>
+          {item.question}
+          <span aria-hidden="true">+</span>
+        </button>
+        <div className="faq-answer" id={contentId} role="region">
+          <div><p>{item.answer}</p></div>
+        </div>
+      </article>
+    </Reveal>
+  );
+}
+
+function FAQ() {
+  return (
+    <section id="duvidas" className="section faq-section">
+      <div className="page-width page-width--narrow">
+        <Reveal><SectionHeading>Dúvidas frequentes</SectionHeading><p className="faq-intro">Respostas objetivas para você entender o que recebe, reduzir incertezas e escolher com segurança.</p></Reveal>
+        <div className="faq-list">
+          {faqItems.map((item, index) => <FaqItem item={item} index={index} key={item.question} />)}
+        </div>
+        <Reveal className="faq-cta"><p>Escolha o formato que melhor acompanha o seu momento.</p><Button href="/#planos">Ver planos</Button></Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Footer({ showStatement = true }: { showStatement?: boolean }) {
+  return (
+    <footer id="contatos" className="footer">
+      <div className="footer-orbit" aria-hidden="true" />
+      <div className="page-width">
+        {showStatement && (
+          <Reveal className="footer-statement">
+            <h2 aria-label="A plataforma feita para você, estudante de Nutrição.">
+              <span aria-hidden="true">A plataforma feita para <span className="footer-word-swap"><span className="footer-word-swap__strike">todo</span><span className="footer-word-swap__insert">você,</span></span> estudante de Nutrição.</span>
+            </h2>
+          </Reveal>
+        )}
+        <div className="footer-grid">
+          <div className="footer-social">
+            <p className="footer-label">Acompanhe de perto</p>
+            <a className="contact-link contact-link--featured" href="https://www.instagram.com/gruponutriwork" target="_blank" rel="noreferrer"><Icon name="instagram"/><span><small>Instagram</small>@gruponutriwork</span></a>
+          </div>
+          <div className="footer-contact">
+            <p className="footer-label">Canais de contato</p>
+            <h3>Dúvidas, acesso ou próximos passos? Fale com a equipe.</h3>
+            <div className="footer-contact__links">
+              <a className="contact-link" href={whatsappContact} target="_blank" rel="noreferrer"><Icon name="whatsapp"/><span><small>WhatsApp</small>(12) 99750-5188</span></a>
+              <a className="contact-link" href={`mailto:${contactEmail}`} aria-label={`Enviar e-mail para ${contactEmail}`}><Icon name="mail"/><span><small>E-mail</small>{contactEmail}</span></a>
+            </div>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <p className="copyright">© {new Date().getFullYear()} Nutriwork. Todos os direitos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function HomePage() {
+  return <main><Hero/><ReferencesSection/><Platform/><JoinCta/><Courses/><Extras/><Evidence/><Mentor/><Pricing/><FAQ/></main>;
+}
+
+function EstudePage() {
+  return <main className="estude-page"><EstudeLandingHero/><Estude/><StudyBenefits/><EstudePlan/></main>;
+}
+
+function PartnersPage() {
+  return (
+    <main className="partners-page">
+      <section className="section partners-hero">
+        <div className="page-width">
+          <Reveal className="partners-hero__grid">
+            <div className="partners-hero__copy">
+              <h1>Construa uma parceria com uma comunidade que valoriza a Nutrição Baseada em Evidências.</h1>
+              <p>Projetos, marcas e instituições que compartilham uma visão séria de educação em saúde são bem-vindas para conversar com o Nutriwork com o intuito de criar iniciativas relevantes.</p>
+              <div className="partners-hero__actions">
+                <Button href={partnerForm} external>Quero ser parceiro</Button>
+                <a className="partners-hero__contact" href={`mailto:${contactEmail}`} aria-label={`Enviar e-mail para ${contactEmail}`}>{contactEmail}</a>
+              </div>
+            </div>
+            <Suspense fallback={<div className="partners-map-card partners-map-card--fallback" aria-hidden="true" />}>
+              <PartnersMapCard />
+            </Suspense>
+          </Reveal>
+        </div>
+      </section>
+      <Suspense fallback={null}>
+        <PartnersEventsGallery />
+      </Suspense>
+    </main>
+  );
+}
+
+export default function App() {
+  const page = useCurrentPage();
+  const { loading, renderedPage } = useLoadingExperience(page);
+  useScrollReveal(renderedPage);
+  useMobileCtaVisibility(renderedPage);
+  useHashScroll(renderedPage);
+
+  return (
+    <>
+      <LoadingExperience state={loading} />
+      <div className={`app-shell ${loading.active ? 'app-shell--loading' : ''}`}>
+        <Header/>
+        {renderedPage === 'estude' ? <EstudePage/> : renderedPage === 'partners' ? <PartnersPage/> : <HomePage/>}
+        <Footer showStatement={renderedPage !== 'partners'} />
+        {renderedPage === 'home' && <Button href="/#planos" className="mobile-cta">Ver planos</Button>}
+      </div>
+    </>
+  );
+}

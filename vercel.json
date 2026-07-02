@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/estude",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
