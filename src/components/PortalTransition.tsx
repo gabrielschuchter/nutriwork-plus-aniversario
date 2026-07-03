@@ -9,8 +9,8 @@ import PortalCanvas from './PortalCanvas';
  *   trocas de rota comuns (Estude, Parceiros, ...).
  * - PortalTravelLayer: portal como elemento de navegação entre a página
  *   principal e a campanha. FLIP transform-only: parte do portal da hero
- *   atual, cresce até cobrir a viewport, segura a assinatura enquanto a
- *   página real carrega e pousa exatamente no portal da nova hero.
+ *   atual, cresce até cobrir a viewport (loading invisível sob a luz,
+ *   sem texto) e pousa exatamente no portal da nova hero.
  *
  * Sincronização por transitionend + prontidão real da página (sem timeouts
  * de coreografia); um fallback generoso cobre abas em segundo plano.
@@ -122,9 +122,6 @@ export function PortalTravelLayer({ stage, from, to, onStageEnd }: {
       <div className="portal-travel__backdrop" />
       <div ref={portalRef} className="portal-travel__portal" style={{ width: size, height: size }}>
         <PortalCanvas mode="routeLite" className="portal-travel__canvas" />
-      </div>
-      <div className="portal-travel__signature">
-        <span className="signature-loading__script">especial de 1 ano</span>
       </div>
     </div>
   );
