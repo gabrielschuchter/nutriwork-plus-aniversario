@@ -22,10 +22,10 @@ type Debris = {
 };
 
 const MODE_TUNING: Record<PortalMode, { debris: number; speed: number; core: number; dither: number; steps: number; fps: number; glints: number; strands: number }> = {
-  loader: { debris: 86, speed: 1, core: 1, dither: 18, steps: 66, fps: 30, glints: 2, strands: 3 },
-  hero: { debris: 94, speed: .78, core: .92, dither: 22, steps: 68, fps: 30, glints: 2, strands: 3 },
-  burst: { debris: 62, speed: 1.45, core: 1.22, dither: 12, steps: 58, fps: 30, glints: 2, strands: 2 },
-  routeLite: { debris: 42, speed: .9, core: .9, dither: 0, steps: 46, fps: 30, glints: 1, strands: 2 },
+  loader: { debris: 68, speed: 1, core: 1, dither: 8, steps: 54, fps: 24, glints: 1, strands: 2 },
+  hero: { debris: 68, speed: .78, core: .94, dither: 10, steps: 54, fps: 24, glints: 1, strands: 2 },
+  burst: { debris: 54, speed: 1.45, core: 1.22, dither: 8, steps: 50, fps: 24, glints: 1, strands: 2 },
+  routeLite: { debris: 36, speed: .9, core: .9, dither: 0, steps: 42, fps: 24, glints: 1, strands: 2 },
   mobileLite: { debris: 34, speed: .76, core: .86, dither: 0, steps: 38, fps: 24, glints: 1, strands: 2 }
 };
 
@@ -66,7 +66,7 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
     const effectiveMode: PortalMode = isMobile && mode !== 'burst' ? 'mobileLite' : mode;
     const tuning = MODE_TUNING[effectiveMode];
     const debris = makeDebris(tuning.debris);
-    const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.15 : 1.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.15 : 1.25);
     let frame = 0;
     let running = true;
     let inViewport = true;
@@ -168,14 +168,14 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
         traceStrand(cx, cy, time, rot, s, R);
         ctx.strokeStyle = `${SEPIA}, ${(.3 + breath * .12) * s.alphaMul})`;
         ctx.lineWidth = R * s.width * 1.15;
-        ctx.shadowBlur = effectiveMode === 'mobileLite' || effectiveMode === 'routeLite' ? 0 : R * .026;
+        ctx.shadowBlur = effectiveMode === 'burst' ? R * .014 : 0;
         ctx.shadowColor = `${BLUE_LIVE}, .8)`;
         ctx.stroke();
 
         traceStrand(cx, cy, time, rot, s, R);
         ctx.strokeStyle = `${WHITE}, ${(.42 + breath * .3) * s.alphaMul})`;
         ctx.lineWidth = R * s.width * .38;
-        ctx.shadowBlur = effectiveMode === 'mobileLite' || effectiveMode === 'routeLite' ? 0 : R * .01;
+        ctx.shadowBlur = 0;
         ctx.stroke();
         ctx.shadowBlur = 0;
       });

@@ -394,7 +394,7 @@ html.route-transition main {
 
 .loading-portal {
   position: relative;
-  width: min(72vmin, 540px);
+  width: min(68vmin, 480px);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -404,12 +404,12 @@ html.route-transition main {
 
 .loading-experience--route .loading-portal,
 .loading-experience--return .loading-portal {
-  width: min(58vmin, 430px);
+  width: min(54vmin, 360px);
 }
 
 .loading-portal__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-.loading-experience--zooming .loading-portal { transform: scale(8); }
+.loading-experience--zooming .loading-portal { transform: scale(6.5); }
 
 @media (max-width: 720px) {
   .app-shell--loading {
@@ -1293,7 +1293,7 @@ html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0
 .hero--time .hero__eclipse, .hero--time .hero__glow { display: none; }
 
 /* Gradiente orgânico animado — só a paleta da campanha, deriva lenta e contínua. */
-.hero--time::before { content: ''; position: absolute; z-index: 0; inset: -34%; background: radial-gradient(circle at 30% 30%, rgba(var(--hero-navy), .55), transparent 38%), radial-gradient(circle at 70% 40%, rgba(96, 132, 216, .2), transparent 34%), radial-gradient(circle at 56% 80%, rgba(var(--hero-cream), .1), transparent 40%); filter: blur(36px); opacity: .55; animation: hero-aurora 72s linear infinite; pointer-events: none; }
+.hero--time::before { content: ''; position: absolute; z-index: 0; inset: -24%; background: radial-gradient(circle at 30% 30%, rgba(var(--hero-navy), .5), transparent 38%), radial-gradient(circle at 70% 40%, rgba(96, 132, 216, .18), transparent 34%), radial-gradient(circle at 56% 80%, rgba(var(--hero-cream), .09), transparent 40%); filter: blur(24px); opacity: .5; animation: hero-aurora 96s linear infinite; pointer-events: none; }
 html[data-theme='light'] .hero--time::before { background: radial-gradient(circle at 30% 30%, rgba(var(--hero-navy), .16), transparent 38%), radial-gradient(circle at 70% 40%, rgba(96, 132, 216, .12), transparent 34%), radial-gradient(circle at 56% 80%, rgba(184, 148, 104, .14), transparent 40%); opacity: .72; }
 @keyframes hero-aurora { to { transform: rotate(360deg); } }
 
@@ -1326,7 +1326,7 @@ html[data-theme='light'] .hero__content--time > p { color: #5a5348; }
 html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gradient(180deg, #2c4a86, #1e3768); box-shadow: 0 16px 40px rgba(34, 61, 124, .3); --cta-glow: rgba(var(--hero-navy), .4); }
 
 /* Portal central: grande, físico, equilibrando texto e elemento gráfico. */
-.hero-portal { position: absolute; z-index: 1; top: 50%; left: 62%; width: min(54vw, 820px); aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; }
+.hero-portal { position: absolute; z-index: 1; top: 50%; left: 62%; width: min(50vw, 720px); aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; }
 .hero-portal__tilt { position: relative; width: 100%; height: 100%; transform: perspective(1400px) rotateX(6deg) rotateY(-10deg) rotate(4deg); transition: transform .9s cubic-bezier(.6, 0, .32, 1); }
 .hero-portal__tilt::before { content: ''; position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle, rgba(5, 6, 8, .9), rgba(5, 6, 8, .5) 58%, transparent 74%); }
 .hero-portal__canvas { position: absolute; inset: 0; }
@@ -1351,8 +1351,8 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 /* Travessia do portal: câmera empurra para dentro, sem cortes nem escala brusca. */
 .hero--warping { transform: scale(1.16); filter: brightness(1.12) blur(1px); }
 .hero--warping .hero__content--time { opacity: 0; transform: translateX(5%) scale(1.035); filter: blur(2px); transition: opacity .6s ease, transform .85s cubic-bezier(.6, 0, .32, 1), filter .6s ease; }
-.hero--warping .hero-portal__tilt { transform: perspective(1400px) rotateX(0deg) rotateY(0deg) rotate(0deg) scale(1.5); }
-.hero--warping .hero-portal-bloom { opacity: 1; transform: translate(-50%, -50%) scale(18); transition: transform .82s cubic-bezier(.45, 0, .25, 1), opacity .7s ease; }
+.hero--warping .hero-portal__tilt { transform: perspective(1400px) rotateX(0deg) rotateY(0deg) rotate(0deg) scale(1.32); }
+.hero--warping .hero-portal-bloom { opacity: 1; transform: translate(-50%, -50%) scale(14); transition: transform .82s cubic-bezier(.45, 0, .25, 1), opacity .7s ease; }
 
 /* ===== CTA com glow pulsante e partículas discretas ===== */
 .cta-glow { position: relative; isolation: isolate; }

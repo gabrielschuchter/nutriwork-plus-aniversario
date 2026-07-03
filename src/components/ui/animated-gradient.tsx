@@ -174,6 +174,7 @@ export function AnimatedGradient({
   const containerRef = useRef<HTMLDivElement>(null);
   const frameIdRef = useRef<number | undefined>(undefined);
   const startTimeRef = useRef<number>(0);
+  const lastDrawRef = useRef<number>(0);
   const visibleRef = useRef(true);
 
   const [isMounted, setIsMounted] = useState(false);
@@ -319,7 +320,12 @@ void main() {
 
       const getPixelRatio = () => {
         const isMobile = window.matchMedia("(max-width: 720px)").matches;
-        return Math.min(window.devicePixelRatio || 1, isMobile ? 1.15 : 1.5);
+        return Math.min(window.devicePixelRatio || 1, isMobile ? 1.15 : 1.25);
+      };
+
+      const getFrameInterval = () => {
+        const isMobile = window.matchMedia("(max-width: 720px)").matches;
+        return 1000 / (isMobile ? 24 : 30);
       };
 
       const resize = () => {
@@ -345,12 +351,19 @@ void main() {
       }
 
       startTimeRef.current = performance.now();
+      lastDrawRef.current = 0;
 
       const animate = (time: number) => {
         if (document.hidden || !visibleRef.current) {
           frameIdRef.current = requestAnimationFrame(animate);
           return;
         }
+
+        if (time - lastDrawRef.current < getFrameInterval()) {
+          frameIdRef.current = requestAnimationFrame(animate);
+          return;
+        }
+        lastDrawRef.current = time;
 
         const elapsed = (time - startTimeRef.current) / 1000;
         const speed = (params.speed / 100) * 5;
