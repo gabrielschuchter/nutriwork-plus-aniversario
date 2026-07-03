@@ -174,6 +174,7 @@ export function AnimatedGradient({
   const containerRef = useRef<HTMLDivElement>(null);
   const frameIdRef = useRef<number | undefined>(undefined);
   const startTimeRef = useRef<number>(0);
+  const visibleRef = useRef(true);
 
   const [isMounted, setIsMounted] = useState(false);
   const [hasWebGLError, setHasWebGLError] = useState(false);
@@ -316,12 +317,17 @@ void main() {
         u_swirlIterations: gl.getUniformLocation(program, "u_swirlIterations"),
       };
 
+      const getPixelRatio = () => {
+        const isMobile = window.matchMedia("(max-width: 720px)").matches;
+        return Math.min(window.devicePixelRatio || 1, isMobile ? 1.15 : 1.5);
+      };
+
       const resize = () => {
         const width = container.clientWidth;
         const height = container.clientHeight;
-        const pixelRatio = window.devicePixelRatio || 1;
-        canvas.width = width * pixelRatio;
-        canvas.height = height * pixelRatio;
+        const pixelRatio = getPixelRatio();
+        canvas.width = Math.round(width * pixelRatio);
+        canvas.height = Math.round(height * pixelRatio);
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height}px`;
         gl.viewport(0, 0, canvas.width, canvas.height);
@@ -330,16 +336,28 @@ void main() {
       resize();
       const resizeObserver = new ResizeObserver(resize);
       resizeObserver.observe(container);
+      let intersectionObserver: IntersectionObserver | undefined;
+      if ("IntersectionObserver" in window) {
+        intersectionObserver = new IntersectionObserver(([entry]) => {
+          visibleRef.current = entry.isIntersecting;
+        }, { rootMargin: "120px 0px" });
+        intersectionObserver.observe(container);
+      }
 
       startTimeRef.current = performance.now();
 
       const animate = (time: number) => {
+        if (document.hidden || !visibleRef.current) {
+          frameIdRef.current = requestAnimationFrame(animate);
+          return;
+        }
+
         const elapsed = (time - startTimeRef.current) / 1000;
         const speed = (params.speed / 100) * 5;
 
         gl.uniform1f(uniforms.u_time, elapsed * speed + params.offset * 0.01);
         gl.uniform2f(uniforms.u_resolution, canvas.width, canvas.height);
-        gl.uniform1f(uniforms.u_pixelRatio, window.devicePixelRatio || 1);
+        gl.uniform1f(uniforms.u_pixelRatio, getPixelRatio());
         gl.uniform1f(uniforms.u_scale, params.scale);
         gl.uniform1f(uniforms.u_rotation, (params.rotation * Math.PI) / 180);
 
@@ -372,6 +390,7 @@ void main() {
           cancelAnimationFrame(frameIdRef.current);
         }
         resizeObserver.disconnect();
+        intersectionObserver?.disconnect();
         gl.deleteProgram(program);
         gl.deleteShader(vertexShader);
         gl.deleteShader(fragmentShader);

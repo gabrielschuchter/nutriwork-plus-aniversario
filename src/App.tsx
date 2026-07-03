@@ -13,7 +13,7 @@ import {
   promises
 } from './data';
 import ReferencesSection from './components/ReferencesSection';
-import PortalCanvas from './components/PortalCanvas';
+import PortalCanvas, { type PortalMode } from './components/PortalCanvas';
 import { AnimatedGradient } from '@/components/ui/animated-gradient';
 import type { GalleryItem } from './components/PartnersEventsGallery';
 
@@ -153,18 +153,7 @@ async function waitForRenderedPage() {
   await waitForNextPaint();
 
   const fontsReady = document.fonts?.ready ?? Promise.resolve();
-  const images = Array.from(document.querySelectorAll<HTMLImageElement>('main img'))
-    .filter((image) => image.loading !== 'lazy');
-  const imagesReady = images.map((image) => {
-    if (image.complete) return image.decode?.().catch(() => undefined) ?? Promise.resolve();
-
-    return new Promise<void>((resolve) => {
-      image.addEventListener('load', () => resolve(), { once: true });
-      image.addEventListener('error', () => resolve(), { once: true });
-    });
-  });
-
-  await Promise.allSettled([fontsReady, ...imagesReady]);
+  await Promise.allSettled([fontsReady]);
 }
 
 function useLoadingExperience(page: Page) {
@@ -274,6 +263,7 @@ function useLoadingExperience(page: Page) {
 
 function LoadingExperience({ state }: { state: LoadingExperienceState }) {
   const [present, setPresent] = useState(state.active);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     if (state.active) {
@@ -286,12 +276,28 @@ function LoadingExperience({ state }: { state: LoadingExperienceState }) {
     return () => window.clearTimeout(timer);
   }, [state.active]);
 
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 720px)');
+    const update = () => setIsMobile(media.matches);
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+
+  const portalMode: PortalMode = isMobile
+    ? 'mobileLite'
+    : state.variant === 'route'
+      ? 'routeLite'
+      : state.variant === 'return'
+        ? 'routeLite'
+        : 'loader';
+
   // Opaco desde o primeiro paint: a abertura dimensional acontece só na saída.
   return (
     <div className={`loading-experience loading-experience--${state.variant} ${!state.active ? 'loading-experience--zooming' : ''} ${present ? '' : 'loading-experience--done'}`} aria-hidden="true">
       <div className="loading-experience__ambient" />
       <div className="loading-portal">
-        {present && <PortalCanvas mode="loader" className="loading-portal__canvas" />}
+        {present && <PortalCanvas mode={portalMode} className="loading-portal__canvas" />}
       </div>
     </div>
   );
@@ -400,9 +406,9 @@ function SectionHeading({ children, accent = false }: { children: ReactNode; acc
 
 
 const heroOrbitPhotos = [
-  '/assets/anniversary/memory-team.jpg',
+  '/assets/anniversary/memory-team.webp',
   '/assets/partners-events/event-02.webp',
-  '/assets/anniversary/memory-podcast.jpg',
+  '/assets/anniversary/memory-podcast.webp',
   '/assets/partners-events/event-13.webp'
 ];
 
@@ -950,9 +956,9 @@ const anniversaryBenefits = [
 ];
 
 const anniversaryMemoryItems: GalleryItem[] = [
-  { number: 'm1', src: '/assets/anniversary/memory-team.jpg', caption: 'A primeira turma reunida em sala de aula, onde tudo começou.', width: 1143, height: 914, tone: 'hero' },
-  { number: 'm2', src: '/assets/anniversary/memory-stage.jpg', caption: 'Apresentação oficial do Nutriwork para a comunidade.', width: 1163, height: 765, tone: 'wide' },
-  { number: 'm3', src: '/assets/anniversary/memory-podcast.jpg', caption: 'Gravação do NW Cast, o podcast que aproximou a comunidade.', width: 1152, height: 775, tone: 'wide' },
+  { number: 'm1', src: '/assets/anniversary/memory-team.webp', caption: 'A primeira turma reunida em sala de aula, onde tudo começou.', width: 1143, height: 914, tone: 'hero' },
+  { number: 'm2', src: '/assets/anniversary/memory-stage.webp', caption: 'Apresentação oficial do Nutriwork para a comunidade.', width: 1163, height: 765, tone: 'wide' },
+  { number: 'm3', src: '/assets/anniversary/memory-podcast.webp', caption: 'Gravação do NW Cast, o podcast que aproximou a comunidade.', width: 1152, height: 775, tone: 'wide' },
   { number: 'm4', src: '/assets/partners-events/event-01.webp', caption: 'A Equipe Nutriwork, responsável por tudo que foi construído até aqui.', width: 1800, height: 1200, tone: 'hero' },
   { number: 'm5', src: '/assets/partners-events/event-11.webp', caption: 'Roda de conversa em um evento oficial Nutriwork.', width: 1400, height: 1867, tone: 'tall' },
   { number: 'm6', src: '/assets/partners-events/event-13.webp', caption: 'Primeira apresentação oficial na Universidade Federal de Uberlândia, 2024.', width: 1400, height: 788, tone: 'wide' }
@@ -960,9 +966,9 @@ const anniversaryMemoryItems: GalleryItem[] = [
 
 const anniversaryFilmReelPhotos = [
   '/assets/partners-events/event-01.webp',
-  '/assets/anniversary/memory-podcast.jpg',
+  '/assets/anniversary/memory-podcast.webp',
   '/assets/partners-events/event-05.webp',
-  '/assets/anniversary/memory-team.jpg',
+  '/assets/anniversary/memory-team.webp',
   '/assets/partners-events/event-08.webp',
   '/assets/partners-events/event-14.webp'
 ];
@@ -1005,7 +1011,7 @@ function AnniversaryFilm() {
             />
           ) : (
             <button type="button" className="anniversary-film__poster" onClick={() => setPlaying(true)} aria-label="Assistir ao comercial de 1 ano do Nutriwork">
-              <img src="/assets/anniversary/memory-podcast.jpg" alt="" width="1152" height="775" loading="lazy" decoding="async" />
+              <img src="/assets/anniversary/memory-podcast.webp" alt="" width="1152" height="775" loading="lazy" decoding="async" />
               <span className="anniversary-film__play" aria-hidden="true" />
               <span className="anniversary-film__label">Assista ao comercial de 1 ano</span>
             </button>
@@ -1038,10 +1044,10 @@ function AnniversaryPage() {
               rotation: 45,
               proportion: 48,
               scale: .28,
-              speed: 4,
-              distortion: 8,
-              swirl: 22,
-              swirlIterations: 5,
+              speed: 3.5,
+              distortion: 7,
+              swirl: 18,
+              swirlIterations: 4,
               softness: 100,
               offset: 0,
               shape: 'Checks',

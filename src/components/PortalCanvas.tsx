@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-type PortalMode = 'loader' | 'hero' | 'burst';
+export type PortalMode = 'loader' | 'hero' | 'burst' | 'routeLite' | 'mobileLite';
 
 const TAU = Math.PI * 2;
 
@@ -21,10 +21,12 @@ type Debris = {
   warm: boolean;
 };
 
-const MODE_TUNING: Record<PortalMode, { debris: number; speed: number; core: number; dither: number }> = {
-  loader: { debris: 150, speed: 1, core: 1, dither: 56 },
-  hero: { debris: 160, speed: .8, core: .92, dither: 68 },
-  burst: { debris: 120, speed: 1.7, core: 1.3, dither: 44 }
+const MODE_TUNING: Record<PortalMode, { debris: number; speed: number; core: number; dither: number; steps: number; fps: number; glints: number; strands: number }> = {
+  loader: { debris: 86, speed: 1, core: 1, dither: 18, steps: 66, fps: 30, glints: 2, strands: 3 },
+  hero: { debris: 94, speed: .78, core: .92, dither: 22, steps: 68, fps: 30, glints: 2, strands: 3 },
+  burst: { debris: 62, speed: 1.45, core: 1.22, dither: 12, steps: 58, fps: 30, glints: 2, strands: 2 },
+  routeLite: { debris: 42, speed: .9, core: .9, dither: 0, steps: 46, fps: 30, glints: 1, strands: 2 },
+  mobileLite: { debris: 34, speed: .76, core: .86, dither: 0, steps: 38, fps: 24, glints: 1, strands: 2 }
 };
 
 // Assinatura orgânica de cada fio do anel: raio modulado por harmônicos
@@ -60,12 +62,16 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return;
 
-    const tuning = MODE_TUNING[mode];
+    const isMobile = window.matchMedia('(max-width: 720px)').matches;
+    const effectiveMode: PortalMode = isMobile && mode !== 'burst' ? 'mobileLite' : mode;
+    const tuning = MODE_TUNING[effectiveMode];
     const debris = makeDebris(tuning.debris);
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.15 : 1.5);
     let frame = 0;
     let running = true;
-    let visible = true;
+    let inViewport = true;
+    let lastDraw = 0;
+    const frameInterval = 1000 / tuning.fps;
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
@@ -84,7 +90,7 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
 
     const traceStrand = (cx: number, cy: number, time: number, rot: number, s: typeof STRANDS[number], R: number) => {
       ctx.beginPath();
-      const steps = 110;
+      const steps = tuning.steps;
       for (let i = 0; i <= steps; i++) {
         const theta = (i / steps) * TAU;
         const r = strandRadius(theta + rot * s.drift, time, s, R);
@@ -153,7 +159,7 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
       });
 
       // Fios orgânicos do anel: três passagens por fio (energia -> borda viva).
-      STRANDS.forEach((s) => {
+      STRANDS.slice(0, tuning.strands).forEach((s) => {
         traceStrand(cx, cy, time, rot, s, R);
         ctx.strokeStyle = `${BLUE_LIVE}, ${(.16 + breath * .08) * s.alphaMul})`;
         ctx.lineWidth = R * s.width * 3.2;
@@ -162,20 +168,20 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
         traceStrand(cx, cy, time, rot, s, R);
         ctx.strokeStyle = `${SEPIA}, ${(.3 + breath * .12) * s.alphaMul})`;
         ctx.lineWidth = R * s.width * 1.15;
-        ctx.shadowBlur = R * .04;
+        ctx.shadowBlur = effectiveMode === 'mobileLite' || effectiveMode === 'routeLite' ? 0 : R * .026;
         ctx.shadowColor = `${BLUE_LIVE}, .8)`;
         ctx.stroke();
 
         traceStrand(cx, cy, time, rot, s, R);
         ctx.strokeStyle = `${WHITE}, ${(.42 + breath * .3) * s.alphaMul})`;
         ctx.lineWidth = R * s.width * .38;
-        ctx.shadowBlur = R * .015;
+        ctx.shadowBlur = effectiveMode === 'mobileLite' || effectiveMode === 'routeLite' ? 0 : R * .01;
         ctx.stroke();
         ctx.shadowBlur = 0;
       });
 
       // Glints estrelados percorrendo a borda em sentido horário.
-      [0, 2.2, 4.5].forEach((offset, i) => {
+      [0, 2.9, 4.7].slice(0, tuning.glints).forEach((offset, i) => {
         const a = rot * (1 + i * .12) + offset;
         const s = STRANDS[i % STRANDS.length];
         const r = strandRadius(a + rot * s.drift, time, s, R);
@@ -236,7 +242,10 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
 
     const loop = (t: number) => {
       if (!running) return;
-      if (visible && !document.hidden) draw(t);
+      if (inViewport && !document.hidden && t - lastDraw >= frameInterval) {
+        draw(t);
+        lastDraw = t;
+      }
       frame = window.requestAnimationFrame(loop);
     };
 
@@ -251,16 +260,22 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
     let intersectionObserver: IntersectionObserver | undefined;
     if ('IntersectionObserver' in window) {
       intersectionObserver = new IntersectionObserver(([entry]) => {
-        visible = entry.isIntersecting;
+        inViewport = entry.isIntersecting;
       }, { rootMargin: '120px 0px' });
       intersectionObserver.observe(canvas);
     }
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) lastDraw = 0;
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       running = false;
       window.cancelAnimationFrame(frame);
       resizeObserver.disconnect();
       intersectionObserver?.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [mode]);
 

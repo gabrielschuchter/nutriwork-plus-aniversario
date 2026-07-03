@@ -335,9 +335,9 @@ html.route-transition main {
 }
 
 .app-shell--loading {
-  opacity: .12;
-  filter: blur(9px) saturate(.85);
-  transform: scale(1.045);
+  opacity: .18;
+  filter: blur(1.5px) saturate(.9);
+  transform: scale(1.015);
   transition-duration: .32s;
   transition-delay: 0s;
 }
@@ -365,8 +365,7 @@ html.route-transition main {
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
-  opacity: .5;
-  mix-blend-mode: screen;
+  opacity: .28;
   pointer-events: none;
 }
 
@@ -387,7 +386,7 @@ html.route-transition main {
   inset: auto -14% -30%;
   height: 55vh;
   background: radial-gradient(ellipse at center, rgba(205, 194, 183, .12), transparent 66%);
-  filter: blur(38px);
+  filter: blur(18px);
   pointer-events: none;
 }
 
@@ -410,12 +409,21 @@ html.route-transition main {
 
 .loading-portal__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-.loading-experience--zooming .loading-portal { transform: scale(34); }
+.loading-experience--zooming .loading-portal { transform: scale(8); }
 
 @media (max-width: 720px) {
   .app-shell--loading {
     opacity: .28;
-    filter: blur(2.4px) saturate(.9);
+    filter: saturate(.9);
+  }
+  .site-header,
+  .nav,
+  .note,
+  .glass-card,
+  .hero-monitor-cue__label,
+  .estude-page-hero__visual span,
+  .partners-map-card__meta {
+    backdrop-filter: none;
   }
   .loading-portal { width: min(88vmin, 420px); }
   .loading-experience--route .loading-portal,
@@ -1169,12 +1177,13 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 
 .anniversary-page { --anniversary-paper: #e0dad4; --anniversary-ink: #171512; --anniversary-sepia: #b89468; color: var(--anniversary-ink); background: var(--anniversary-paper); }
 .anniversary-page .page-width--narrow { margin-inline: auto; }
-.animated-gradient-fallback { background: radial-gradient(circle at 76% 30%, rgba(201,169,106,.16), transparent 32%), linear-gradient(135deg, #050b14, #10233d); }
+.animated-gradient-fallback { background: radial-gradient(circle at 76% 30%, rgba(201,169,106,.28), transparent 32%), radial-gradient(circle at 24% 72%, rgba(40,88,140,.3), transparent 40%), linear-gradient(135deg, #050b14, #10233d); background-size: 160% 160%; animation: animated-gradient-fallback-drift 9s ease-in-out infinite alternate; }
+@keyframes animated-gradient-fallback-drift { from { background-position: 0% 34%; filter: hue-rotate(0deg); } to { background-position: 100% 66%; filter: hue-rotate(8deg); } }
 .anniversary-hero { position: relative; min-height: min(860px, 96vh); padding-top: 92px; display: grid; align-items: center; overflow: hidden; color: #fff; background: #050b14; isolation: isolate; }
 .anniversary-hero__gradient, .anniversary-hero__shade, .anniversary-hero__glow, .anniversary-hero__text-shield { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.anniversary-hero__gradient { z-index: 0; opacity: .6; transform: scale(1.015); }
-.anniversary-hero__shade { z-index: 1; background: linear-gradient(180deg, rgba(5,11,20,.78) 0%, rgba(5,11,20,.28) 18%, rgba(5,11,20,.06) 38%), linear-gradient(90deg, rgba(5,11,20,.94) 0%, rgba(5,11,20,.72) 42%, rgba(16,35,61,.28) 72%), linear-gradient(0deg, rgba(5,11,20,.92), transparent 42%, rgba(0,0,0,.22)); }
-.anniversary-hero__glow { z-index: 2; background: radial-gradient(circle at 78% 28%, rgba(201,169,106,.15), transparent 30%), radial-gradient(circle at 18% 74%, rgba(40,88,140,.25), transparent 40%); }
+.anniversary-hero__gradient { z-index: 0; opacity: .86; transform: scale(1.015); }
+.anniversary-hero__shade { z-index: 1; background: linear-gradient(180deg, rgba(5,11,20,.7) 0%, rgba(5,11,20,.22) 18%, rgba(5,11,20,.04) 38%), linear-gradient(90deg, rgba(5,11,20,.94) 0%, rgba(5,11,20,.68) 42%, rgba(16,35,61,.18) 72%), linear-gradient(0deg, rgba(5,11,20,.9), transparent 42%, rgba(0,0,0,.18)); }
+.anniversary-hero__glow { z-index: 2; background: radial-gradient(circle at 78% 28%, rgba(201,169,106,.22), transparent 31%), radial-gradient(circle at 18% 74%, rgba(40,88,140,.28), transparent 40%); }
 .anniversary-hero__text-shield { z-index: 3; width: min(68%, 780px); background: linear-gradient(90deg, rgba(5,11,20,.88), rgba(5,11,20,.62) 62%, transparent); }
 .anniversary-hero__content { position: relative; z-index: 10; width: min(1180px, calc(100% - 64px)); padding-bottom: 132px; display: flex; align-items: end; justify-content: space-between; }
 .anniversary-kicker { margin: 0 0 16px; color: rgba(255,255,255,.78); font-size: 12px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; }
@@ -1243,7 +1252,7 @@ html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0
 @media (max-width: 720px) {
   .nav a.nav__anniversary { justify-content: center; min-height: 46px; margin: 3px 0; }
   .anniversary-hero { min-height: 760px; align-items: end; }
-  .anniversary-hero__gradient { opacity: .6; }
+  .anniversary-hero__gradient { opacity: .8; }
   .anniversary-hero__shade { background: linear-gradient(0deg, rgba(5,11,20,.96) 0%, rgba(5,11,20,.72) 48%, rgba(5,11,20,.18) 78%), linear-gradient(90deg, rgba(5,11,20,.35), transparent); }
   .anniversary-hero__glow { background: radial-gradient(circle at 74% 20%, rgba(201,169,106,.08), transparent 32%), radial-gradient(circle at 22% 68%, rgba(40,88,140,.2), transparent 42%); }
   .anniversary-hero__text-shield { width: 100%; background: linear-gradient(0deg, rgba(5,11,20,.88), rgba(5,11,20,.52) 62%, transparent); }
@@ -1284,7 +1293,7 @@ html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0
 .hero--time .hero__eclipse, .hero--time .hero__glow { display: none; }
 
 /* Gradiente orgânico animado — só a paleta da campanha, deriva lenta e contínua. */
-.hero--time::before { content: ''; position: absolute; z-index: 0; inset: -42%; background: radial-gradient(circle at 30% 30%, rgba(var(--hero-navy), .55), transparent 38%), radial-gradient(circle at 70% 40%, rgba(96, 132, 216, .2), transparent 34%), radial-gradient(circle at 56% 80%, rgba(var(--hero-cream), .1), transparent 40%); filter: blur(72px); opacity: .55; animation: hero-aurora 72s linear infinite; pointer-events: none; }
+.hero--time::before { content: ''; position: absolute; z-index: 0; inset: -34%; background: radial-gradient(circle at 30% 30%, rgba(var(--hero-navy), .55), transparent 38%), radial-gradient(circle at 70% 40%, rgba(96, 132, 216, .2), transparent 34%), radial-gradient(circle at 56% 80%, rgba(var(--hero-cream), .1), transparent 40%); filter: blur(36px); opacity: .55; animation: hero-aurora 72s linear infinite; pointer-events: none; }
 html[data-theme='light'] .hero--time::before { background: radial-gradient(circle at 30% 30%, rgba(var(--hero-navy), .16), transparent 38%), radial-gradient(circle at 70% 40%, rgba(96, 132, 216, .12), transparent 34%), radial-gradient(circle at 56% 80%, rgba(184, 148, 104, .14), transparent 40%); opacity: .72; }
 @keyframes hero-aurora { to { transform: rotate(360deg); } }
 
@@ -1337,13 +1346,13 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 }
 
 /* Bloom da travessia: a luz do portal cresce do centro e engole a viewport. */
-.hero-portal-bloom { position: absolute; z-index: 5; top: 48%; left: 62%; width: 54px; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; background: radial-gradient(circle, #fff 0%, #fff 12%, rgba(var(--hero-cream), .95) 30%, rgba(var(--hero-navy), .7) 52%, transparent 74%); filter: blur(9px); pointer-events: none; }
+.hero-portal-bloom { position: absolute; z-index: 5; top: 48%; left: 62%; width: 54px; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; background: radial-gradient(circle, #fff 0%, #fff 12%, rgba(var(--hero-cream), .95) 30%, rgba(var(--hero-navy), .7) 52%, transparent 74%); filter: blur(6px); pointer-events: none; }
 
 /* Travessia do portal: câmera empurra para dentro, sem cortes nem escala brusca. */
-.hero--warping { transform: scale(1.24); filter: brightness(1.14) blur(2px); }
-.hero--warping .hero__content--time { opacity: 0; transform: translateX(6%) scale(1.05); filter: blur(6px); transition: opacity .6s ease, transform .85s cubic-bezier(.6, 0, .32, 1), filter .6s ease; }
+.hero--warping { transform: scale(1.16); filter: brightness(1.12) blur(1px); }
+.hero--warping .hero__content--time { opacity: 0; transform: translateX(5%) scale(1.035); filter: blur(2px); transition: opacity .6s ease, transform .85s cubic-bezier(.6, 0, .32, 1), filter .6s ease; }
 .hero--warping .hero-portal__tilt { transform: perspective(1400px) rotateX(0deg) rotateY(0deg) rotate(0deg) scale(1.5); }
-.hero--warping .hero-portal-bloom { opacity: 1; transform: translate(-50%, -50%) scale(72); transition: transform .82s cubic-bezier(.45, 0, .25, 1), opacity .7s ease; }
+.hero--warping .hero-portal-bloom { opacity: 1; transform: translate(-50%, -50%) scale(18); transition: transform .82s cubic-bezier(.45, 0, .25, 1), opacity .7s ease; }
 
 /* ===== CTA com glow pulsante e partículas discretas ===== */
 .cta-glow { position: relative; isolation: isolate; }
@@ -1375,7 +1384,7 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 .anniversary-world { animation: anniversary-emerge .9s cubic-bezier(.2, .8, .3, 1) both; }
 
 @keyframes anniversary-warp-clear { 0% { opacity: 1; } 100% { opacity: 0; } }
-@keyframes anniversary-emerge { 0% { opacity: .45; transform: scale(1.035); filter: blur(9px) brightness(1.22); } 100% { opacity: 1; transform: none; filter: none; } }
+@keyframes anniversary-emerge { 0% { opacity: .45; transform: scale(1.018); filter: blur(1.5px) brightness(1.1); } 100% { opacity: 1; transform: none; filter: none; } }
 
 /* ===== Adereços físicos da campanha (assets reais extraídos do PDF) ===== */
 .anniversary-camera { position: absolute; z-index: 0; top: clamp(24px, 5vw, 80px); left: clamp(-90px, -6vw, -40px); width: clamp(210px, 25vw, 380px); height: auto; transform: rotate(-16deg); filter: drop-shadow(0 34px 54px rgba(25, 18, 10, .4)); pointer-events: none; }
