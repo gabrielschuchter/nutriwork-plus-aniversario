@@ -273,31 +273,24 @@ function useLoadingExperience(page: Page) {
 
 function LoadingExperience({ state }: { state: LoadingExperienceState }) {
   const [present, setPresent] = useState(state.active);
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (state.active) {
       setPresent(true);
-      const frame = window.requestAnimationFrame(() => setVisible(true));
-      return () => window.cancelAnimationFrame(frame);
+      return;
     }
 
     // O portal executa o zoom-in dimensional antes do overlay ser removido.
-    setVisible(false);
-    const timer = window.setTimeout(
-      () => setPresent(false),
-      980
-    );
-
+    const timer = window.setTimeout(() => setPresent(false), 1080);
     return () => window.clearTimeout(timer);
   }, [state.active]);
 
+  // Opaco desde o primeiro paint: a abertura dimensional acontece só na saída.
   return (
-    <div className={`loading-experience loading-experience--${state.variant} ${visible ? 'loading-experience--active' : ''} ${!state.active && present ? 'loading-experience--zooming' : ''} ${present ? 'loading-experience--animating' : ''}`} aria-hidden="true">
+    <div className={`loading-experience loading-experience--${state.variant} ${!state.active ? 'loading-experience--zooming' : ''} ${present ? '' : 'loading-experience--done'}`} aria-hidden="true">
       <div className="loading-experience__ambient" />
       <div className="loading-portal">
         {present && <PortalCanvas mode="loader" className="loading-portal__canvas" />}
-        <div className="loading-portal__mark">N<span>+</span></div>
       </div>
     </div>
   );
@@ -427,89 +420,6 @@ function HeroPortal() {
   );
 }
 
-function useCountUp(target: number, duration = 3000) {
-  const [value, setValue] = useState(0);
-  const ref = useRef<HTMLElement>(null);
-  const startedRef = useRef(false);
-  const completedRef = useRef(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    let frame = 0;
-    let fallbackTimer = 0;
-
-    const animate = () => {
-      if (startedRef.current) return;
-      startedRef.current = true;
-      window.clearTimeout(fallbackTimer);
-
-      const start = performance.now();
-      const step = (now: number) => {
-        const progress = Math.min((now - start) / duration, 1);
-        // easeInOutCubic: aceleração e desaceleração suaves, sem contagem brusca.
-        const eased = progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-        setValue(Math.round(eased * target));
-        if (progress < 1) {
-          frame = window.requestAnimationFrame(step);
-        } else {
-          completedRef.current = true;
-        }
-      };
-      frame = window.requestAnimationFrame(step);
-    };
-
-    const rect = node.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      animate();
-      return () => {
-        window.cancelAnimationFrame(frame);
-        if (!completedRef.current) startedRef.current = false;
-      };
-    }
-
-    if (!('IntersectionObserver' in window)) {
-      animate();
-      return () => {
-        window.cancelAnimationFrame(frame);
-        if (!completedRef.current) startedRef.current = false;
-      };
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          animate();
-          observer.disconnect();
-        }
-      }),
-      { threshold: 0.08, rootMargin: '0px 0px -8% 0px' }
-    );
-    observer.observe(node);
-    fallbackTimer = window.setTimeout(animate, 1200);
-
-    return () => {
-      observer.disconnect();
-      window.clearTimeout(fallbackTimer);
-      window.cancelAnimationFrame(frame);
-      if (!completedRef.current) startedRef.current = false;
-    };
-  }, [target, duration]);
-
-  return { value, ref };
-}
-
-function HeroSocialProof() {
-  const { value, ref } = useCountUp(300);
-  return (
-    <small className="hero__proof" ref={ref} aria-label="Mais de 300 alunos">
-      <b>+{value}</b> alunos
-    </small>
-  );
-}
-
 function Hero() {
   const [warping, setWarping] = useState(false);
 
@@ -529,7 +439,7 @@ function Hero() {
       <HeroPortal />
       <Reveal className="hero__layout hero__layout--time">
         <div className="hero__content hero__content--time">
-          <p className="hero-time-kicker">Especial de 1 ano <HeroSocialProof /></p>
+          <p className="hero-script-kicker" aria-label="Especial de 1 ano"><span className="hero-script-kicker__text">especial de 1 ano</span></p>
           <h1 className="hero-time-title">O Nutriwork<br /><strong>voltou no tempo.</strong></h1>
           <p>Para celebrar nosso primeiro ano, trouxemos de volta o valor que marcou o começo de tudo.</p>
           <div className="hero-actions">
@@ -537,7 +447,6 @@ function Hero() {
               Saiba mais
               <span className="cta-sparks" aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>
             </button>
-            <Button href="https://plus.gruponutriwork.com.br/" variant="outline" className="member-cta" external>Já sou membro(a)</Button>
           </div>
         </div>
       </Reveal>
