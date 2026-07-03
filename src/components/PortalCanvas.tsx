@@ -62,7 +62,6 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
 
     const tuning = MODE_TUNING[mode];
     const debris = makeDebris(tuning.debris);
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
     let frame = 0;
     let running = true;
@@ -244,15 +243,10 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
     resize();
     const resizeObserver = new ResizeObserver(() => {
       resize();
-      if (reducedMotion) draw(2400);
     });
     resizeObserver.observe(canvas);
 
-    if (reducedMotion) {
-      draw(2400);
-    } else {
-      frame = window.requestAnimationFrame(loop);
-    }
+    frame = window.requestAnimationFrame(loop);
 
     let intersectionObserver: IntersectionObserver | undefined;
     if ('IntersectionObserver' in window) {

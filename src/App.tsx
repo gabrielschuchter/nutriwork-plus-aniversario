@@ -14,6 +14,7 @@ import {
 } from './data';
 import ReferencesSection from './components/ReferencesSection';
 import PortalCanvas from './components/PortalCanvas';
+import { AnimatedGradient } from '@/components/ui/animated-gradient';
 import type { GalleryItem } from './components/PartnersEventsGallery';
 
 const checkout = {
@@ -426,10 +427,9 @@ function Hero() {
   const enterPortal = () => {
     if (warping) return;
     setWarping(true);
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     window.setTimeout(() => {
       window.location.hash = '#/aniversario';
-    }, reducedMotion ? 0 : 660);
+    }, 660);
   };
 
   return (
@@ -1020,8 +1020,7 @@ function AnniversaryPage() {
   const [arrived, setArrived] = useState(false);
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const timer = window.setTimeout(() => setArrived(true), reducedMotion ? 0 : 820);
+    const timer = window.setTimeout(() => setArrived(true), 820);
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -1030,8 +1029,33 @@ function AnniversaryPage() {
       {!arrived && <div className="anniversary-warp" aria-hidden="true" />}
       <div className="anniversary-world">
         <section className="anniversary-hero">
-          <img className="anniversary-hero__image" src="/assets/anniversary/team-hero-hd.webp" alt="Equipe Nutriwork reunida na celebração de um ano" width="1686" height="1124" decoding="async" />
+          <AnimatedGradient
+            config={{
+              preset: 'custom',
+              color1: '#050B14',
+              color2: '#10233D',
+              color3: '#C9A96A',
+              rotation: 45,
+              proportion: 48,
+              scale: .28,
+              speed: 4,
+              distortion: 8,
+              swirl: 22,
+              swirlIterations: 5,
+              softness: 100,
+              offset: 0,
+              shape: 'Checks',
+              shapeSize: 60
+            }}
+            noise={{
+              opacity: .05,
+              scale: 1.2
+            }}
+            className="anniversary-hero__gradient"
+          />
           <div className="anniversary-hero__shade" />
+          <div className="anniversary-hero__glow" aria-hidden="true" />
+          <div className="anniversary-hero__text-shield" aria-hidden="true" />
           <div className="page-width anniversary-hero__content">
             <Reveal>
               <p className="anniversary-kicker">1 ano de Nutriwork</p>
