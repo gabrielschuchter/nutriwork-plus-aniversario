@@ -429,18 +429,16 @@ function Hero() {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     window.setTimeout(() => {
       window.location.hash = '#/aniversario';
-    }, reducedMotion ? 0 : 540);
+    }, reducedMotion ? 0 : 660);
   };
 
   return (
     <section id="inicio" className={`hero hero--time ${warping ? 'hero--warping' : ''}`}>
-      <div className="hero__eclipse" aria-hidden="true" />
-      <div className="hero__glow" aria-hidden="true" />
       <HeroPortal />
       <Reveal className="hero__layout hero__layout--time">
         <div className="hero__content hero__content--time">
           <p className="hero-script-kicker" aria-label="Especial de 1 ano"><span className="hero-script-kicker__text">especial de 1 ano</span></p>
-          <h1 className="hero-time-title">O Nutriwork<br /><strong>voltou no tempo.</strong></h1>
+          <h1 className="hero-time-title"><span className="hero-time-title__lead">O Nutriwork</span><strong>voltou no tempo.</strong></h1>
           <p>Para celebrar nosso primeiro ano, trouxemos de volta o valor que marcou o começo de tudo.</p>
           <div className="hero-actions">
             <button type="button" className="button hero-time-cta cta-glow" onClick={enterPortal}>
@@ -450,6 +448,7 @@ function Hero() {
           </div>
         </div>
       </Reveal>
+      <div className="hero-portal-bloom" aria-hidden="true" />
     </section>
   );
 }
@@ -1022,17 +1021,13 @@ function AnniversaryPage() {
 
   useEffect(() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const timer = window.setTimeout(() => setArrived(true), reducedMotion ? 0 : 1050);
+    const timer = window.setTimeout(() => setArrived(true), reducedMotion ? 0 : 820);
     return () => window.clearTimeout(timer);
   }, []);
 
   return (
     <main className={`anniversary-page ${arrived ? '' : 'anniversary-page--arriving'}`}>
-      {!arrived && (
-        <div className="anniversary-warp" aria-hidden="true">
-          <PortalCanvas mode="burst" className="anniversary-warp__portal" />
-        </div>
-      )}
+      {!arrived && <div className="anniversary-warp" aria-hidden="true" />}
       <div className="anniversary-world">
         <section className="anniversary-hero">
           <img className="anniversary-hero__image" src="/assets/anniversary/team-hero-hd.webp" alt="Equipe Nutriwork reunida na celebração de um ano" width="1686" height="1124" decoding="async" />
