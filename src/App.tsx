@@ -1068,7 +1068,9 @@ function AnniversaryPage() {
               <h1>Nosso aniversário.<br/><strong>O seu presente.</strong></h1>
               <Button href="#oferta-aniversario" className="anniversary-hero__cta cta-glow">Acesso imediato<span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span></Button>
             </Reveal>
-            <p className="anniversary-script" aria-hidden="true">especial de<br/>1 ano</p>
+            <div className="anniversary-hero__portal" aria-hidden="true">
+              <PortalCanvas mode="hero" className="anniversary-hero__portal-canvas" />
+            </div>
           </div>
           <FilmStrip />
         </section>
@@ -1123,15 +1125,6 @@ function AnniversaryPage() {
             </Reveal>
           </div>
           <div className="anniversary-grain" aria-hidden="true" />
-        </section>
-
-        <section className="anniversary-plans" aria-labelledby="anniversary-plans-title">
-          <div className="page-width">
-            <Reveal className="anniversary-plans__heading">
-              <h2 id="anniversary-plans-title">Prefere outro formato?<br/><strong>Os planos continuam com você.</strong></h2>
-            </Reveal>
-            <CampaignPlans tone="anniversary" />
-          </div>
           <FilmReel />
         </section>
       </div>
@@ -1152,8 +1145,7 @@ export default function App() {
       <div className={`app-shell ${loading.active ? 'app-shell--loading' : ''}`}>
         <Header/>
         {renderedPage === 'estude' ? <EstudePage/> : renderedPage === 'partners' ? <PartnersPage/> : renderedPage === 'anniversary' ? <AnniversaryPage/> : <HomePage/>}
-        <Footer showStatement={renderedPage !== 'partners' && renderedPage !== 'anniversary'} />
-        {renderedPage === 'home' && <Button href="/#planos" className="mobile-cta">Ver planos</Button>}
+        {renderedPage !== 'anniversary' && <Footer showStatement={renderedPage !== 'partners'} />}
       </div>
     </>
   );
