@@ -1169,7 +1169,7 @@ html[data-theme='light'] .partners-network__hub-pulse { stroke: rgba(18, 99, 255
 }
 
 /* Anniversary campaign */
-.nav a.nav__anniversary { display: inline-flex; align-items: center; gap: 5px; border-color: rgba(213,184,142,.34); color: #fff8ed; background: linear-gradient(110deg, rgba(128,82,37,.28), rgba(226,198,157,.14)); box-shadow: inset 0 1px rgba(255,255,255,.12), 0 0 18px rgba(213,184,142,.12); }
+.nav a.nav__anniversary { display: inline-flex; align-items: center; flex: 0 0 auto; gap: 5px; white-space: nowrap; border-color: rgba(213,184,142,.34); color: #fff8ed; background: linear-gradient(110deg, rgba(128,82,37,.28), rgba(226,198,157,.14)); box-shadow: inset 0 1px rgba(255,255,255,.12), 0 0 18px rgba(213,184,142,.12); }
 .nav a.nav__anniversary span { color: #e9c997; font-size: 11px; }
 .nav a.nav__anniversary:hover, .nav a.nav__anniversary.is-active { border-color: rgba(239,209,164,.62); color: #fff; background: linear-gradient(110deg, rgba(164,105,48,.42), rgba(226,198,157,.23)); box-shadow: inset 0 1px rgba(255,255,255,.18), 0 0 22px rgba(213,184,142,.22); }
 html[data-theme='light'] .nav a.nav__anniversary { border-color: rgba(128,82,37,.24); color: #4b2d13; background: linear-gradient(110deg, #fff7e9, #ead4b6); box-shadow: inset 0 1px #fff, 0 8px 22px rgba(99,61,24,.12); }
@@ -1190,7 +1190,9 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-hero h1 { margin: 0; color: #fff; font-family: 'Open Sauce One', 'Poppins', system-ui, sans-serif; font-size: clamp(44px, 5.6vw, 76px); font-weight: 700; line-height: 1.04; letter-spacing: -.03em; text-shadow: 0 12px 36px rgba(0,0,0,.5); }
 .anniversary-hero h1 strong { font-weight: 800; }
 .anniversary-hero__cta { margin-top: 32px; min-height: 50px; padding-inline: 30px; border-color: rgba(255,255,255,.8); color: #19140e; background: #eee7de; box-shadow: 0 16px 42px rgba(0,0,0,.32); font-size: 15px; white-space: nowrap; --cta-glow: rgba(238, 231, 222, .55); }
-.anniversary-script { margin: 0 4% 44px 0; color: #e5d4bf; font-family: 'Sacramento', 'Segoe Script', cursive; font-size: clamp(34px, 4vw, 56px); line-height: 1.05; transform: rotate(-7deg); text-align: center; text-shadow: 0 8px 28px rgba(0,0,0,.6); -webkit-mask: linear-gradient(100deg, #000 44%, transparent 56%) no-repeat 100% 0 / 320% 100%; mask: linear-gradient(100deg, #000 44%, transparent 56%) no-repeat 100% 0 / 320% 100%; animation: hero-signature 2.2s cubic-bezier(.42, 0, .3, 1) .5s both; }
+.anniversary-hero__portal { position: relative; z-index: 10; align-self: center; width: clamp(280px, 27vw, 430px); aspect-ratio: 1; margin: 0 1% 0 24px; pointer-events: none; }
+.anniversary-hero__portal::before { content: ''; position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle, rgba(5, 6, 8, .9), rgba(5, 6, 8, .5) 58%, transparent 74%); }
+.anniversary-hero__portal-canvas { position: absolute; inset: 0; }
 .anniversary-filmstrip { position: absolute; z-index: 11; left: 0; right: 0; bottom: 0; height: 58px; padding: 12px 8px; display: flex; justify-content: space-around; gap: 18px; border-block: 5px solid #050505; background: #111; }
 .anniversary-filmstrip span { flex: 0 1 42px; border-radius: 5px; background: #e8e4de; box-shadow: inset 0 0 0 1px rgba(0,0,0,.16); }
 
@@ -1215,7 +1217,7 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-memories h2 { margin: 0 0 64px; color: #f3eee8; font-size: clamp(31px, 4vw, 52px); font-weight: 400; line-height: 1.15; text-align: center; letter-spacing: -.03em; }
 .anniversary-memories h2 strong { font-weight: 800; }
 
-.anniversary-offer { position: relative; overflow: hidden; padding: 112px 0 132px; background: var(--anniversary-paper); }
+.anniversary-offer { position: relative; overflow: hidden; padding: 112px 0 clamp(250px, 27vw, 350px); background: var(--anniversary-paper); }
 .anniversary-offer__layout { display: grid; justify-items: center; }
 .anniversary-offer__copy { max-width: 800px; text-align: center; }
 .anniversary-offer__copy > p { margin: 0 auto 24px; max-width: 730px; color: #37322c; font-size: clamp(16px, 1.6vw, 20px); line-height: 1.6; }
@@ -1259,9 +1261,10 @@ html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0
   .anniversary-hero__content { width: min(100% - 36px, 560px); padding-bottom: 106px; display: block; text-align: center; }
   .anniversary-hero h1 { font-size: clamp(44px, 13vw, 62px); }
   .anniversary-hero__cta { width: 100%; margin-top: 28px; }
-  .anniversary-script { display: none; }
+  .anniversary-hero__portal { display: none; }
   .anniversary-filmstrip { height: 44px; padding: 8px 5px; gap: 9px; border-block-width: 4px; }
-  .anniversary-story, .anniversary-offer { padding: 78px 0 90px; }
+  .anniversary-story { padding: 78px 0 90px; }
+  .anniversary-offer { padding: 78px 0 200px; }
   .anniversary-story__intro h2 { margin-top: 50px; }
   .anniversary-polaroids { margin-top: 64px; grid-template-columns: 1fr; gap: 46px; }
   .anniversary-polaroids .reveal { width: min(88%, 360px); margin-inline: auto; }
@@ -1447,28 +1450,6 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 
 html[data-theme='light'] .plans-duo__card--semiannual { background: linear-gradient(155deg, #ffffff, #eef3fc); }
 
-/* Pele vintage dos planos dentro da campanha. */
-.plans-duo--anniversary .plans-duo__card--annual { border-color: rgba(238, 222, 199, .4); background: radial-gradient(circle at 78% 8%, rgba(205, 173, 126, .22), transparent 40%), linear-gradient(150deg, #0b0b0a, #262421); color: #f6f1ea; box-shadow: 0 35px 90px rgba(0, 0, 0, .5), 0 0 55px rgba(205, 173, 126, .14); }
-.plans-duo--anniversary .plans-duo__card--annual::before { background: radial-gradient(circle at 30% 0%, rgba(226, 198, 157, .5), transparent 46%); }
-.plans-duo--anniversary .plans-duo__card--annual .price { text-shadow: 0 0 24px rgba(226, 198, 157, .55); }
-.plans-duo--anniversary .plans-duo__card--annual .plans-duo__title span { color: #e9c997; }
-.plans-duo--anniversary .plans-duo__card--semiannual .plans-duo__title span { color: inherit; }
-.plans-duo--anniversary .plans-duo__card--annual .pricing-actions .button { border: 0; color: #15120f; background: #e7dfd5; box-shadow: 0 15px 35px rgba(0, 0, 0, .3); --cta-glow: rgba(238, 231, 222, .5); }
-.plans-duo--anniversary .plans-duo__card--annual .pricing-actions .pricing-card__secondary { color: #f0e8dc; border: 1px solid rgba(238, 222, 199, .4); background: transparent; box-shadow: none; }
-.plans-duo--anniversary .plans-duo__card--semiannual,
-html[data-theme='light'] .plans-duo--anniversary .plans-duo__card--semiannual { border: 1px solid rgba(23, 21, 18, .18); background: #efe9e1; color: #23201c; box-shadow: 0 22px 55px rgba(50, 39, 25, .18); }
-.plans-duo--anniversary .plans-duo__card--semiannual li { color: #4a443c; }
-.plans-duo--anniversary .plans-duo__card--semiannual .plans-duo__tag { border-color: rgba(23, 21, 18, .25); }
-.plans-duo--anniversary .plans-duo__card--semiannual .pricing-actions .button { color: #23201c; border-color: rgba(23, 21, 18, .3); background: rgba(255, 255, 255, .6); box-shadow: none; }
-
-/* ===== Seção de planos dentro da campanha (papel rasgado + tira de filme) ===== */
-.anniversary-plans { position: relative; overflow: hidden; padding: clamp(130px, 15vw, 190px) 0 clamp(190px, 22vw, 260px); margin-top: -46px; color: #f3eee7; }
-.anniversary-plans::before { content: ''; position: absolute; inset: 0; background: url('/assets/anniversary/torn-paper.webp') center / 100% 100% no-repeat; filter: drop-shadow(0 -14px 34px rgba(20, 15, 9, .3)); pointer-events: none; }
-.anniversary-plans > * { position: relative; z-index: 1; }
-.anniversary-plans__heading h2 { margin: 0 0 12px; color: #f3eee8; font-size: clamp(29px, 3.6vw, 48px); font-weight: 400; line-height: 1.12; text-align: center; letter-spacing: -.035em; }
-.anniversary-plans__heading h2 strong { font-weight: 800; }
-.anniversary-memories__fallback { min-height: clamp(320px, 44vw, 560px); }
-
 /* ===== Responsivo das novas peças ===== */
 @media (max-width: 900px) {
   .hero-portal { top: 40%; left: 50%; width: min(128vw, 620px); opacity: .8; transform: translate(-50%, -50%); }
@@ -1478,18 +1459,20 @@ html[data-theme='light'] .plans-duo--anniversary .plans-duo__card--semiannual { 
 }
 
 @media (max-width: 720px) {
-  .hero--time { min-height: 760px; }
-  .hero-time-title { font-size: clamp(46px, 12.6vw, 64px); }
-  .hero__content--time > p { margin-bottom: 34px; }
+  .hero--time { min-height: 740px; padding-top: 118px; place-items: start center; }
+  .hero-script-kicker { display: none; }
+  .hero__content--time { text-align: center; }
+  .hero-time-title { min-height: min(88vw, 380px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: clamp(38px, 10.4vw, 54px); }
+  .hero__content--time > p { max-width: 340px; margin: 30px auto 34px; }
   .hero-time-cta { width: 100%; }
-  .hero--warping .hero__content--time { transform: translateY(-4%) scale(1.04); }
-  .hero-portal-bloom { top: 40%; left: 50%; }
+  .hero-portal { top: 118px; left: 50%; width: min(88vw, 380px); opacity: 1; transform: translateX(-50%); }
+  .hero-portal-bloom { top: calc(118px + min(44vw, 190px)); left: 50%; }
+  .hero--warping .hero__content--time { transform: translateY(-2%) scale(1.04); }
   .anniversary-camera { top: auto; bottom: -34px; left: -64px; width: 212px; transform: rotate(-10deg); }
   .anniversary-ink { width: 200px; opacity: .4; }
   .anniversary-filmreel { bottom: 12px; }
   .anniversary-filmreel__strip { padding-block: 22px; gap: 8px; }
   .anniversary-filmreel__frame { flex: 0 0 128px; }
-  .anniversary-plans { padding: 104px 0 168px; margin-top: -32px; }
   .plans-duo__badge { top: -42px; right: 4px; width: 112px; }
   .plans-duo__card--annual .plans-duo__title { max-width: calc(100% - 92px); }
   .anniversary-film__frame { border-width: 6px; border-radius: 14px; }
