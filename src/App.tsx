@@ -1044,17 +1044,17 @@ function AnniversaryPage() {
               rotation: 45,
               proportion: 48,
               scale: .28,
-              speed: 3.5,
-              distortion: 7,
-              swirl: 18,
-              swirlIterations: 4,
+              speed: 8,
+              distortion: 10,
+              swirl: 30,
+              swirlIterations: 5,
               softness: 100,
               offset: 0,
               shape: 'Checks',
               shapeSize: 60
             }}
             noise={{
-              opacity: .05,
+              opacity: .04,
               scale: 1.2
             }}
             className="anniversary-hero__gradient"

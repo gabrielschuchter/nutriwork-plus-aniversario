@@ -1177,14 +1177,14 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 
 .anniversary-page { --anniversary-paper: #e0dad4; --anniversary-ink: #171512; --anniversary-sepia: #b89468; color: var(--anniversary-ink); background: var(--anniversary-paper); }
 .anniversary-page .page-width--narrow { margin-inline: auto; }
-.animated-gradient-fallback { background: radial-gradient(circle at 76% 30%, rgba(201,169,106,.28), transparent 32%), radial-gradient(circle at 24% 72%, rgba(40,88,140,.3), transparent 40%), linear-gradient(135deg, #050b14, #10233d); background-size: 160% 160%; animation: animated-gradient-fallback-drift 9s ease-in-out infinite alternate; }
-@keyframes animated-gradient-fallback-drift { from { background-position: 0% 34%; filter: hue-rotate(0deg); } to { background-position: 100% 66%; filter: hue-rotate(8deg); } }
+.animated-gradient-fallback { background: radial-gradient(circle at 76% 30%, rgba(201,169,106,.34), transparent 32%), radial-gradient(circle at 24% 72%, rgba(40,88,140,.34), transparent 40%), linear-gradient(135deg, #050b14, #10233d); background-size: 170% 170%; animation: animated-gradient-fallback-drift 6s ease-in-out infinite alternate; }
+@keyframes animated-gradient-fallback-drift { from { background-position: 0% 32%; filter: hue-rotate(0deg) saturate(1); } to { background-position: 100% 68%; filter: hue-rotate(10deg) saturate(1.08); } }
 .anniversary-hero { position: relative; min-height: min(860px, 96vh); padding-top: 92px; display: grid; align-items: center; overflow: hidden; color: #fff; background: #050b14; isolation: isolate; }
 .anniversary-hero__gradient, .anniversary-hero__shade, .anniversary-hero__glow, .anniversary-hero__text-shield { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.anniversary-hero__gradient { z-index: 0; opacity: .86; transform: scale(1.015); }
-.anniversary-hero__shade { z-index: 1; background: linear-gradient(180deg, rgba(5,11,20,.7) 0%, rgba(5,11,20,.22) 18%, rgba(5,11,20,.04) 38%), linear-gradient(90deg, rgba(5,11,20,.94) 0%, rgba(5,11,20,.68) 42%, rgba(16,35,61,.18) 72%), linear-gradient(0deg, rgba(5,11,20,.9), transparent 42%, rgba(0,0,0,.18)); }
-.anniversary-hero__glow { z-index: 2; background: radial-gradient(circle at 78% 28%, rgba(201,169,106,.22), transparent 31%), radial-gradient(circle at 18% 74%, rgba(40,88,140,.28), transparent 40%); }
-.anniversary-hero__text-shield { z-index: 3; width: min(68%, 780px); background: linear-gradient(90deg, rgba(5,11,20,.88), rgba(5,11,20,.62) 62%, transparent); }
+.anniversary-hero__gradient { z-index: 0; opacity: .98; transform: scale(1.015); }
+.anniversary-hero__shade { z-index: 1; background: linear-gradient(180deg, rgba(5,11,20,.58) 0%, rgba(5,11,20,.16) 18%, rgba(5,11,20,.02) 38%), linear-gradient(90deg, rgba(5,11,20,.94) 0%, rgba(5,11,20,.62) 42%, rgba(16,35,61,.08) 72%), linear-gradient(0deg, rgba(5,11,20,.84), transparent 42%, rgba(0,0,0,.12)); }
+.anniversary-hero__glow { z-index: 2; background: radial-gradient(circle at 79% 29%, rgba(201,169,106,.28), transparent 32%), radial-gradient(circle at 18% 74%, rgba(40,88,140,.32), transparent 40%); }
+.anniversary-hero__text-shield { z-index: 3; width: min(68%, 780px); background: linear-gradient(90deg, rgba(5,11,20,.9), rgba(5,11,20,.6) 58%, transparent); }
 .anniversary-hero__content { position: relative; z-index: 10; width: min(1180px, calc(100% - 64px)); padding-bottom: 132px; display: flex; align-items: end; justify-content: space-between; }
 .anniversary-kicker { margin: 0 0 16px; color: rgba(255,255,255,.78); font-size: 12px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; }
 .anniversary-hero h1 { margin: 0; color: #fff; font-family: 'Open Sauce One', 'Poppins', system-ui, sans-serif; font-size: clamp(44px, 5.6vw, 76px); font-weight: 700; line-height: 1.04; letter-spacing: -.03em; text-shadow: 0 12px 36px rgba(0,0,0,.5); }
@@ -1252,9 +1252,9 @@ html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0
 @media (max-width: 720px) {
   .nav a.nav__anniversary { justify-content: center; min-height: 46px; margin: 3px 0; }
   .anniversary-hero { min-height: 760px; align-items: end; }
-  .anniversary-hero__gradient { opacity: .8; }
-  .anniversary-hero__shade { background: linear-gradient(0deg, rgba(5,11,20,.96) 0%, rgba(5,11,20,.72) 48%, rgba(5,11,20,.18) 78%), linear-gradient(90deg, rgba(5,11,20,.35), transparent); }
-  .anniversary-hero__glow { background: radial-gradient(circle at 74% 20%, rgba(201,169,106,.08), transparent 32%), radial-gradient(circle at 22% 68%, rgba(40,88,140,.2), transparent 42%); }
+  .anniversary-hero__gradient { opacity: .92; }
+  .anniversary-hero__shade { background: linear-gradient(0deg, rgba(5,11,20,.94) 0%, rgba(5,11,20,.66) 48%, rgba(5,11,20,.12) 78%), linear-gradient(90deg, rgba(5,11,20,.28), transparent); }
+  .anniversary-hero__glow { background: radial-gradient(circle at 74% 20%, rgba(201,169,106,.13), transparent 32%), radial-gradient(circle at 22% 68%, rgba(40,88,140,.24), transparent 42%); }
   .anniversary-hero__text-shield { width: 100%; background: linear-gradient(0deg, rgba(5,11,20,.88), rgba(5,11,20,.52) 62%, transparent); }
   .anniversary-hero__content { width: min(100% - 36px, 560px); padding-bottom: 106px; display: block; text-align: center; }
   .anniversary-hero h1 { font-size: clamp(44px, 13vw, 62px); }
