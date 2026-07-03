@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import {
   comparison,
   courses,
@@ -13,7 +13,8 @@ import {
   promises
 } from './data';
 import ReferencesSection from './components/ReferencesSection';
-import PortalCanvas, { type PortalMode } from './components/PortalCanvas';
+import PortalCanvas from './components/PortalCanvas';
+import { PortalTravelLayer, SignatureLoading, centerAnchor, measurePortalAnchor, type PortalAnchor, type TravelStage } from './components/PortalTransition';
 import { AnimatedGradient } from '@/components/ui/animated-gradient';
 import type { GalleryItem } from './components/PartnersEventsGallery';
 
@@ -30,16 +31,13 @@ const partnerForm = 'https://forms.gle/avn9yrBdbEHkaGg8A';
 const whatsappContact = `https://wa.me/5512997505188?text=${encodeURIComponent('Olá, equipe Nutriwork! Vim pelo site e gostaria de tirar uma dúvida sobre o Nutriwork Plus.')}`;
 type Theme = 'light' | 'dark';
 type Page = 'home' | 'estude' | 'partners' | 'anniversary';
-type LoadingVariant = 'intro' | 'return' | 'route';
-type LoadingExperienceState = { active: boolean; variant: LoadingVariant; page: Page };
+type NavOverlay =
+  | { kind: 'boot' }
+  | { kind: 'fade' }
+  | { kind: 'travel'; stage: TravelStage; from: PortalAnchor; to: PortalAnchor | null }
+  | null;
 
-const loaderStorageKey = 'nutriwork-loading-experience-seen';
-const loaderMinimumDuration: Record<LoadingVariant, number> = {
-  intro: 1350,
-  return: 1000,
-  route: 1100
-};
-const loaderContentSwapDelay = 260;
+const bootMinimumDuration = 1000;
 
 const PartnersMapCard = lazy(() => import('./components/PartnersMapCard'));
 const PartnersEventsGallery = lazy(() => import('./components/PartnersEventsGallery'));
@@ -109,7 +107,7 @@ function useCurrentPage() {
 function useHashScroll(page: Page) {
   useEffect(() => {
     if (page !== 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
       return;
     }
 
@@ -120,23 +118,6 @@ function useHashScroll(page: Page) {
       document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start' });
     });
   }, [page]);
-}
-
-function hasSeenLoadingExperience() {
-  try {
-    return localStorage.getItem(loaderStorageKey) === '1' || sessionStorage.getItem(loaderStorageKey) === '1';
-  } catch {
-    return false;
-  }
-}
-
-function markLoadingExperienceSeen() {
-  try {
-    localStorage.setItem(loaderStorageKey, '1');
-    sessionStorage.setItem(loaderStorageKey, '1');
-  } catch {
-    // The experience should still complete when storage is unavailable.
-  }
 }
 
 function waitForDelay(delay: number) {
@@ -156,24 +137,29 @@ async function waitForRenderedPage() {
   await Promise.allSettled([fontsReady]);
 }
 
-function useLoadingExperience(page: Page) {
+function isPortalRoute(from: Page, to: Page) {
+  return (from === 'home' && to === 'anniversary') || (from === 'anniversary' && to === 'home');
+}
+
+/*
+ * Controlador único de navegação da campanha (equivalente a um
+ * PortalTransitionProvider): boot com assinatura em qualquer URL, fade de
+ * assinatura nas rotas comuns e travessia do portal entre home e campanha.
+ */
+function useNavigationSystem(page: Page) {
   const hasHandledFirstPage = useRef(false);
   const currentPageRef = useRef(page);
-  const initialStartedAt = useRef(performance.now());
+  const bootStartedAt = useRef(performance.now());
   const [renderedPage, setRenderedPage] = useState(page);
-  const [loading, setLoading] = useState<LoadingExperienceState>(() => {
-    const seen = hasSeenLoadingExperience();
-    return { active: true, variant: seen ? 'return' : 'intro', page };
-  });
+  const [overlay, setOverlay] = useState<NavOverlay>({ kind: 'boot' });
 
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.toggle('loading-active', loading.active);
+    root.classList.toggle('loading-active', overlay?.kind === 'boot');
     return () => root.classList.remove('loading-active');
-  }, [loading.active]);
+  }, [overlay]);
 
   useEffect(() => {
-    const initialVariant = loading.variant;
     let cancelled = false;
     let removeLoadListener = () => {};
 
@@ -185,22 +171,13 @@ function useLoadingExperience(page: Page) {
           removeLoadListener = () => window.removeEventListener('load', handleLoad);
         });
 
-    const minimumVisible = waitForDelay(
-      loaderMinimumDuration[initialVariant] - (performance.now() - initialStartedAt.current)
-    );
-
     void Promise.all([
       windowReady,
       document.fonts?.ready ?? Promise.resolve(),
-      minimumVisible
+      waitForDelay(bootMinimumDuration - (performance.now() - bootStartedAt.current))
     ]).then(() => {
       if (cancelled) return;
-      markLoadingExperienceSeen();
-      setLoading((current) => (
-        current.variant === initialVariant && current.active
-          ? { ...current, active: false }
-          : current
-      ));
+      setOverlay((current) => (current?.kind === 'boot' ? null : current));
     });
 
     return () => {
@@ -215,92 +192,57 @@ function useLoadingExperience(page: Page) {
       currentPageRef.current = page;
       return;
     }
+    if (currentPageRef.current === page) return;
 
-    if (currentPageRef.current === page) {
+    const from = currentPageRef.current;
+    currentPageRef.current = page;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!reducedMotion && isPortalRoute(from, page)) {
+      setOverlay({ kind: 'travel', stage: 'expand', from: measurePortalAnchor() ?? centerAnchor(), to: null });
       return;
     }
 
-    currentPageRef.current = page;
-
-    const root = document.documentElement;
-    const transitionStartedAt = performance.now();
     let cancelled = false;
-    let routeClassTimer = 0;
-    root.classList.add('route-transition');
-    setLoading({ active: true, variant: 'route', page });
-
+    setOverlay({ kind: 'fade' });
     const swapTimer = window.setTimeout(() => {
       setRenderedPage(page);
-
       void Promise.all([
         waitForRenderedPage(),
-        waitForDelay(loaderMinimumDuration.route - (performance.now() - transitionStartedAt))
+        waitForDelay(reducedMotion ? 0 : 520)
       ]).then(() => {
         if (cancelled) return;
-        setLoading((current) => (
-          current.variant === 'route' && current.page === page
-            ? { ...current, active: false }
-            : current
-        ));
-        routeClassTimer = window.setTimeout(
-          () => root.classList.remove('route-transition'),
-          680
-        );
+        setOverlay((current) => (current?.kind === 'fade' ? null : current));
       });
-    }, loaderContentSwapDelay);
+    }, reducedMotion ? 0 : 300);
 
     return () => {
       cancelled = true;
       window.clearTimeout(swapTimer);
-      window.clearTimeout(routeClassTimer);
-      root.classList.remove('route-transition');
     };
   }, [page]);
 
-  return { loading, renderedPage };
-}
-
-
-function LoadingExperience({ state }: { state: LoadingExperienceState }) {
-  const [present, setPresent] = useState(state.active);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    if (state.active) {
-      setPresent(true);
-      return;
+  const handleTravelStageEnd = useCallback((stage: TravelStage) => {
+    if (stage === 'expand') {
+      // Portal cobre a viewport: troca a página real sob a luz e aguarda
+      // a prontidão de verdade antes de pousar no portal de destino.
+      setOverlay((current) => (current?.kind === 'travel' ? { ...current, stage: 'hold' } : current));
+      setRenderedPage(currentPageRef.current);
+      void Promise.all([waitForRenderedPage(), waitForDelay(700)]).then(() => {
+        window.requestAnimationFrame(() => {
+          setOverlay((current) => (
+            current?.kind === 'travel' && current.stage === 'hold'
+              ? { ...current, stage: 'contract', to: measurePortalAnchor() ?? centerAnchor() }
+              : current
+          ));
+        });
+      });
+    } else if (stage === 'contract') {
+      setOverlay((current) => (current?.kind === 'travel' ? null : current));
     }
-
-    // O portal executa o zoom-in dimensional antes do overlay ser removido.
-    const timer = window.setTimeout(() => setPresent(false), 1080);
-    return () => window.clearTimeout(timer);
-  }, [state.active]);
-
-  useEffect(() => {
-    const media = window.matchMedia('(max-width: 720px)');
-    const update = () => setIsMobile(media.matches);
-    update();
-    media.addEventListener('change', update);
-    return () => media.removeEventListener('change', update);
   }, []);
 
-  const portalMode: PortalMode = isMobile
-    ? 'mobileLite'
-    : state.variant === 'route'
-      ? 'routeLite'
-      : state.variant === 'return'
-        ? 'routeLite'
-        : 'loader';
-
-  // Opaco desde o primeiro paint: a abertura dimensional acontece só na saída.
-  return (
-    <div className={`loading-experience loading-experience--${state.variant} ${!state.active ? 'loading-experience--zooming' : ''} ${present ? '' : 'loading-experience--done'}`} aria-hidden="true">
-      <div className="loading-experience__ambient" />
-      <div className="loading-portal">
-        {present && <PortalCanvas mode={portalMode} className="loading-portal__canvas" />}
-      </div>
-    </div>
-  );
+  return { renderedPage, overlay, handleTravelStageEnd };
 }
 
 function Icon({ name }: { name: string }) {
@@ -414,7 +356,7 @@ const heroOrbitPhotos = [
 
 function HeroPortal() {
   return (
-    <div className="hero-portal" aria-hidden="true">
+    <div className="hero-portal" aria-hidden="true" data-portal-anchor>
       <div className="hero-portal__tilt">
         <PortalCanvas mode="hero" className="hero-portal__canvas" />
         <div className="hero-portal__orbit">
@@ -428,18 +370,12 @@ function HeroPortal() {
 }
 
 function Hero() {
-  const [warping, setWarping] = useState(false);
-
   const enterPortal = () => {
-    if (warping) return;
-    setWarping(true);
-    window.setTimeout(() => {
-      window.location.hash = '#/aniversario';
-    }, 660);
+    window.location.hash = '#/aniversario';
   };
 
   return (
-    <section id="inicio" className={`hero hero--time ${warping ? 'hero--warping' : ''}`}>
+    <section id="inicio" className="hero hero--time">
       <HeroPortal />
       <Reveal className="hero__layout hero__layout--time">
         <div className="hero__content hero__content--time">
@@ -454,7 +390,6 @@ function Hero() {
           </div>
         </div>
       </Reveal>
-      <div className="hero-portal-bloom" aria-hidden="true" />
     </section>
   );
 }
@@ -1023,16 +958,8 @@ function AnniversaryFilm() {
 }
 
 function AnniversaryPage() {
-  const [arrived, setArrived] = useState(false);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setArrived(true), 820);
-    return () => window.clearTimeout(timer);
-  }, []);
-
   return (
-    <main className={`anniversary-page ${arrived ? '' : 'anniversary-page--arriving'}`}>
-      {!arrived && <div className="anniversary-warp" aria-hidden="true" />}
+    <main className="anniversary-page">
       <div className="anniversary-world">
         <section className="anniversary-hero">
           <AnimatedGradient
@@ -1068,7 +995,7 @@ function AnniversaryPage() {
               <h1>Nosso aniversário.<br/><strong>O seu presente.</strong></h1>
               <Button href="#oferta-aniversario" className="anniversary-hero__cta cta-glow">Acesso imediato<span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span></Button>
             </Reveal>
-            <div className="anniversary-hero__portal" aria-hidden="true">
+            <div className="anniversary-hero__portal" aria-hidden="true" data-portal-anchor>
               <PortalCanvas mode="hero" className="anniversary-hero__portal-canvas" />
             </div>
           </div>
@@ -1134,15 +1061,18 @@ function AnniversaryPage() {
 
 export default function App() {
   const page = useCurrentPage();
-  const { loading, renderedPage } = useLoadingExperience(page);
+  const { renderedPage, overlay, handleTravelStageEnd } = useNavigationSystem(page);
   useScrollReveal(renderedPage);
   useMobileCtaVisibility(renderedPage);
   useHashScroll(renderedPage);
 
   return (
     <>
-      <LoadingExperience state={loading} />
-      <div className={`app-shell ${loading.active ? 'app-shell--loading' : ''}`}>
+      <SignatureLoading visible={overlay?.kind === 'boot' || overlay?.kind === 'fade'} />
+      {overlay?.kind === 'travel' && (
+        <PortalTravelLayer stage={overlay.stage} from={overlay.from} to={overlay.to} onStageEnd={handleTravelStageEnd} />
+      )}
+      <div className={`app-shell ${overlay && overlay.kind !== 'travel' ? 'app-shell--loading' : ''}`}>
         <Header/>
         {renderedPage === 'estude' ? <EstudePage/> : renderedPage === 'partners' ? <PartnersPage/> : renderedPage === 'anniversary' ? <AnniversaryPage/> : <HomePage/>}
         {renderedPage !== 'anniversary' && <Footer showStatement={renderedPage !== 'partners'} />}
