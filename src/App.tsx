@@ -37,7 +37,8 @@ type NavOverlay =
   | { kind: 'travel'; stage: TravelStage; from: PortalAnchor; to: PortalAnchor | null }
   | null;
 
-const bootMinimumDuration = 1000;
+// Loading de acesso direto (refresh/URL): exibido = max(4000ms, carregamento real).
+const bootMinimumDuration = 4000;
 
 const PartnersMapCard = lazy(() => import('./components/PartnersMapCard'));
 const PartnersEventsGallery = lazy(() => import('./components/PartnersEventsGallery'));
