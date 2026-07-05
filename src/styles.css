@@ -1209,7 +1209,7 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-hero h1 { margin: 0; color: #fff; font-family: 'Open Sauce One', 'Poppins', system-ui, sans-serif; font-size: clamp(44px, 5.6vw, 76px); font-weight: 700; line-height: 1.04; letter-spacing: -.03em; text-shadow: 0 12px 36px rgba(0,0,0,.5); }
 .anniversary-hero h1 strong { font-weight: 800; }
 .anniversary-hero__cta { margin-top: 32px; min-height: 50px; padding-inline: 30px; border-color: rgba(255,255,255,.8); color: #19140e; background: #eee7de; box-shadow: 0 16px 42px rgba(0,0,0,.32); font-size: 15px; white-space: nowrap; --cta-glow: rgba(238, 231, 222, .55); }
-.anniversary-hero__portal { position: relative; z-index: 10; align-self: center; width: clamp(420px, 40vw, 640px); aspect-ratio: 1; margin: 0 0 0 24px; pointer-events: none; }
+.anniversary-hero__portal { position: relative; z-index: 10; align-self: center; width: clamp(480px, 48vw, 760px); aspect-ratio: 1; margin: 0 -3% 0 12px; pointer-events: none; }
 .anniversary-hero__portal::before { content: ''; position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle, rgba(5, 6, 8, .9), rgba(5, 6, 8, .5) 58%, transparent 74%); }
 .anniversary-hero__portal-canvas { position: absolute; inset: 0; }
 .anniversary-filmstrip { position: absolute; z-index: 11; left: 0; right: 0; bottom: 0; height: 58px; padding: 12px 8px; display: flex; justify-content: space-around; gap: 18px; border-block: 5px solid #050505; background: #111; }
