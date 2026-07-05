@@ -54,7 +54,7 @@ function makeDebris(count: number): Debris[] {
   }));
 }
 
-export default function PortalCanvas({ mode = 'loader', className = '' }: { mode?: PortalMode; className?: string }) {
+export default function PortalCanvas({ mode = 'loader', className = '', noShaft = false }: { mode?: PortalMode; className?: string; noShaft?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -118,19 +118,21 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
       const R = base * .56 * pulse;
       const rot = time * .00012; // rotação horária lenta
 
-      // Luz volumétrica ambiente + leve facho vertical.
+      // Luz volumétrica exclusivamente radial (halo). Sem faixa/overlay.
       const halo = ctx.createRadialGradient(cx, cy, R * .25, cx, cy, base * 1.02);
       halo.addColorStop(0, `${BLUE}, ${.3 + breath * .1})`);
       halo.addColorStop(.55, `${BLUE}, .13)`);
       halo.addColorStop(1, `${BLUE}, 0)`);
       ctx.fillStyle = halo;
       ctx.fillRect(0, 0, w, h);
-      const shaft = ctx.createLinearGradient(cx, 0, cx, h);
-      shaft.addColorStop(0, `${PAPER}, 0)`);
-      shaft.addColorStop(.5, `${PAPER}, ${.03 + breath * .025})`);
-      shaft.addColorStop(1, `${PAPER}, 0)`);
-      ctx.fillStyle = shaft;
-      ctx.fillRect(cx - R * .9, 0, R * 1.8, h);
+      if (!noShaft) {
+        const shaft = ctx.createLinearGradient(cx, 0, cx, h);
+        shaft.addColorStop(0, `${PAPER}, 0)`);
+        shaft.addColorStop(.5, `${PAPER}, ${.03 + breath * .025})`);
+        shaft.addColorStop(1, `${PAPER}, 0)`);
+        ctx.fillStyle = shaft;
+        ctx.fillRect(cx - R * .9, 0, R * 1.8, h);
+      }
 
       ctx.globalCompositeOperation = 'lighter';
 
