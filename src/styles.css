@@ -1209,7 +1209,7 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-hero h1 { margin: 0; color: #fff; font-family: 'Open Sauce One', 'Poppins', system-ui, sans-serif; font-size: clamp(44px, 5.6vw, 76px); font-weight: 700; line-height: 1.04; letter-spacing: -.03em; text-shadow: 0 12px 36px rgba(0,0,0,.5); }
 .anniversary-hero h1 strong { font-weight: 800; }
 .anniversary-hero__cta { margin-top: 32px; min-height: 50px; padding-inline: 30px; border-color: rgba(255,255,255,.8); color: #19140e; background: #eee7de; box-shadow: 0 16px 42px rgba(0,0,0,.32); font-size: 15px; white-space: nowrap; --cta-glow: rgba(238, 231, 222, .55); }
-.anniversary-hero__portal { position: relative; z-index: 10; align-self: center; width: clamp(340px, 33vw, 540px); aspect-ratio: 1; margin: 0 0 0 24px; pointer-events: none; }
+.anniversary-hero__portal { position: relative; z-index: 10; align-self: center; width: clamp(420px, 40vw, 640px); aspect-ratio: 1; margin: 0 0 0 24px; pointer-events: none; }
 .anniversary-hero__portal::before { content: ''; position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle, rgba(5, 6, 8, .9), rgba(5, 6, 8, .5) 58%, transparent 74%); }
 .anniversary-hero__portal-canvas { position: absolute; inset: 0; }
 .anniversary-filmstrip { position: absolute; z-index: 11; left: 0; right: 0; bottom: 0; height: 58px; padding: 12px 8px; display: flex; justify-content: space-around; gap: 18px; border-block: 5px solid #050505; background: #111; }
@@ -1231,6 +1231,9 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 
 .anniversary-memories { position: relative; z-index: 2; margin: -54px 0 -60px; padding: clamp(120px, 14vw, 190px) 0 clamp(130px, 15vw, 200px); overflow: visible; color: #fff; background: transparent; }
 .anniversary-memories::before { content: ''; position: absolute; inset: 0; background: url('/assets/anniversary/torn-paper.webp') center / 100% 100% no-repeat; filter: drop-shadow(0 18px 40px rgba(20, 15, 9, .35)); pointer-events: none; }
+@media (min-width: 721px) {
+  .anniversary-memories::before { background-size: 118% 100%; }
+}
 .anniversary-memories::after { content: ''; position: absolute; inset: 6% 0; background: radial-gradient(circle at 50% 30%, rgba(128, 97, 62, .16), transparent 44%); pointer-events: none; }
 .anniversary-memories .page-width { position: relative; z-index: 1; }
 .anniversary-memories h2 { margin: 0 0 64px; color: #f3eee8; font-size: clamp(31px, 4vw, 52px); font-weight: 400; line-height: 1.15; text-align: center; letter-spacing: -.03em; }
@@ -1244,6 +1247,13 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-offer__copy h2 { max-width: 700px; margin: 72px auto 44px; color: #15120f; font-size: clamp(29px, 3.6vw, 48px); line-height: 1.12; letter-spacing: -.04em; }
 .anniversary-price-card { width: min(100%, 520px); padding: 48px 48px 42px; border: 1px solid rgba(255,255,255,.12); border-radius: 38px; color: #fff; background: radial-gradient(circle at 78% 12%, rgba(205,173,126,.18), transparent 36%), linear-gradient(145deg, #050505, #242321); box-shadow: 0 35px 80px rgba(40,31,21,.28), inset 0 1px rgba(255,255,255,.12); }
 .anniversary-price-card > p { margin: 0 0 16px; font-size: 25px; font-weight: 700; text-align: center; }
+.anniversary-offer__subtitle { margin: -26px auto 44px !important; max-width: 620px; }
+.anniversary-price-card { position: relative; overflow: visible; }
+.anniversary-price-card__plan { display: grid; gap: 4px; text-align: left !important; font-size: 24px !important; }
+.anniversary-price-card__plan span { font-size: 15px; font-weight: 400; color: rgba(255, 255, 255, .72); }
+.anniversary-price-card__seal { position: absolute; top: -30px; right: 26px; z-index: 2; width: 92px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; align-content: center; color: #4a3410; background: radial-gradient(circle at 32% 28%, #ffe9ad, #e8b84d 52%, #b78a2c); box-shadow: 0 10px 26px rgba(0, 0, 0, .35), inset 0 1px rgba(255, 255, 255, .65); font-size: 12px; font-weight: 800; letter-spacing: .06em; line-height: 1.15; text-align: center; text-transform: uppercase; transform: rotate(8deg); }
+.anniversary-price { justify-content: flex-start !important; }
+.anniversary-price-card .anniversary-price { justify-content: flex-start; }
 .anniversary-price { display: flex; align-items: end; justify-content: center; white-space: nowrap; }
 .anniversary-price > span { margin: 0 7px 15px 0; font-size: 32px; font-weight: 800; }
 .anniversary-price strong { font-size: clamp(84px, 11vw, 126px); line-height: .8; letter-spacing: -.08em; }
@@ -1358,6 +1368,7 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 .hero-portal__photo--2 { top: 44%; right: -3%; animation-delay: 4s; }
 .hero-portal__photo--3 { bottom: 4%; left: 30%; animation-delay: 8s; }
 .hero-portal__photo--4 { top: 66%; left: 2%; animation-delay: 12s; }
+.hero-portal__photo--5 { top: 5%; left: 5%; animation-delay: 14.2s; }
 
 @keyframes hero-photo-drift {
   0% { opacity: 0; transform: translate3d(6px, 18px, 0) rotate(-4deg) scale(.92); }
@@ -1428,41 +1439,10 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 .anniversary-film__label { position: absolute; left: 0; right: 0; bottom: 26px; color: rgba(244, 239, 231, .85); font-size: 14px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; text-align: center; }
 
 /* ===== Planos: Anual dominante + Semestral (home e aniversário) ===== */
-.plans-duo { position: relative; display: grid; grid-template-columns: minmax(0, 1.16fr) minmax(0, .84fr); gap: clamp(22px, 3vw, 38px); align-items: stretch; max-width: 1060px; margin: 58px auto 0; }
-.plans-duo__card { position: relative; display: flex; flex-direction: column; padding: clamp(30px, 4vw, 48px) clamp(24px, 3.4vw, 46px) clamp(26px, 3.4vw, 40px); border-radius: 36px; }
-.plans-duo__card--annual { z-index: 1; border: 2px solid var(--pricing-border); background: var(--pricing-featured-bg); color: var(--button-text); box-shadow: var(--shadow), var(--depth-blue); }
-.plans-duo__card--annual::before { content: ''; position: absolute; inset: -2px; z-index: -1; border-radius: inherit; background: radial-gradient(circle at 30% 0%, rgba(41, 168, 255, .55), transparent 46%); filter: blur(26px); opacity: .55; animation: plans-halo 3.6s ease-in-out infinite; pointer-events: none; }
-.plans-duo__badge { top: -52px; right: -8px; width: clamp(120px, 12vw, 164px); }
-.plans-duo__title { margin: 0; font-size: clamp(25px, 2.6vw, 38px); line-height: 1.08; }
-.plans-duo__card--annual .plans-duo__title { max-width: calc(100% - 130px); }
-.plans-duo__title span { white-space: nowrap; }
-.plans-duo__subtitle { margin: 10px 0 0; font-size: clamp(16px, 1.6vw, 21px); font-weight: 400; opacity: .92; }
-.plans-duo__card .price { margin: 14px 0 4px; }
-.plans-duo__card--semiannual .price { font-size: clamp(56px, 5.6vw, 84px); text-shadow: none; }
-.plans-duo__card ul { margin: 18px 0 22px; padding: 0; list-style: none; display: grid; gap: 12px; }
-.plans-duo__card li { display: flex; align-items: center; gap: 14px; font-size: 16px; line-height: 1.35; }
-.plans-duo__card--semiannual li { font-size: 14.5px; color: var(--card-copy); }
-.plans-duo__card .pricing-actions { width: 100%; margin-top: auto; padding-top: 12px; }
-.plans-duo__card--annual .pricing-actions .button { width: min(92%, 560px); }
-.plans-duo__card--annual .pricing-actions .pricing-card__secondary { width: min(56%, 360px); }
-.plans-duo__card--semiannual .pricing-actions .button { width: min(88%, 340px); min-height: 52px; font-size: 15px; }
-.plans-duo__card--semiannual { border: 1px solid var(--border); background: var(--mini-plan-bg); color: var(--text); box-shadow: var(--depth-1); transform: translateY(14px) scale(.985); }
-.plans-duo__tag { position: absolute; top: 24px; right: 26px; padding: 7px 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
-.plans-duo .scarcity { align-self: center; }
-
-@keyframes plans-halo {
-  0%, 100% { opacity: .4; }
-  50% { opacity: .75; }
-}
-
-html[data-theme='light'] .plans-duo__card--semiannual { background: linear-gradient(155deg, #ffffff, #eef3fc); }
-
 /* ===== Responsivo das novas peças ===== */
 @media (max-width: 900px) {
   .hero-portal { top: 40%; left: 50%; width: min(128vw, 620px); opacity: .8; transform: translate(-50%, -50%); }
   .hero-portal__photo { display: none; }
-  .plans-duo { grid-template-columns: 1fr; gap: 48px; max-width: 620px; }
-  .plans-duo__card--semiannual { transform: none; }
 }
 
 @media (max-width: 720px) {
@@ -1480,8 +1460,6 @@ html[data-theme='light'] .plans-duo__card--semiannual { background: linear-gradi
   .anniversary-filmreel { bottom: 12px; }
   .anniversary-filmreel__strip { padding-block: 22px; gap: 8px; }
   .anniversary-filmreel__frame { flex: 0 0 128px; }
-  .plans-duo__badge { top: -42px; right: 4px; width: 112px; }
-  .plans-duo__card--annual .plans-duo__title { max-width: calc(100% - 92px); }
   .anniversary-film__frame { border-width: 6px; border-radius: 14px; }
   .anniversary-film__label { bottom: 14px; font-size: 11px; }
 }
