@@ -1209,7 +1209,7 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-hero h1 { margin: 0; color: #fff; font-family: 'Open Sauce One', 'Poppins', system-ui, sans-serif; font-size: clamp(44px, 5.6vw, 76px); font-weight: 700; line-height: 1.04; letter-spacing: -.03em; text-shadow: 0 12px 36px rgba(0,0,0,.5); }
 .anniversary-hero h1 strong { font-weight: 800; }
 .anniversary-hero__cta { margin-top: 32px; min-height: 50px; padding-inline: 30px; border-color: rgba(255,255,255,.8); color: #19140e; background: #eee7de; box-shadow: 0 16px 42px rgba(0,0,0,.32); font-size: 15px; white-space: nowrap; --cta-glow: rgba(238, 231, 222, .55); }
-.anniversary-hero__portal { position: relative; z-index: 10; align-self: center; width: clamp(420px, 40vw, 640px); aspect-ratio: 1; margin: 0 0 0 24px; pointer-events: none; }
+.anniversary-hero__portal { position: relative; z-index: 10; align-self: center; width: clamp(520px, 53vw, 840px); aspect-ratio: 1; margin: 0 -6% 0 8px; pointer-events: none; }
 .anniversary-hero__portal::before { content: ''; position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle, rgba(5, 6, 8, .9), rgba(5, 6, 8, .5) 58%, transparent 74%); }
 .anniversary-hero__portal-canvas { position: absolute; inset: 0; }
 .anniversary-filmstrip { position: absolute; z-index: 11; left: 0; right: 0; bottom: 0; height: 58px; padding: 12px 8px; display: flex; justify-content: space-around; gap: 18px; border-block: 5px solid #050505; background: #111; }
@@ -1230,11 +1230,8 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-clip { position: absolute; z-index: 2; top: -31px; left: 50%; width: 24px; height: 60px; border-radius: 8px 8px 4px 4px; background: linear-gradient(90deg, #25211d, #5c5247 44%, #191714); box-shadow: 0 5px 8px rgba(0,0,0,.42); transform: translateX(-50%); }
 
 .anniversary-memories { position: relative; z-index: 2; margin: -54px 0 -60px; padding: clamp(120px, 14vw, 190px) 0 clamp(130px, 15vw, 200px); overflow: visible; color: #fff; background: transparent; }
-.anniversary-memories::before { content: ''; position: absolute; inset: 0; background: url('/assets/anniversary/torn-paper.webp') center / 100% 100% no-repeat; filter: drop-shadow(0 18px 40px rgba(20, 15, 9, .35)); pointer-events: none; }
-@media (min-width: 721px) {
-  .anniversary-memories::before { background-size: 118% 100%; }
-}
-.anniversary-memories::after { content: ''; position: absolute; inset: 6% 0; background: radial-gradient(circle at 50% 30%, rgba(128, 97, 62, .16), transparent 44%); pointer-events: none; }
+.anniversary-memories::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 120% 84% at 50% 40%, #16171d 0%, #0b0b0e 58%, #08080a 100%); -webkit-mask: linear-gradient(180deg, transparent, #000 9%, #000 91%, transparent); mask: linear-gradient(180deg, transparent, #000 9%, #000 91%, transparent); pointer-events: none; }
+.anniversary-memories::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 30%, rgba(150, 180, 230, .1), transparent 46%); pointer-events: none; }
 .anniversary-memories .page-width { position: relative; z-index: 1; }
 .anniversary-memories h2 { margin: 0 0 64px; color: #f3eee8; font-size: clamp(31px, 4vw, 52px); font-weight: 400; line-height: 1.15; text-align: center; letter-spacing: -.03em; }
 .anniversary-memories h2 strong { font-weight: 800; }
@@ -1245,7 +1242,9 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-offer__copy > p { margin: 0 auto 24px; max-width: 730px; color: #37322c; font-size: clamp(16px, 1.6vw, 20px); line-height: 1.6; }
 .anniversary-offer__copy strong { color: #223d7c; }
 .anniversary-offer__copy h2 { max-width: 700px; margin: 72px auto 44px; color: #15120f; font-size: clamp(29px, 3.6vw, 48px); line-height: 1.12; letter-spacing: -.04em; }
-.anniversary-price-card { width: min(100%, 520px); padding: 48px 48px 42px; border: 1px solid rgba(255,255,255,.12); border-radius: 38px; color: #fff; background: radial-gradient(circle at 78% 12%, rgba(205,173,126,.18), transparent 36%), linear-gradient(145deg, #050505, #242321); box-shadow: 0 35px 80px rgba(40,31,21,.28), inset 0 1px rgba(255,255,255,.12); }
+.anniversary-price-card { width: min(100%, 520px); padding: 46px 44px 40px; border: 1px solid rgba(226,198,157,.22); border-radius: 22px; color: #fff; background: radial-gradient(circle at 82% 8%, rgba(226,198,157,.16), transparent 42%), linear-gradient(158deg, #22345c 0%, #182740 56%, #101a30 100%); box-shadow: 0 35px 80px rgba(16,22,40,.4), inset 0 1px rgba(255,255,255,.1); }
+.anniversary-price-card::before { content: ''; position: absolute; inset: 12px; border: 2px dashed rgba(226,198,157,.32); border-radius: 12px; pointer-events: none; }
+.anniversary-price-card > * { position: relative; }
 .anniversary-price-card > p { margin: 0 0 16px; font-size: 25px; font-weight: 700; text-align: center; }
 .anniversary-offer__subtitle { margin: -26px auto 44px !important; max-width: 620px; }
 .anniversary-price-card { position: relative; overflow: visible; }
@@ -1261,8 +1260,9 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-price small { margin: 0 0 7px 8px; font-size: 18px; font-weight: 700; }
 .anniversary-price-card ul { margin: 42px 0 38px; padding: 0; display: grid; gap: 17px; list-style: none; }
 .anniversary-price-card li { display: flex; align-items: center; gap: 13px; color: rgba(255,255,255,.78); font-size: 14px; }
-.anniversary-price-card .pricing-check { width: 24px; height: 24px; flex: 0 0 auto; }
-.anniversary-price-card .button { width: 100%; min-height: 58px; border: 0; color: #15120f; background: #e7dfd5; box-shadow: 0 15px 35px rgba(0,0,0,.3); font-size: 18px; text-transform: none; }
+.anniversary-price-card .pricing-check { width: 22px; height: 22px; flex: 0 0 auto; border: 1px solid rgba(226,198,157,.5); border-radius: 6px; background: rgba(226,198,157,.12); box-shadow: none; color: #ecc98e; }
+.anniversary-price-card .pricing-check::before { font-size: 14px; text-shadow: none; }
+.anniversary-price-card .button { width: 100%; min-height: 58px; border: 0; color: #15120f; background: #ede5d9; box-shadow: 0 15px 35px rgba(0,0,0,.32); font-size: 16px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
 .anniversary-price-card > small { display: block; margin-top: 25px; color: rgba(255,255,255,.56); font-size: 10px; letter-spacing: .08em; text-align: center; text-transform: uppercase; }
 .anniversary-offer__closing { margin-top: 72px; text-align: center; }
 .anniversary-offer__closing h2 { margin: 0 0 8px; color: #15120f; font-size: clamp(25px, 3vw, 38px); }
@@ -1272,7 +1272,7 @@ html[data-theme='dark'] .anniversary-story, html[data-theme='dark'] .anniversary
 html[data-theme='dark'] .anniversary-story__intro p, html[data-theme='dark'] .anniversary-offer__copy > p, html[data-theme='dark'] .anniversary-offer__closing p { color: #c8beb2; }
 html[data-theme='dark'] .anniversary-story__intro h2, html[data-theme='dark'] .anniversary-offer__copy h2, html[data-theme='dark'] .anniversary-offer__closing h2 { color: #f5eee5; }
 html[data-theme='dark'] .anniversary-polaroids article { border-color: #ded6cb; }
-html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0,0,0,.5), 0 0 60px rgba(192,151,96,.08), inset 0 1px rgba(255,255,255,.1); }
+html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0,0,0,.55), 0 0 60px rgba(34,61,124,.16), inset 0 1px rgba(255,255,255,.08); }
 
 @media (max-width: 1080px) and (min-width: 901px) {
   .site-header { width: min(1040px, calc(100% - 24px)); padding-inline: 14px; }
@@ -1301,7 +1301,8 @@ html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0
   .anniversary-polaroids .reveal:nth-child(1), .anniversary-polaroids .reveal:nth-child(3) { transform: none; }
   .anniversary-memories { margin: -38px 0 -44px; padding: 100px 0 112px; }
   .anniversary-memories h2 { margin-bottom: 42px; }
-  .anniversary-price-card { padding: 42px 24px 34px; border-radius: 30px; }
+  .anniversary-price-card { padding: 42px 22px 32px; border-radius: 18px; }
+  .anniversary-price-card::before { inset: 10px; }
   .anniversary-price strong { font-size: clamp(82px, 29vw, 112px); }
   .anniversary-price > span { font-size: 26px; }
   .anniversary-price small { font-size: 14px; }
@@ -1367,8 +1368,6 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 .hero-portal__photo--1 { top: 8%; left: 20%; animation-delay: 0s; }
 .hero-portal__photo--2 { top: 44%; right: -3%; animation-delay: 4s; }
 .hero-portal__photo--3 { bottom: 4%; left: 30%; animation-delay: 8s; }
-.hero-portal__photo--4 { top: 66%; left: 2%; animation-delay: 12s; }
-.hero-portal__photo--5 { top: 5%; left: 5%; animation-delay: 14.2s; }
 
 @keyframes hero-photo-drift {
   0% { opacity: 0; transform: translate3d(6px, 18px, 0) rotate(-4deg) scale(.92); }

@@ -347,13 +347,32 @@ function SectionHeading({ children, accent = false }: { children: ReactNode; acc
 }
 
 
-const heroOrbitPhotos = [
-  '/assets/anniversary/memory-team.webp',
-  '/assets/partners-events/event-02.webp',
-  '/assets/anniversary/memory-podcast.webp',
-  '/assets/partners-events/event-13.webp',
-  '/assets/anniversary/memory-stage.webp'
+// Três posições fixas ao redor do portal; cada slot cicla o próprio conjunto
+// de fotos (disjunto entre slots, sem colisão) usando o mesmo fade existente.
+const heroPortalSlots = [
+  ['/assets/anniversary/memory-team.webp', '/assets/partners-events/event-13.webp'],
+  ['/assets/partners-events/event-02.webp', '/assets/anniversary/memory-stage.webp'],
+  ['/assets/anniversary/memory-podcast.webp', '/assets/partners-events/event-08.webp']
 ];
+
+function HeroPortalPhoto({ slot, photos }: { slot: number; photos: string[] }) {
+  const [index, setIndex] = useState(0);
+  // Troca o conteúdo no fim de cada ciclo de fade (opacidade já em 0).
+  const handleIteration = () => setIndex((current) => (current + 1) % photos.length);
+  return (
+    <img
+      className={`hero-portal__photo hero-portal__photo--${slot}`}
+      src={photos[index]}
+      onAnimationIteration={handleIteration}
+      alt=""
+      width="360"
+      height="240"
+      loading="lazy"
+      decoding="async"
+      draggable="false"
+    />
+  );
+}
 
 function HeroPortal() {
   return (
@@ -361,8 +380,8 @@ function HeroPortal() {
       <div className="hero-portal__tilt">
         <PortalCanvas mode="hero" className="hero-portal__canvas" />
         <div className="hero-portal__orbit">
-          {heroOrbitPhotos.map((src, index) => (
-            <img key={src} className={`hero-portal__photo hero-portal__photo--${index + 1}`} src={src} alt="" width="360" height="240" loading="lazy" decoding="async" draggable="false" />
+          {heroPortalSlots.map((photos, index) => (
+            <HeroPortalPhoto key={index} slot={index + 1} photos={photos} />
           ))}
         </div>
       </div>
