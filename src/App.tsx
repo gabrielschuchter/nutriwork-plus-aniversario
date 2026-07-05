@@ -378,7 +378,7 @@ function HeroPortal() {
   return (
     <div className="hero-portal" aria-hidden="true" data-portal-anchor>
       <div className="hero-portal__tilt">
-        <PortalCanvas mode="hero" noShaft className="hero-portal__canvas" />
+        <PortalCanvas mode="hero" className="hero-portal__canvas" />
         <div className="hero-portal__orbit">
           {heroPortalSlots.map((photos, index) => (
             <HeroPortalPhoto key={index} slot={index + 1} photos={photos} />
