@@ -9,7 +9,6 @@ import {
   extras,
   faqItems,
   navItems,
-  platformBenefits,
   promises
 } from './data';
 import ReferencesSection from './components/ReferencesSection';
@@ -352,7 +351,8 @@ const heroOrbitPhotos = [
   '/assets/anniversary/memory-team.webp',
   '/assets/partners-events/event-02.webp',
   '/assets/anniversary/memory-podcast.webp',
-  '/assets/partners-events/event-13.webp'
+  '/assets/partners-events/event-13.webp',
+  '/assets/anniversary/memory-stage.webp'
 ];
 
 function HeroPortal() {
@@ -427,7 +427,7 @@ function JoinCta() {
             <h2 id="join-cta-title">Pare de estudar no improviso.</h2>
             <p className="join-cta__copy">Você não precisa salvar mais 50 posts para sentir que está evoluindo.<br/><br/>Entre no Nutriwork e estude com aulas, materiais e discussões que mostram <strong>o que estudar</strong>, <strong>por que estudar</strong> e <strong>como usar isso na prática</strong>.</p>
           </div>
-          <Button href="/#planos" variant="outline">Quero fazer parte</Button>
+          <Button href="/#/aniversario" variant="outline">Quero fazer parte</Button>
         </Reveal>
       </div>
     </section>
@@ -742,45 +742,6 @@ function Price({ value, monthly = false }: { value: string; monthly?: boolean })
   return <div className="price"><span>R$</span>{whole}<small>,{cents}{monthly ? '/mês' : ''}</small></div>;
 }
 
-function CampaignPlans({ tone }: { tone: 'home' | 'anniversary' }) {
-  return (
-    <div className={`plans-duo plans-duo--${tone}`}>
-      <Reveal className="plans-duo__card plans-duo__card--annual">
-        <img className="featured-badge plans-duo__badge" src="/assets/featured-badge-labeled.webp" alt="Plano em destaque" width="790" height="1000" loading="lazy" decoding="async" />
-        <h3 className="plans-duo__title">Nutriwork Plus Anual +<br/><span>livro ESTUDE!</span></h3>
-        <p className="plans-duo__subtitle">Acesso completo à formação que você sempre quis.</p>
-        <Price value="24,90" monthly/>
-        <ul>{['Cursos de todas as áreas da Nutrição.','E-book ESTUDE para resolver sua rotina de estudos.','Aulas ao vivo com especialistas.','Comunidade ativa para trocar dúvidas e obter oportunidades de trabalho.','Análises de artigo, podcasts, Espaço de Conforto e outros recursos.'].map((item) => <li key={item}><PricingCheck />{item}</li>)}</ul>
-        <div className="pricing-actions">
-          <Button href={checkout.complete} external className="cta-glow">QUERO A EXPERIÊNCIA COMPLETA</Button>
-          <Button href="/#/estude" variant="outline" className="pricing-card__secondary">CONHECER O ESTUDE</Button>
-        </div>
-        <div className="scarcity">🔥 últimas vagas restantes!</div>
-      </Reveal>
-      <Reveal className="plans-duo__card plans-duo__card--semiannual">
-        <span className="plans-duo__tag">À vista</span>
-        <h3 className="plans-duo__title">Nutriwork Plus<br/><span>Semestral</span></h3>
-        <p className="plans-duo__subtitle">A plataforma completa no seu ritmo.</p>
-        <Price value="24,90" monthly/>
-        <ul>{platformBenefits.map((item) => <li key={item}><PricingCheck />{item}</li>)}</ul>
-        <div className="pricing-actions">
-          <Button href={checkout.semiannual} variant="outline" external>Quero assinar</Button>
-        </div>
-      </Reveal>
-    </div>
-  );
-}
-
-function Pricing() {
-  return (
-    <section id="planos" className="section pricing-section">
-      <div className="page-width">
-        <Reveal><SectionHeading>Planos pensados para se adaptar à sua<br/>rotina de estudos</SectionHeading></Reveal>
-        <CampaignPlans tone="home" />
-      </div>
-    </section>
-  );
-}
 
 function FaqItem({ item, index }: { item: typeof faqItems[number]; index: number }) {
   const [open, setOpen] = useState(false);
@@ -809,7 +770,7 @@ function FAQ() {
         <div className="faq-list">
           {faqItems.map((item, index) => <FaqItem item={item} index={index} key={item.question} />)}
         </div>
-        <Reveal className="faq-cta"><p>Escolha o formato que melhor acompanha o seu momento.</p><Button href="/#planos">Ver planos</Button></Reveal>
+        <Reveal className="faq-cta"><p>Escolha o formato que melhor acompanha o seu momento.</p><Button href="/#/aniversario">Ver a oferta de 1 ano</Button></Reveal>
       </div>
     </section>
   );
@@ -850,7 +811,7 @@ function Footer({ showStatement = true }: { showStatement?: boolean }) {
 }
 
 function HomePage() {
-  return <main><Hero/><ReferencesSection/><Platform/><JoinCta/><Courses/><Extras/><Evidence/><Mentor/><Pricing/><FAQ/></main>;
+  return <main><Hero/><ReferencesSection/><Platform/><JoinCta/><Courses/><Extras/><Evidence/><Mentor/><FAQ/></main>;
 }
 
 function EstudePage() {
@@ -885,15 +846,14 @@ function PartnersPage() {
 }
 
 const anniversaryBenefits = [
-  'Nutriwork Plus completo',
-  'Valor vitalício sem reajustes futuros',
-  'Benefícios e atualizações futuras',
-  'Edição limitada de aniversário'
+  'Nutriwork Plus completo por 1 ano.',
+  'Acesso exclusivo ao Estude.',
+  'Valor vitalício sem reajustes futuros.',
+  'Benefícios e atualizações futuras.'
 ];
 
 const anniversaryMemoryItems: GalleryItem[] = [
   { number: 'm1', src: '/assets/anniversary/memory-team.webp', caption: 'A primeira turma reunida em sala de aula, onde tudo começou.', width: 1143, height: 914, tone: 'hero' },
-  { number: 'm2', src: '/assets/anniversary/memory-stage.webp', caption: 'Apresentação oficial do Nutriwork para a comunidade.', width: 1163, height: 765, tone: 'wide' },
   { number: 'm3', src: '/assets/anniversary/memory-podcast.webp', caption: 'Gravação do NW Cast, o podcast que aproximou a comunidade.', width: 1152, height: 775, tone: 'wide' },
   { number: 'm4', src: '/assets/partners-events/event-01.webp', caption: 'A Equipe Nutriwork, responsável por tudo que foi construído até aqui.', width: 1800, height: 1200, tone: 'hero' },
   { number: 'm5', src: '/assets/partners-events/event-11.webp', caption: 'Roda de conversa em um evento oficial Nutriwork.', width: 1400, height: 1867, tone: 'tall' },
@@ -906,7 +866,11 @@ const anniversaryFilmReelPhotos = [
   '/assets/partners-events/event-05.webp',
   '/assets/anniversary/memory-team.webp',
   '/assets/partners-events/event-08.webp',
-  '/assets/partners-events/event-14.webp'
+  '/assets/partners-events/event-14.webp',
+  '/assets/partners-events/event-03.webp',
+  '/assets/anniversary/memory-stage.webp',
+  '/assets/partners-events/event-06.webp',
+  '/assets/partners-events/event-13.webp'
 ];
 
 // Comercial de 1 ano: preencha com o ID do vídeo no YouTube para exibir o bloco cinematográfico.
@@ -1038,13 +1002,15 @@ function AnniversaryPage() {
             <Reveal className="anniversary-offer__copy">
               <p>Há 1 ano, o <strong>Nutriwork</strong> nasceu com um propósito: tornar o conhecimento em nutrição acessível para todos.</p>
               <p>Para celebrar essa trajetória, trouxemos de volta o valor que marcou o nosso começo.</p>
-              <h2>Aproveite a campanha e tenha acesso a todos nossos conteúdos</h2>
+              <h2>Aproveite a campanha e tenha acesso a todos nossos conteúdos!</h2>
+              <p className="anniversary-offer__subtitle">Escolha o <strong>plano anual</strong> e também tenha acesso ao <strong>Estude!</strong> gratuitamente na campanha de aniversário.</p>
             </Reveal>
             <Reveal className="anniversary-price-card">
-              <p>Por apenas</p>
+              <span className="anniversary-price-card__seal" aria-hidden="true">Mais<br/>escolhido</span>
+              <p className="anniversary-price-card__plan">Plano anual<span>Nutriwork plus + ESTUDE!</span></p>
               <div className="anniversary-price"><span>R$</span><strong>9<sup>,90</sup></strong><small>/ mês</small></div>
               <ul>{anniversaryBenefits.map((benefit) => <li key={benefit}><PricingCheck/>{benefit}</li>)}</ul>
-              <Button href={checkout.monthly} external className="cta-glow">Assinar agora<span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span></Button>
+              <Button href={checkout.complete} external className="cta-glow">Quero plano completo<span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span></Button>
               <small>*Oferta por tempo limitado</small>
             </Reveal>
             <Reveal className="anniversary-offer__closing">
