@@ -871,6 +871,39 @@ const anniversaryBenefits = [
   'Benefícios e atualizações futuras.'
 ];
 
+// Papel-selo rasgado da oferta (reprodução da arte oficial): perfuração de
+// selo postal + rasgo orgânico via feTurbulence/feDisplacementMap.
+function StampPaper() {
+  const w = 520;
+  const h = 640;
+  const gap = 23;
+  const r = 6.5;
+  const m = 13;
+  const holes: Array<[number, number]> = [];
+  for (let x = m; x <= w - m; x += gap) { holes.push([x, m]); holes.push([x, h - m]); }
+  for (let y = m + gap; y <= h - m - gap; y += gap) { holes.push([m, y]); holes.push([w - m, y]); }
+  return (
+    <svg className="anniversary-price-card__paper" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <filter id="stamp-tear" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.013 0.038" numOctaves="2" seed="11" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <radialGradient id="stamp-fill" cx="28%" cy="6%" r="128%">
+          <stop offset="0%" stopColor="#2c3f6c" />
+          <stop offset="52%" stopColor="#1a2846" />
+          <stop offset="100%" stopColor="#101a30" />
+        </radialGradient>
+        <mask id="stamp-perf">
+          <rect x="6" y="6" width={w - 12} height={h - 12} rx="9" fill="#fff" />
+          {holes.map(([x, y], i) => <circle key={i} cx={x} cy={y} r={r} fill="#000" />)}
+        </mask>
+      </defs>
+      <rect x="6" y="6" width={w - 12} height={h - 12} rx="9" fill="url(#stamp-fill)" mask="url(#stamp-perf)" filter="url(#stamp-tear)" />
+    </svg>
+  );
+}
+
 const anniversaryMemoryItems: GalleryItem[] = [
   { number: 'm1', src: '/assets/anniversary/memory-team.webp', caption: 'A primeira turma reunida em sala de aula, onde tudo começou.', width: 1143, height: 914, tone: 'hero' },
   { number: 'm3', src: '/assets/anniversary/memory-podcast.webp', caption: 'Gravação do NW Cast, o podcast que aproximou a comunidade.', width: 1152, height: 775, tone: 'wide' },
@@ -1024,13 +1057,16 @@ function AnniversaryPage() {
               <p className="anniversary-offer__subtitle">Escolha o <strong>plano anual</strong> e também tenha acesso ao <strong>Estude!</strong> gratuitamente na campanha de aniversário.</p>
             </Reveal>
             <Reveal className="anniversary-price-card">
-              <span className="anniversary-price-card__seal" aria-hidden="true">Mais<br/>escolhido</span>
-              <p className="anniversary-price-card__plan">Plano anual<span>Nutriwork plus + ESTUDE!</span></p>
-              <div className="anniversary-price"><span>R$</span><strong>9<sup>,90</sup></strong><small>/ mês</small></div>
-              <ul>{anniversaryBenefits.map((benefit) => <li key={benefit}><PricingCheck/>{benefit}</li>)}</ul>
-              <Button href={checkout.complete} external className="cta-glow">Quero plano completo<span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span></Button>
-              <small>*Oferta por tempo limitado</small>
+              <StampPaper />
+              <span className="anniversary-price-card__seal" aria-hidden="true"><b>Mais</b><span>escolhido</span></span>
+              <div className="anniversary-price-card__body">
+                <p className="anniversary-price-card__plan">Plano anual<span>Nutriwork plus + ESTUDE!</span></p>
+                <div className="anniversary-price"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
+                <ul>{anniversaryBenefits.map((benefit) => <li key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
+                <Button href={checkout.complete} external className="anniversary-price-card__cta">Quero plano completo</Button>
+              </div>
             </Reveal>
+            <p className="anniversary-offer__disclaimer">*Oferta por tempo limitado</p>
             <Reveal className="anniversary-offer__closing">
               <h2>O preço é para sempre. A condição, não.</h2>
               <p>Garanta seu acesso ao Nutriwork Plus.</p>
