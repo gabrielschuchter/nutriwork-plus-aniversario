@@ -871,9 +871,17 @@ const anniversaryBenefits = [
   'Benefícios e atualizações futuras.'
 ];
 
+const anniversarySemesterBenefits = [
+  'Nutriwork Plus por 6 meses.',
+  'Materiais e conteúdos exclusivos.',
+  'Valor vitalício sem reajustes futuros.',
+  'Benefícios e atualizações futuras da plataforma.'
+];
+
 // Papel-selo rasgado da oferta (reprodução da arte oficial): perfuração de
-// selo postal + rasgo orgânico via feTurbulence/feDisplacementMap.
-function StampPaper() {
+// selo postal + rasgo orgânico via feTurbulence/feDisplacementMap. O `id`
+// isola os filtros/máscaras quando há mais de um card na página.
+function StampPaper({ id = 'a' }: { id?: string }) {
   const w = 520;
   const h = 640;
   const gap = 23;
@@ -882,24 +890,27 @@ function StampPaper() {
   const holes: Array<[number, number]> = [];
   for (let x = m; x <= w - m; x += gap) { holes.push([x, m]); holes.push([x, h - m]); }
   for (let y = m + gap; y <= h - m - gap; y += gap) { holes.push([m, y]); holes.push([w - m, y]); }
+  const tearId = `stamp-tear-${id}`;
+  const fillId = `stamp-fill-${id}`;
+  const perfId = `stamp-perf-${id}`;
   return (
     <svg className="anniversary-price-card__paper" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden="true">
       <defs>
-        <filter id="stamp-tear" x="-5%" y="-5%" width="110%" height="110%">
+        <filter id={tearId} x="-5%" y="-5%" width="110%" height="110%">
           <feTurbulence type="fractalNoise" baseFrequency="0.013 0.038" numOctaves="2" seed="11" result="n" />
           <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G" />
         </filter>
-        <radialGradient id="stamp-fill" cx="28%" cy="6%" r="128%">
+        <radialGradient id={fillId} cx="28%" cy="6%" r="128%">
           <stop offset="0%" stopColor="#2c3f6c" />
           <stop offset="52%" stopColor="#1a2846" />
           <stop offset="100%" stopColor="#101a30" />
         </radialGradient>
-        <mask id="stamp-perf">
+        <mask id={perfId}>
           <rect x="6" y="6" width={w - 12} height={h - 12} rx="9" fill="#fff" />
           {holes.map(([x, y], i) => <circle key={i} cx={x} cy={y} r={r} fill="#000" />)}
         </mask>
       </defs>
-      <rect x="6" y="6" width={w - 12} height={h - 12} rx="9" fill="url(#stamp-fill)" mask="url(#stamp-perf)" filter="url(#stamp-tear)" />
+      <rect x="6" y="6" width={w - 12} height={h - 12} rx="9" fill={`url(#${fillId})`} mask={`url(#${perfId})`} filter={`url(#${tearId})`} />
     </svg>
   );
 }
@@ -933,14 +944,18 @@ function FilmStrip() {
 }
 
 function FilmReel() {
+  // Sequência duplicada para o loop contínuo (translateX -50% → 0), sem emenda.
+  const frames = [...anniversaryFilmReelPhotos, ...anniversaryFilmReelPhotos];
   return (
     <div className="anniversary-filmreel" aria-hidden="true">
       <div className="anniversary-filmreel__strip">
-        {anniversaryFilmReelPhotos.map((src) => (
-          <span className="anniversary-filmreel__frame" key={src}>
-            <img src={src} alt="" width="280" height="187" loading="lazy" decoding="async" draggable="false" />
-          </span>
-        ))}
+        <div className="anniversary-filmreel__track">
+          {frames.map((src, i) => (
+            <span className="anniversary-filmreel__frame" key={`${src}-${i}`}>
+              <img src={src} alt="" width="280" height="187" loading="lazy" decoding="async" draggable="false" />
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -1056,16 +1071,29 @@ function AnniversaryPage() {
               <h2>Aproveite a campanha e tenha acesso a todos nossos conteúdos!</h2>
               <p className="anniversary-offer__subtitle">Escolha o <strong>plano anual</strong> e também tenha acesso ao <strong>Estude!</strong> gratuitamente na campanha de aniversário.</p>
             </Reveal>
-            <Reveal className="anniversary-price-card">
-              <StampPaper />
-              <span className="anniversary-price-card__seal" aria-hidden="true"><b>Mais</b><span>escolhido</span></span>
-              <div className="anniversary-price-card__body">
-                <p className="anniversary-price-card__plan">Plano anual<span>Nutriwork plus + ESTUDE!</span></p>
-                <div className="anniversary-price"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
-                <ul>{anniversaryBenefits.map((benefit) => <li key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
-                <Button href={checkout.complete} external className="anniversary-price-card__cta">Quero plano completo</Button>
-              </div>
-            </Reveal>
+            <div className="anniversary-plans">
+              <Reveal className="anniversary-price-card anniversary-price-card--annual">
+                <StampPaper id="annual" />
+                <span className="anniversary-price-card__seal-aura" aria-hidden="true" />
+                <span className="anniversary-price-card__seal" aria-hidden="true"><b>Mais</b><span>escolhido</span></span>
+                <div className="anniversary-price-card__body">
+                  <p className="anniversary-price-card__plan">Plano anual<span>Nutriwork plus + ESTUDE!</span></p>
+                  <div className="anniversary-price"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
+                  <ul>{anniversaryBenefits.map((benefit) => <li key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
+                  <Button href={checkout.complete} external className="anniversary-price-card__cta">Quero plano completo</Button>
+                </div>
+              </Reveal>
+              <Reveal className="anniversary-price-card anniversary-price-card--semester">
+                <StampPaper id="semester" />
+                <div className="anniversary-price-card__body">
+                  <p className="anniversary-price-card__plan">Plano semestral<span>Acesso ao Nutriwork plus</span></p>
+                  <div className="anniversary-price anniversary-price--center"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
+                  <ul>{anniversarySemesterBenefits.map((benefit) => <li key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
+                  <Button href={checkout.semiannual} external className="anniversary-price-card__cta">Assinar</Button>
+                </div>
+              </Reveal>
+            </div>
+            <p className="anniversary-offer__note">Pagamento à vista.</p>
             <p className="anniversary-offer__disclaimer">*Oferta por tempo limitado</p>
             <Reveal className="anniversary-offer__closing">
               <h2>O preço é para sempre. A condição, não.</h2>
