@@ -1229,11 +1229,9 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-polaroids p { margin: 0; color: rgba(255,255,255,.72); font-size: 13px; line-height: 1.55; }
 .anniversary-clip { position: absolute; z-index: 2; top: -31px; left: 50%; width: 24px; height: 60px; border-radius: 8px 8px 4px 4px; background: linear-gradient(90deg, #25211d, #5c5247 44%, #191714); box-shadow: 0 5px 8px rgba(0,0,0,.42); transform: translateX(-50%); }
 
-.anniversary-memories { position: relative; z-index: 2; margin: -54px 0 -60px; padding: clamp(120px, 14vw, 190px) 0 clamp(130px, 15vw, 200px); overflow: visible; color: #fff; background: transparent; }
-.anniversary-memories::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 120% 84% at 50% 40%, #16171d 0%, #0b0b0e 58%, #08080a 100%); -webkit-mask: linear-gradient(180deg, transparent, #000 9%, #000 91%, transparent); mask: linear-gradient(180deg, transparent, #000 9%, #000 91%, transparent); pointer-events: none; }
-.anniversary-memories::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 30%, rgba(150, 180, 230, .1), transparent 46%); pointer-events: none; }
+.anniversary-memories { position: relative; z-index: 2; padding: clamp(96px, 11vw, 150px) 0 clamp(96px, 11vw, 150px); overflow: visible; color: var(--anniversary-ink); background: var(--anniversary-paper); }
 .anniversary-memories .page-width { position: relative; z-index: 1; }
-.anniversary-memories h2 { margin: 0 0 64px; color: #f3eee8; font-size: clamp(31px, 4vw, 52px); font-weight: 400; line-height: 1.15; text-align: center; letter-spacing: -.03em; }
+.anniversary-memories h2 { margin: 0 0 64px; color: var(--anniversary-ink); font-size: clamp(31px, 4vw, 52px); font-weight: 400; line-height: 1.15; text-align: center; letter-spacing: -.03em; }
 .anniversary-memories h2 strong { font-weight: 800; }
 
 .anniversary-offer { position: relative; overflow: hidden; padding: 112px 0 clamp(250px, 27vw, 350px); background: var(--anniversary-paper); }
@@ -1299,7 +1297,7 @@ html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0
   .anniversary-polaroids .reveal { width: min(88%, 360px); margin-inline: auto; }
   .anniversary-polaroids article { min-height: 250px; padding: 42px 24px; border-width: 8px; border-bottom-width: 38px; }
   .anniversary-polaroids .reveal:nth-child(1), .anniversary-polaroids .reveal:nth-child(3) { transform: none; }
-  .anniversary-memories { margin: -38px 0 -44px; padding: 100px 0 112px; }
+  .anniversary-memories { padding: 76px 0 84px; }
   .anniversary-memories h2 { margin-bottom: 42px; }
   .anniversary-price-card { padding: 42px 22px 32px; border-radius: 18px; }
   .anniversary-price-card::before { inset: 10px; }
@@ -1407,7 +1405,6 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 
 
 /* ===== Adereços físicos da campanha (assets reais extraídos do PDF) ===== */
-.anniversary-camera { position: absolute; z-index: 0; top: clamp(24px, 5vw, 80px); left: clamp(-90px, -6vw, -40px); width: clamp(210px, 25vw, 380px); height: auto; transform: rotate(-16deg); filter: drop-shadow(0 34px 54px rgba(25, 18, 10, .4)); pointer-events: none; }
 .anniversary-ink { position: absolute; z-index: 0; width: clamp(220px, 26vw, 380px); height: auto; mix-blend-mode: multiply; opacity: .55; pointer-events: none; }
 .anniversary-ink--story { top: 44px; left: max(-70px, -5vw); transform: rotate(7deg); }
 .anniversary-ink--offer { right: max(-80px, -6vw); bottom: 16%; transform: rotate(-8deg) scaleX(-1); }
@@ -1454,7 +1451,6 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
   .hero__content--time > p { max-width: 340px; margin: 26px auto 34px; }
   .hero-time-cta { width: 100%; }
   .hero-portal { top: 104px; left: 50%; width: min(128vw, 560px); opacity: 1; transform: translateX(-50%); }
-  .anniversary-camera { top: auto; bottom: -34px; left: -64px; width: 212px; transform: rotate(-10deg); }
   .anniversary-ink { width: 200px; opacity: .4; }
   .anniversary-filmreel { bottom: 12px; }
   .anniversary-filmreel__strip { padding-block: 22px; gap: 8px; }

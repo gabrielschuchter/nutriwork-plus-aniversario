@@ -1015,7 +1015,6 @@ function AnniversaryPage() {
         <AnniversaryFilm />
 
         <section id="oferta-aniversario" className="anniversary-offer">
-          <img className="anniversary-camera" src="/assets/anniversary/camera-vintage.webp" alt="" width="880" height="858" loading="lazy" decoding="async" />
           <img className="anniversary-ink anniversary-ink--offer" src="/assets/anniversary/ink-texture.webp" alt="" width="460" height="688" loading="lazy" decoding="async" />
           <div className="page-width--narrow anniversary-offer__layout">
             <Reveal className="anniversary-offer__copy">
