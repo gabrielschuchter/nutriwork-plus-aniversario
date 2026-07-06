@@ -1240,37 +1240,42 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-offer__copy > p { margin: 0 auto 24px; max-width: 730px; color: #37322c; font-size: clamp(16px, 1.6vw, 20px); line-height: 1.6; }
 .anniversary-offer__copy strong { color: #223d7c; }
 .anniversary-offer__copy h2 { max-width: 700px; margin: 72px auto 44px; color: #15120f; font-size: clamp(29px, 3.6vw, 48px); line-height: 1.12; letter-spacing: -.04em; }
-.anniversary-price-card { width: min(100%, 520px); padding: 46px 44px 40px; border: 1px solid rgba(226,198,157,.22); border-radius: 22px; color: #fff; background: radial-gradient(circle at 82% 8%, rgba(226,198,157,.16), transparent 42%), linear-gradient(158deg, #22345c 0%, #182740 56%, #101a30 100%); box-shadow: 0 35px 80px rgba(16,22,40,.4), inset 0 1px rgba(255,255,255,.1); }
-.anniversary-price-card::before { content: ''; position: absolute; inset: 12px; border: 2px dashed rgba(226,198,157,.32); border-radius: 12px; pointer-events: none; }
-.anniversary-price-card > * { position: relative; }
-.anniversary-price-card > p { margin: 0 0 16px; font-size: 25px; font-weight: 700; text-align: center; }
+/* ===== Card de planos: papel-selo rasgado (reprodução da arte oficial) ===== */
+.anniversary-price-card { position: relative; overflow: visible; width: min(100%, 520px); padding: 0; border: 0; background: none; box-shadow: none; color: #fff; filter: drop-shadow(0 34px 60px rgba(16,22,40,.42)); }
+.anniversary-price-card__paper { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.anniversary-price-card__body { position: relative; z-index: 1; padding: 52px 46px 46px; }
+
 .anniversary-offer__subtitle { margin: -26px auto 44px !important; max-width: 620px; }
-.anniversary-price-card { position: relative; overflow: visible; }
-.anniversary-price-card__plan { display: grid; gap: 4px; text-align: left !important; font-size: 24px !important; }
-.anniversary-price-card__plan span { font-size: 15px; font-weight: 400; color: rgba(255, 255, 255, .72); }
-.anniversary-price-card__seal { position: absolute; top: -30px; right: 26px; z-index: 2; width: 92px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; align-content: center; color: #4a3410; background: radial-gradient(circle at 32% 28%, #ffe9ad, #e8b84d 52%, #b78a2c); box-shadow: 0 10px 26px rgba(0, 0, 0, .35), inset 0 1px rgba(255, 255, 255, .65); font-size: 12px; font-weight: 800; letter-spacing: .06em; line-height: 1.15; text-align: center; text-transform: uppercase; transform: rotate(8deg); }
-.anniversary-price { justify-content: flex-start !important; }
-.anniversary-price-card .anniversary-price { justify-content: flex-start; }
-.anniversary-price { display: flex; align-items: end; justify-content: center; white-space: nowrap; }
-.anniversary-price > span { margin: 0 7px 15px 0; font-size: 32px; font-weight: 800; }
-.anniversary-price strong { font-size: clamp(84px, 11vw, 126px); line-height: .8; letter-spacing: -.08em; }
-.anniversary-price sup { font-size: .38em; letter-spacing: -.04em; vertical-align: top; }
-.anniversary-price small { margin: 0 0 7px 8px; font-size: 18px; font-weight: 700; }
-.anniversary-price-card ul { margin: 42px 0 38px; padding: 0; display: grid; gap: 17px; list-style: none; }
-.anniversary-price-card li { display: flex; align-items: center; gap: 13px; color: rgba(255,255,255,.78); font-size: 14px; }
-.anniversary-price-card .pricing-check { width: 22px; height: 22px; flex: 0 0 auto; border: 1px solid rgba(226,198,157,.5); border-radius: 6px; background: rgba(226,198,157,.12); box-shadow: none; color: #ecc98e; }
-.anniversary-price-card .pricing-check::before { font-size: 14px; text-shadow: none; }
-.anniversary-price-card .button { width: 100%; min-height: 58px; border: 0; color: #15120f; background: #ede5d9; box-shadow: 0 15px 35px rgba(0,0,0,.32); font-size: 16px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
-.anniversary-price-card > small { display: block; margin-top: 25px; color: rgba(255,255,255,.56); font-size: 10px; letter-spacing: .08em; text-align: center; text-transform: uppercase; }
-.anniversary-offer__closing { margin-top: 72px; text-align: center; }
-.anniversary-offer__closing h2 { margin: 0 0 8px; color: #15120f; font-size: clamp(25px, 3vw, 38px); }
-.anniversary-offer__closing p { margin: 0; color: #37322c; font-size: clamp(18px, 2vw, 24px); }
-html[data-theme='dark'] .anniversary-page { --anniversary-paper: #12110f; --anniversary-ink: #f3eee7; }
-html[data-theme='dark'] .anniversary-story, html[data-theme='dark'] .anniversary-offer { background-color: #12110f; }
-html[data-theme='dark'] .anniversary-story__intro p, html[data-theme='dark'] .anniversary-offer__copy > p, html[data-theme='dark'] .anniversary-offer__closing p { color: #c8beb2; }
-html[data-theme='dark'] .anniversary-story__intro h2, html[data-theme='dark'] .anniversary-offer__copy h2, html[data-theme='dark'] .anniversary-offer__closing h2 { color: #f5eee5; }
-html[data-theme='dark'] .anniversary-polaroids article { border-color: #ded6cb; }
-html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0,0,0,.55), 0 0 60px rgba(34,61,124,.16), inset 0 1px rgba(255,255,255,.08); }
+
+.anniversary-price-card__plan { margin: 0; display: grid; gap: 5px; text-align: left; font-size: 25px; font-weight: 800; line-height: 1.05; }
+.anniversary-price-card__plan span { font-size: 15px; font-weight: 400; color: rgba(255,255,255,.74); }
+
+/* Preço: "9" gigante com ,90 sobreposto e /mês na linha de base. */
+.anniversary-price { margin: 22px 0 6px; display: flex; align-items: flex-end; justify-content: flex-start; white-space: nowrap; }
+.anniversary-price > span { margin: 0 6px 20px 0; font-size: 34px; font-weight: 800; }
+.anniversary-price strong { font-size: clamp(96px, 12vw, 132px); font-weight: 800; line-height: .72; letter-spacing: -.06em; }
+.anniversary-price sup { align-self: flex-start; margin: 6px 0 0 2px; font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
+.anniversary-price small { margin: 0 0 16px 6px; font-size: 19px; font-weight: 600; }
+
+.anniversary-price-card ul { margin: 34px 0 34px; padding: 0; display: grid; gap: 18px; list-style: none; }
+.anniversary-price-card li { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,.82); font-size: 14.5px; }
+.anniversary-check { flex: 0 0 auto; width: 22px; height: 22px; position: relative; }
+.anniversary-check::before { content: ''; position: absolute; left: 3px; top: 11px; width: 7px; height: 12px; border: solid #e9c489; border-width: 0 2.6px 2.6px 0; transform: rotate(43deg); transform-origin: center; }
+
+/* CTA contornado (pílula), como na arte. */
+.anniversary-price-card__cta { width: 100%; min-height: 56px; border: 1.6px solid rgba(233,222,205,.7); border-radius: 999px; color: #f2ece0; background: transparent; box-shadow: none; font-size: 15px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.anniversary-price-card__cta:hover, .anniversary-price-card__cta:focus-visible { color: #15120f; background: #ede5d9; border-color: #ede5d9; box-shadow: 0 14px 30px rgba(0,0,0,.3); }
+
+/* Selo dourado tipo medalha (anel serrilhado + aro interno). */
+.anniversary-price-card__seal { position: absolute; top: -34px; right: 30px; z-index: 3; width: 104px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; align-content: center; gap: 1px; color: #2c2140; background: radial-gradient(circle at 34% 26%, #ffeeb8, #eabf56 54%, #c2912f); box-shadow: 0 12px 26px rgba(0,0,0,.34), inset 0 2px 3px rgba(255,255,255,.6); font-weight: 800; line-height: 1.05; text-align: center; text-transform: uppercase; transform: rotate(6deg); }
+.anniversary-price-card__seal::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; background: repeating-conic-gradient(#e4b64d 0deg 9deg, #c8922f 9deg 18deg); z-index: -1; -webkit-mask: radial-gradient(circle, transparent 42px, #000 43px); mask: radial-gradient(circle, transparent 42px, #000 43px); }
+.anniversary-price-card__seal::after { content: ''; position: absolute; inset: 8px; border: 1.5px solid rgba(78,54,15,.45); border-radius: 50%; }
+.anniversary-price-card__seal b { font-size: 15px; font-weight: 800; }
+.anniversary-price-card__seal > span { font-size: 11px; letter-spacing: .02em; }
+
+.anniversary-offer__disclaimer { margin: 22px 0 0; color: var(--anniversary-ink); opacity: .62; font-size: 11px; letter-spacing: .1em; text-align: center; text-transform: uppercase; }
+
+html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70px rgba(0,0,0,.6)); }
 
 @media (max-width: 1080px) and (min-width: 901px) {
   .site-header { width: min(1040px, calc(100% - 24px)); padding-inline: 14px; }
@@ -1299,12 +1304,13 @@ html[data-theme='dark'] .anniversary-price-card { box-shadow: 0 35px 90px rgba(0
   .anniversary-polaroids .reveal:nth-child(1), .anniversary-polaroids .reveal:nth-child(3) { transform: none; }
   .anniversary-memories { padding: 76px 0 84px; }
   .anniversary-memories h2 { margin-bottom: 42px; }
-  .anniversary-price-card { padding: 42px 22px 32px; border-radius: 18px; }
-  .anniversary-price-card::before { inset: 10px; }
-  .anniversary-price strong { font-size: clamp(82px, 29vw, 112px); }
-  .anniversary-price > span { font-size: 26px; }
-  .anniversary-price small { font-size: 14px; }
-  .anniversary-price-card li { font-size: 13px; }
+  .anniversary-price-card__body { padding: 44px 30px 38px; }
+  .anniversary-price strong { font-size: clamp(88px, 30vw, 118px); }
+  .anniversary-price > span { font-size: 28px; }
+  .anniversary-price sup { font-size: 28px; }
+  .anniversary-price small { font-size: 16px; }
+  .anniversary-price-card li { font-size: 13.5px; }
+  .anniversary-price-card__seal { width: 92px; top: -28px; right: 18px; }
   .anniversary-offer__copy h2 { margin-top: 54px; }
   .anniversary-offer__closing { margin-top: 58px; }
 }
