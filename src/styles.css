@@ -1278,10 +1278,15 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-price-card__seal > span { font-size: 11px; letter-spacing: .02em; }
 
 /* Aura externa do selo: halo dourado suave + luz percorrendo o aro (horário). */
-.anniversary-price-card__seal-aura { position: absolute; top: -44px; right: 20px; z-index: 2; width: 124px; aspect-ratio: 1; border-radius: 50%; pointer-events: none; box-shadow: 0 0 20px rgba(238,198,110,.16); }
-.anniversary-price-card__seal-aura::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, rgba(247,214,138,0) 0deg, rgba(247,214,138,0) 236deg, rgba(255,236,178,.8) 318deg, rgba(255,249,225,1) 342deg, rgba(255,236,178,.8) 360deg); -webkit-mask: radial-gradient(closest-side, transparent 74%, #000 80%, #000 98%, transparent 100%); mask: radial-gradient(closest-side, transparent 74%, #000 80%, #000 98%, transparent 100%); filter: blur(2.5px); animation: seal-aura-orbit 6s linear infinite; will-change: transform; }
-@keyframes seal-aura-orbit { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .anniversary-price-card__seal-aura::before { animation: none; } }
+/* Aura do plano destaque: halo dourado suave ao redor de TODO o card, com
+   uma luz percorrendo o perímetro (horário). Fica atrás do papel (z-index -1),
+   não altera o layout. A luz viaja animando o ângulo do conic-gradient
+   (@property), então o brilho segue a borda sem girar/distorcer o retângulo. */
+@property --aura-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+.anniversary-price-card__aura { position: absolute; inset: -11px; z-index: -1; border-radius: 20px; pointer-events: none; box-shadow: 0 0 30px 1px rgba(233,196,110,.14); }
+.anniversary-price-card__aura::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: conic-gradient(from var(--aura-angle), rgba(240,204,124,0) 0deg, rgba(240,204,124,0) 208deg, rgba(255,232,170,.85) 306deg, rgba(255,249,226,1) 338deg, rgba(255,232,170,.85) 360deg); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; filter: blur(.4px); animation: anniversary-card-aura 7.5s linear infinite; }
+@keyframes anniversary-card-aura { to { --aura-angle: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .anniversary-price-card__aura::before { animation: none; } }
 
 /* Observação de baixa hierarquia abaixo dos dois cards. */
 .anniversary-offer__note { margin: 32px 0 0; color: var(--anniversary-ink); opacity: .5; font-size: 12px; letter-spacing: .01em; text-align: center; }
@@ -1339,7 +1344,6 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
   .anniversary-price small { font-size: 16px; }
   .anniversary-price-card li { font-size: 13.5px; }
   .anniversary-price-card__seal { width: 92px; top: -28px; right: 18px; }
-  .anniversary-price-card__seal-aura { width: 108px; top: -36px; right: 10px; }
   .anniversary-offer__copy h2 { margin-top: 54px; }
   .anniversary-offer__closing { margin-top: 58px; }
 }
@@ -1453,11 +1457,13 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 .anniversary-filmreel__strip::after { content: ''; position: absolute; z-index: 2; left: 0; right: 0; height: 9px; background-image: repeating-linear-gradient(90deg, rgba(232, 228, 222, .9) 0 14px, transparent 14px 34px); border-radius: 2px; opacity: .85; }
 .anniversary-filmreel__strip::before { top: 8px; }
 .anniversary-filmreel__strip::after { bottom: 8px; }
-/* Track das fotos: desliza continuamente (moldura/perfurações permanecem fixas). */
-.anniversary-filmreel__track { display: flex; width: max-content; gap: clamp(10px, 1.6vw, 18px); will-change: transform; animation: anniversary-filmreel-scroll 56s linear infinite; }
+/* Track das fotos: desliza continuamente (moldura/perfurações permanecem fixas).
+   O espaçamento é margin-right em cada frame (não `gap`) para que o salto de
+   translateX(-50%) case exatamente com o espaçamento interno — loop sem emenda. */
+.anniversary-filmreel__track { display: flex; width: max-content; will-change: transform; animation: anniversary-filmreel-scroll 56s linear infinite; }
 @keyframes anniversary-filmreel-scroll { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) { .anniversary-filmreel__track { animation-play-state: paused; } }
-.anniversary-filmreel__frame { flex: 0 0 clamp(150px, 17vw, 250px); aspect-ratio: 3 / 2; overflow: hidden; border-radius: 4px; }
+.anniversary-filmreel__frame { flex: 0 0 clamp(150px, 17vw, 250px); margin-right: clamp(10px, 1.6vw, 18px); aspect-ratio: 3 / 2; overflow: hidden; border-radius: 4px; }
 .anniversary-filmreel__frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.28) saturate(.72) brightness(.88) contrast(1.02); }
 
 /* ===== Bloco cinematográfico do comercial ===== */
@@ -1493,8 +1499,8 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
   .anniversary-ink { width: 200px; opacity: .4; }
   .anniversary-filmreel { bottom: 12px; }
   .anniversary-filmreel__strip { padding-block: 22px; }
-  .anniversary-filmreel__track { gap: 8px; animation-duration: 40s; }
-  .anniversary-filmreel__frame { flex: 0 0 128px; }
+  .anniversary-filmreel__track { animation-duration: 40s; }
+  .anniversary-filmreel__frame { flex: 0 0 128px; margin-right: 8px; }
   .anniversary-film__frame { border-width: 6px; border-radius: 14px; }
   .anniversary-film__label { bottom: 14px; font-size: 11px; }
 }

@@ -1073,8 +1073,8 @@ function AnniversaryPage() {
             </Reveal>
             <div className="anniversary-plans">
               <Reveal className="anniversary-price-card anniversary-price-card--annual">
+                <span className="anniversary-price-card__aura" aria-hidden="true" />
                 <StampPaper id="annual" />
-                <span className="anniversary-price-card__seal-aura" aria-hidden="true" />
                 <span className="anniversary-price-card__seal" aria-hidden="true"><b>Mais</b><span>escolhido</span></span>
                 <div className="anniversary-price-card__body">
                   <p className="anniversary-price-card__plan">Plano anual<span>Nutriwork plus + ESTUDE!</span></p>
