@@ -952,7 +952,7 @@ function FilmReel() {
         <div className="anniversary-filmreel__track">
           {frames.map((src, i) => (
             <span className="anniversary-filmreel__frame" key={`${src}-${i}`}>
-              <img src={src} alt="" width="280" height="187" loading="lazy" decoding="async" draggable="false" />
+              <img src={src} alt="" width="280" height="187" loading="eager" decoding="async" draggable="false" />
             </span>
           ))}
         </div>
