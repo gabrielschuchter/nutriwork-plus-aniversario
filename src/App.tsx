@@ -927,9 +927,9 @@ function StampPaper({ id = 'a' }: { id?: string }) {
           <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G" />
         </filter>
         <radialGradient id={fillId} cx="28%" cy="6%" r="128%">
-          <stop offset="0%" stopColor={isAnnual ? '#315fae' : '#343942'} />
-          <stop offset="52%" stopColor={isAnnual ? '#173d7c' : '#242a33'} />
-          <stop offset="100%" stopColor={isAnnual ? '#0a1d42' : '#171b21'} />
+          <stop offset="0%" stopColor={isAnnual ? '#2c3f6c' : '#343942'} />
+          <stop offset="52%" stopColor={isAnnual ? '#1a2846' : '#242a33'} />
+          <stop offset="100%" stopColor={isAnnual ? '#101a30' : '#171b21'} />
         </radialGradient>
         <mask id={perfId}>
           <rect x="6" y="6" width={w - 12} height={h - 12} rx="9" fill="#fff" />
