@@ -470,6 +470,9 @@ html[data-theme='light'] .partners-events--anniversary .partners-events__item::a
   right: 16px;
   bottom: 14px;
   color: #2b261f;
+  font-size: clamp(14px, 1.05vw, 15px);
+  font-weight: 600;
+  line-height: 1.35;
 }
 
 .partners-events--anniversary .partners-events__controls button,
@@ -510,5 +513,10 @@ html[data-theme='light'] .partners-events--anniversary .partners-events__control
   .partners-events--anniversary .partners-events__item::after,
   html[data-theme='light'] .partners-events--anniversary .partners-events__item::after {
     inset: 8px 8px 58px;
+  }
+
+  .partners-events--anniversary .partners-events__item figcaption {
+    font-size: 14px;
+    line-height: 1.35;
   }
 }

@@ -69,7 +69,7 @@ function useScrollReveal(refreshKey: unknown) {
 function useMobileCtaVisibility(refreshKey: unknown) {
   useEffect(() => {
     const cta = document.querySelector<HTMLElement>('.mobile-cta');
-    const protectedSections = document.querySelectorAll('.pricing-section, .faq-section, .footer');
+    const protectedSections = document.querySelectorAll('.pricing-section, .campaign-gateway, .faq-section, .footer');
     if (!cta || !protectedSections.length) return;
 
     const visibleSections = new Set<Element>();
@@ -783,46 +783,37 @@ function FaqItem({ item, index }: { item: typeof faqItems[number]; index: number
 }
 
 function FAQ() {
-  const campaignBenefits = [
-    { icon: 'trend', text: 'Condições exclusivas da campanha' },
-    { icon: 'gauge', text: 'Maior economia do ano' },
-    { icon: 'cap', text: 'Benefícios especiais para novos alunos' },
-    { icon: 'heart', text: 'Oferta disponível por tempo limitado' }
-  ];
-
   return (
-    <section id="duvidas" className="section faq-section">
-      <div className="page-width">
-        <Reveal className="campaign-gateway">
-          <div className="campaign-gateway__copy">
-            <p className="campaign-gateway__eyebrow">Campanha de aniversário</p>
-            <h2>A maior oportunidade do ano para entrar na Nutriwork.</h2>
-            <p>Durante nossa campanha de aniversário reunimos condições especiais que foram vistas apenas uma vez na nossa história. Acesse a página exclusiva da campanha e descubra a melhor forma de fazer parte da Nutriwork.</p>
-          </div>
-          <div className="campaign-gateway__card">
-            <span className="campaign-gateway__seal">Acesso exclusivo</span>
-            <div className="campaign-gateway__benefits">
-              {campaignBenefits.map((benefit) => (
-                <article key={benefit.text}>
-                  <span><Icon name={benefit.icon} /></span>
-                  <p>{benefit.text}</p>
-                </article>
-              ))}
-            </div>
-            <Button href="/#/aniversario" className="campaign-gateway__button cta-glow">
-              QUERO CONHECER MINHA OFERTA
-              <span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span>
-            </Button>
-          </div>
-        </Reveal>
-      </div>
-      <div className="page-width page-width--narrow">
-        <Reveal><SectionHeading>Dúvidas frequentes</SectionHeading><p className="faq-intro">Respostas objetivas para você entender o que recebe, reduzir incertezas e escolher com segurança.</p></Reveal>
-        <div className="faq-list">
-          {faqItems.map((item, index) => <FaqItem item={item} index={index} key={item.question} />)}
+    <>
+      <section className="campaign-gateway" aria-labelledby="campaign-gateway-title" data-campaign="anniversary">
+        <div className="campaign-gateway__atmosphere" aria-hidden="true">
+          <span className="campaign-gateway__orbit" />
+          <span className="campaign-gateway__light" />
         </div>
-      </div>
-    </section>
+        <div className="page-width campaign-gateway__layout">
+          <Reveal className="campaign-gateway__copy">
+            <p className="campaign-gateway__eyebrow">Campanha de aniversário · 1 ano</p>
+            <h2 id="campaign-gateway-title">A maior oportunidade do ano para entrar no Nutriwork.</h2>
+            <p>Na campanha de aniversário, reunimos condições especiais que apareceram apenas uma vez em nossa história. Acesse a página exclusiva e descubra a melhor forma de fazer parte do Nutriwork.</p>
+            <Button href="/#/aniversario" className="campaign-gateway__button">
+              Conhecer a campanha
+              <span className="campaign-gateway__arrow" aria-hidden="true">→</span>
+            </Button>
+          </Reveal>
+          <Reveal className="campaign-gateway__aside">
+            <p className="campaign-gateway__aside-intro">Um marco na nossa trajetória. Uma oportunidade para começar a sua.</p>
+          </Reveal>
+        </div>
+      </section>
+      <section id="duvidas" className="section faq-section">
+        <div className="page-width page-width--narrow">
+          <Reveal><SectionHeading>Dúvidas frequentes</SectionHeading><p className="faq-intro">Respostas objetivas para você entender o que recebe, reduzir incertezas e escolher com segurança.</p></Reveal>
+          <div className="faq-list">
+            {faqItems.map((item, index) => <FaqItem item={item} index={index} key={item.question} />)}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 
@@ -1116,14 +1107,17 @@ function AnniversaryPage() {
                 <span className="anniversary-price-card__seal" aria-hidden="true"><b>Mais</b><span>escolhido</span></span>
                 <div className="anniversary-price-card__body">
                   <div className="anniversary-price-card__heading">
-                    <p className="anniversary-price-card__plan">Plano anual<span>Nutriwork Plus Anual + livro ESTUDE!</span></p>
-                    <span className="anniversary-price-card__value-badge">Maior economia</span>
+                    <h3 className="anniversary-price-card__title">Nutriwork Plus Anual + livro ESTUDE!</h3>
                   </div>
                   <p className="anniversary-price-card__description">Acesso completo à formação que você sempre quis.</p>
                   <div className="anniversary-price"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
                   <ul>{anniversaryBenefits.map((benefit, index) => <li className={index === anniversaryBenefits.length - 1 ? 'anniversary-benefit--lifetime' : undefined} key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
-                  <Button href={checkout.complete} external className="anniversary-price-card__cta">Quero a oferta mais completa</Button>
+                  <div className="anniversary-price-card__actions">
+                    <Button href={checkout.complete} external className="anniversary-price-card__cta">QUERO A EXPERIÊNCIA COMPLETA</Button>
+                    <Button href="/#/estude" variant="outline" className="anniversary-price-card__secondary">CONHECER O ESTUDE</Button>
+                  </div>
                 </div>
+                <p className="anniversary-price-card__scarcity">🔥 últimas vagas restantes!</p>
               </Reveal>
               <Reveal className="anniversary-price-card anniversary-price-card--semester">
                 <StampPaper id="semester" />
