@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { usePerformanceMode } from '../performanceMode';
 import { referenceProfiles } from '../data/references';
 import './ReferencesSection.css';
 
@@ -44,6 +45,7 @@ function ReferenceGroup({ duplicate, groupRef }: { duplicate: boolean; groupRef?
 }
 
 export default function ReferencesSection() {
+  const performanceMode = usePerformanceMode();
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const firstGroupRef = useRef<HTMLDivElement>(null);
@@ -100,7 +102,8 @@ export default function ReferencesSection() {
       previousTime = time;
 
       if (carouselVisibleRef.current && groupWidthRef.current > 0) {
-        const standardSpeed = viewport.clientWidth <= 720 ? 17 : 21;
+        const baseSpeed = viewport.clientWidth <= 720 ? 17 : 21;
+        const standardSpeed = performanceMode === 'reduced' ? 0 : performanceMode === 'balanced' ? baseSpeed * .68 : baseSpeed;
         const autoplayDelta = standardSpeed * elapsed;
         const easing = 1 - Math.exp(-7 * elapsed);
         const manualDelta = nudgeRemainingRef.current * easing;
@@ -122,7 +125,7 @@ export default function ReferencesSection() {
       visibilityObserver?.disconnect();
       resizeObserver.disconnect();
     };
-  }, [applyPosition]);
+  }, [applyPosition, performanceMode]);
 
   const move = (direction: -1 | 1) => {
     const width = groupWidthRef.current;

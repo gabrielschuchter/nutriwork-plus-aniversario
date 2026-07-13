@@ -16,6 +16,7 @@ import PortalCanvas from './components/PortalCanvas';
 import { PortalTravelLayer, SignatureLoading, centerAnchor, measurePortalAnchor, type PortalAnchor, type TravelStage } from './components/PortalTransition';
 import { AnimatedGradient } from '@/components/ui/animated-gradient';
 import type { GalleryItem } from './components/PartnersEventsGallery';
+import { usePerformanceMode } from './performanceMode';
 
 const checkout = {
   complete: 'https://pay.kiwify.com.br/nyBH9vq',
@@ -196,9 +197,7 @@ function useNavigationSystem(page: Page) {
 
     const from = currentPageRef.current;
     currentPageRef.current = page;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!reducedMotion && isPortalRoute(from, page)) {
+    if (isPortalRoute(from, page)) {
       setOverlay({ kind: 'travel', stage: 'expand', from: measurePortalAnchor() ?? centerAnchor(), to: null });
       return;
     }
@@ -209,12 +208,12 @@ function useNavigationSystem(page: Page) {
       setRenderedPage(page);
       void Promise.all([
         waitForRenderedPage(),
-        waitForDelay(reducedMotion ? 0 : 520)
+        waitForDelay(520)
       ]).then(() => {
         if (cancelled) return;
         setOverlay((current) => (current?.kind === 'fade' ? null : current));
       });
-    }, reducedMotion ? 0 : 300);
+    }, 300);
 
     return () => {
       cancelled = true;
@@ -454,6 +453,7 @@ function JoinCta() {
 }
 
 function Courses() {
+  const performanceMode = usePerformanceMode();
   const trackRef = useRef<HTMLDivElement>(null);
   const firstGroupRef = useRef<HTMLDivElement>(null);
   const carouselVisibleRef = useRef(true);
@@ -510,8 +510,9 @@ function Courses() {
       previousTime = time;
       const paused = draggingRef.current || hoverPausedRef.current || focusPausedRef.current;
 
-      if (carouselVisibleRef.current && !paused && groupWidthRef.current > 0) {
-        const cycleDuration = window.innerWidth <= 720 ? 44 : 54;
+      if (carouselVisibleRef.current && !paused && groupWidthRef.current > 0 && performanceMode !== 'reduced') {
+        const baseDuration = window.innerWidth <= 720 ? 44 : 54;
+        const cycleDuration = performanceMode === 'balanced' ? baseDuration * 1.35 : baseDuration;
         const autoSpeed = groupWidthRef.current / cycleDuration;
         applyOffset(offsetRef.current + momentumRef.current * elapsed - autoSpeed * elapsed);
         momentumRef.current *= Math.exp(-5 * elapsed);
@@ -527,7 +528,7 @@ function Courses() {
       visibilityObserver?.disconnect();
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [performanceMode]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
@@ -782,14 +783,44 @@ function FaqItem({ item, index }: { item: typeof faqItems[number]; index: number
 }
 
 function FAQ() {
+  const campaignBenefits = [
+    { icon: 'trend', text: 'Condições exclusivas da campanha' },
+    { icon: 'gauge', text: 'Maior economia do ano' },
+    { icon: 'cap', text: 'Benefícios especiais para novos alunos' },
+    { icon: 'heart', text: 'Oferta disponível por tempo limitado' }
+  ];
+
   return (
     <section id="duvidas" className="section faq-section">
+      <div className="page-width">
+        <Reveal className="campaign-gateway">
+          <div className="campaign-gateway__copy">
+            <p className="campaign-gateway__eyebrow">Campanha de aniversário</p>
+            <h2>A maior oportunidade do ano para entrar na Nutriwork.</h2>
+            <p>Durante nossa campanha de aniversário reunimos condições especiais que foram vistas apenas uma vez na nossa história. Acesse a página exclusiva da campanha e descubra a melhor forma de fazer parte da Nutriwork.</p>
+          </div>
+          <div className="campaign-gateway__card">
+            <span className="campaign-gateway__seal">Acesso exclusivo</span>
+            <div className="campaign-gateway__benefits">
+              {campaignBenefits.map((benefit) => (
+                <article key={benefit.text}>
+                  <span><Icon name={benefit.icon} /></span>
+                  <p>{benefit.text}</p>
+                </article>
+              ))}
+            </div>
+            <Button href="/#/aniversario" className="campaign-gateway__button cta-glow">
+              QUERO CONHECER MINHA OFERTA
+              <span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span>
+            </Button>
+          </div>
+        </Reveal>
+      </div>
       <div className="page-width page-width--narrow">
         <Reveal><SectionHeading>Dúvidas frequentes</SectionHeading><p className="faq-intro">Respostas objetivas para você entender o que recebe, reduzir incertezas e escolher com segurança.</p></Reveal>
         <div className="faq-list">
           {faqItems.map((item, index) => <FaqItem item={item} index={index} key={item.question} />)}
         </div>
-        <Reveal className="faq-cta"><p>Escolha o formato que melhor acompanha o seu momento.</p><Button href="/#/aniversario">Ver a oferta de 1 ano</Button></Reveal>
       </div>
     </section>
   );
@@ -865,23 +896,27 @@ function PartnersPage() {
 }
 
 const anniversaryBenefits = [
-  'Nutriwork Plus completo por 1 ano.',
-  'Acesso exclusivo ao Estude.',
-  'Valor vitalício sem reajustes futuros.',
-  'Benefícios e atualizações futuras.'
+  'Cursos de todas as áreas da Nutrição.',
+  'E-book ESTUDE para resolver sua rotina de estudos.',
+  'Aulas ao vivo com especialistas.',
+  'Comunidade ativa para trocar dúvidas e obter oportunidades de trabalho.',
+  'Análises de artigo, podcasts, Espaço de Conforto e outros recursos.',
+  'Valor vitalício sem reajustes futuros!'
 ];
 
 const anniversarySemesterBenefits = [
-  'Nutriwork Plus por 6 meses.',
-  'Materiais e conteúdos exclusivos.',
-  'Valor vitalício sem reajustes futuros.',
-  'Benefícios e atualizações futuras da plataforma.'
+  'Acesso ao Nutriwork Plus pelo período escolhido.',
+  'Cursos, aulas e recursos da plataforma em um só lugar.',
+  'Comunidade Nutriwork para dúvidas e trocas.',
+  'Acesso pelo computador e celular.',
+  'Valor vitalício sem reajustes futuros!'
 ];
 
 // Papel-selo rasgado da oferta (reprodução da arte oficial): perfuração de
 // selo postal + rasgo orgânico via feTurbulence/feDisplacementMap. O `id`
 // isola os filtros/máscaras quando há mais de um card na página.
 function StampPaper({ id = 'a' }: { id?: string }) {
+  const isAnnual = id === 'annual';
   const w = 520;
   const h = 640;
   const gap = 23;
@@ -901,9 +936,9 @@ function StampPaper({ id = 'a' }: { id?: string }) {
           <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G" />
         </filter>
         <radialGradient id={fillId} cx="28%" cy="6%" r="128%">
-          <stop offset="0%" stopColor="#2c3f6c" />
-          <stop offset="52%" stopColor="#1a2846" />
-          <stop offset="100%" stopColor="#101a30" />
+          <stop offset="0%" stopColor={isAnnual ? '#315fae' : '#343942'} />
+          <stop offset="52%" stopColor={isAnnual ? '#173d7c' : '#242a33'} />
+          <stop offset="100%" stopColor={isAnnual ? '#0a1d42' : '#171b21'} />
         </radialGradient>
         <mask id={perfId}>
           <rect x="6" y="6" width={w - 12} height={h - 12} rx="9" fill="#fff" />
@@ -911,6 +946,7 @@ function StampPaper({ id = 'a' }: { id?: string }) {
         </mask>
       </defs>
       <rect x="6" y="6" width={w - 12} height={h - 12} rx="9" fill={`url(#${fillId})`} mask={`url(#${perfId})`} filter={`url(#${tearId})`} />
+      <rect className="anniversary-price-card__paper-border" x="13" y="13" width={w - 26} height={h - 26} rx="7" fill="none" stroke={isAnnual ? '#e8c576' : '#68717d'} strokeWidth={isAnnual ? '2.4' : '1'} opacity={isAnnual ? '.72' : '.28'} mask={`url(#${perfId})`} />
     </svg>
   );
 }
@@ -1023,9 +1059,9 @@ function AnniversaryPage() {
           <div className="anniversary-hero__text-shield" aria-hidden="true" />
           <div className="page-width anniversary-hero__content">
             <Reveal>
-              <p className="anniversary-kicker">1 ano de Nutriwork</p>
+              <p className="anniversary-kicker">1 ano de Nutriwork +</p>
               <h1>Nosso aniversário.<br/><strong>O seu presente.</strong></h1>
-              <Button href="#oferta-aniversario" className="anniversary-hero__cta cta-glow">Acesso imediato<span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span></Button>
+              <Button href="#oferta-aniversario" className="anniversary-hero__cta cta-glow">Clique aqui e seja Plus<span className="cta-sparks" aria-hidden="true"><i/><i/><i/><i/><i/><i/></span></Button>
             </Reveal>
             <div className="anniversary-hero__portal" aria-hidden="true" data-portal-anchor>
               <PortalCanvas mode="hero" className="anniversary-hero__portal-canvas" />
@@ -1038,15 +1074,15 @@ function AnniversaryPage() {
           <img className="anniversary-ink anniversary-ink--story" src="/assets/anniversary/ink-texture.webp" alt="" width="460" height="688" loading="lazy" decoding="async" />
           <div className="page-width--narrow">
             <Reveal className="anniversary-story__intro">
-              <p>Em nosso primeiro dia, acreditávamos que uma plataforma feita por estudantes e para estudantes poderia <strong>transformar a rotina acadêmica.</strong></p>
+              <p>Em nosso primeiro dia, acreditávamos que uma plataforma feita por estudantes e para estudantes poderia <strong>transformar o modo que se estuda Nutrição.</strong></p>
               <p>Um ano depois, continuamos crescendo, aprendendo e inovando, mas sem esquecer de onde viemos.</p>
-              <h2>1 ano de história, um presente para você.</h2>
-              <p>Reviva o início da nossa jornada e garanta benefícios que permanecem para sempre.</p>
+              <h2><span>1 ano de história,</span><strong>um presente para você.</strong></h2>
+              <p>Estamos relembrando o início da nossa jornada, para que você possa garantir benefícios que vão permanecer para sempre.</p>
             </Reveal>
             <div className="anniversary-polaroids">
-              <Reveal><article><span className="anniversary-clip"/><h3>Preço garantido<br/>para sempre</h3><p>Entre durante a campanha e mantenha sua assinatura nesse valor de forma <strong>vitalícia.</strong></p></article></Reveal>
-              <Reveal><article><span className="anniversary-clip"/><h3>Nutriwork Plus</h3><p>Tenha acesso aos conteúdos, materiais e recursos exclusivos da plataforma.</p></article></Reveal>
-              <Reveal><article><span className="anniversary-clip"/><h3>Comunidade<br/>que cresce</h3><p>Faça parte de uma plataforma construída por estudantes e para estudantes, evoluindo a cada ano.</p></article></Reveal>
+              <Reveal><article><span className="anniversary-clip"/><h3>Preço garantido<br/>para sempre</h3><p>Entre durante a campanha e mantenha sua assinatura nesse valor de forma <strong className="anniversary-vitalicio">vitalícia.</strong></p></article></Reveal>
+              <Reveal><article><span className="anniversary-clip"/><h3>Nutriwork Plus</h3><p>Tenha acesso aos <strong>conteúdos, materiais e recursos exclusivos</strong> da plataforma.</p></article></Reveal>
+              <Reveal><article><span className="anniversary-clip"/><h3>Comunidade<br/>que cresce</h3><p>Faça parte de uma plataforma construída por estudantes e para estudantes, com conteúdos práticos e baseados em evidências.</p></article></Reveal>
             </div>
           </div>
         </section>
@@ -1066,10 +1102,12 @@ function AnniversaryPage() {
           <img className="anniversary-ink anniversary-ink--offer" src="/assets/anniversary/ink-texture.webp" alt="" width="460" height="688" loading="lazy" decoding="async" />
           <div className="page-width--narrow anniversary-offer__layout">
             <Reveal className="anniversary-offer__copy">
-              <p>Há 1 ano, o <strong>Nutriwork</strong> nasceu com um propósito: tornar o conhecimento em nutrição acessível para todos.</p>
-              <p>Para celebrar essa trajetória, trouxemos de volta o valor que marcou o nosso começo.</p>
+              <div className="anniversary-offer__intro">
+                <p>Há 1 ano, o <strong>Nutriwork</strong> nasceu com um propósito: <strong>tornar o conhecimento em nutrição acessível para todos.</strong></p>
+                <p>Para celebrar essa trajetória, <strong>trouxemos de volta o valor que marcou o nosso começo.</strong></p>
+              </div>
               <h2>Aproveite a campanha e tenha acesso a todos nossos conteúdos!</h2>
-              <p className="anniversary-offer__subtitle">Escolha o <strong>plano anual</strong> e também tenha acesso ao <strong>Estude!</strong> gratuitamente na campanha de aniversário.</p>
+              <p className="anniversary-offer__subtitle">Escolha o <strong>plano anual</strong> e também tenha acesso ao <a href="/#/estude">ESTUDE!</a> gratuitamente na campanha de aniversário.</p>
             </Reveal>
             <div className="anniversary-plans">
               <Reveal className="anniversary-price-card anniversary-price-card--annual">
@@ -1077,10 +1115,14 @@ function AnniversaryPage() {
                 <StampPaper id="annual" />
                 <span className="anniversary-price-card__seal" aria-hidden="true"><b>Mais</b><span>escolhido</span></span>
                 <div className="anniversary-price-card__body">
-                  <p className="anniversary-price-card__plan">Plano anual<span>Nutriwork plus + ESTUDE!</span></p>
+                  <div className="anniversary-price-card__heading">
+                    <p className="anniversary-price-card__plan">Plano anual<span>Nutriwork Plus Anual + livro ESTUDE!</span></p>
+                    <span className="anniversary-price-card__value-badge">Maior economia</span>
+                  </div>
+                  <p className="anniversary-price-card__description">Acesso completo à formação que você sempre quis.</p>
                   <div className="anniversary-price"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
-                  <ul>{anniversaryBenefits.map((benefit) => <li key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
-                  <Button href={checkout.complete} external className="anniversary-price-card__cta">Quero plano completo</Button>
+                  <ul>{anniversaryBenefits.map((benefit, index) => <li className={index === anniversaryBenefits.length - 1 ? 'anniversary-benefit--lifetime' : undefined} key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
+                  <Button href={checkout.complete} external className="anniversary-price-card__cta">Quero a oferta mais completa</Button>
                 </div>
               </Reveal>
               <Reveal className="anniversary-price-card anniversary-price-card--semester">
@@ -1088,7 +1130,7 @@ function AnniversaryPage() {
                 <div className="anniversary-price-card__body">
                   <p className="anniversary-price-card__plan">Plano semestral<span>Acesso ao Nutriwork plus</span></p>
                   <div className="anniversary-price anniversary-price--center"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
-                  <ul>{anniversarySemesterBenefits.map((benefit) => <li key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
+                  <ul>{anniversarySemesterBenefits.map((benefit, index) => <li className={index === anniversarySemesterBenefits.length - 1 ? 'anniversary-benefit--lifetime' : undefined} key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
                   <Button href={checkout.semiannual} external className="anniversary-price-card__cta">Assinar</Button>
                 </div>
               </Reveal>

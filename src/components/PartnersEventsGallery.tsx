@@ -1,6 +1,7 @@
 import './PartnersEventsGallery.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties, FocusEvent as ReactFocusEvent } from 'react';
+import { usePerformanceMode } from '../performanceMode';
 
 export type GalleryItem = {
   number: string;
@@ -140,6 +141,7 @@ function getShortestOffset(index: number, activeIndex: number, total: number) {
 }
 
 export default function PartnersEventsGallery({ variant = 'partners', items = eventGalleryItems }: PartnersEventsGalleryProps) {
+  const performanceMode = usePerformanceMode();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -174,14 +176,14 @@ export default function PartnersEventsGallery({ variant = 'partners', items = ev
   }, []);
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || performanceMode === 'reduced') return;
 
     const interval = window.setInterval(() => {
       if (isVisibleRef.current) move(1);
-    }, AUTOPLAY_DELAY);
+    }, performanceMode === 'balanced' ? AUTOPLAY_DELAY * 1.35 : AUTOPLAY_DELAY);
 
     return () => window.clearInterval(interval);
-  }, [isPaused, move]);
+  }, [isPaused, move, performanceMode]);
 
   return (
     <section

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { usePerformanceMode } from '../performanceMode';
 
 export type PortalMode = 'loader' | 'hero' | 'burst' | 'routeLite' | 'mobileLite';
 
@@ -56,6 +57,7 @@ function makeDebris(count: number): Debris[] {
 
 export default function PortalCanvas({ mode = 'loader', className = '' }: { mode?: PortalMode; className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const performanceMode = usePerformanceMode();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -64,9 +66,20 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
 
     const isMobile = window.matchMedia('(max-width: 720px)').matches;
     const effectiveMode: PortalMode = isMobile && mode !== 'burst' ? 'mobileLite' : mode;
-    const tuning = MODE_TUNING[effectiveMode];
+    const baseTuning = MODE_TUNING[effectiveMode];
+    const tuning = performanceMode === 'full'
+      ? baseTuning
+      : {
+          ...baseTuning,
+          debris: Math.round(baseTuning.debris * (performanceMode === 'balanced' ? .72 : .46)),
+          steps: Math.round(baseTuning.steps * (performanceMode === 'balanced' ? .82 : .62)),
+          fps: performanceMode === 'balanced' ? Math.min(baseTuning.fps, 20) : 8,
+          dither: performanceMode === 'reduced' ? 0 : baseTuning.dither
+        };
     const debris = makeDebris(tuning.debris);
-    const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.15 : 1.25);
+    const dprCap = isMobile ? 1.15 : 1.25;
+    const dprScale = performanceMode === 'full' ? 1 : performanceMode === 'balanced' ? .88 : .72;
+    const dpr = Math.min(window.devicePixelRatio || 1, dprCap * dprScale);
     let frame = 0;
     let running = true;
     let inViewport = true;
@@ -271,7 +284,7 @@ export default function PortalCanvas({ mode = 'loader', className = '' }: { mode
       intersectionObserver?.disconnect();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [mode]);
+  }, [mode, performanceMode]);
 
   return <canvas ref={canvasRef} className={`portal-canvas ${className}`} aria-hidden="true" />;
 }

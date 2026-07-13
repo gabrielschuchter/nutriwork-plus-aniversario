@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { usePerformanceMode } from "../../performanceMode";
 
 type PatternShape = "Checks" | "Stripes" | "Edge";
 
@@ -170,6 +171,7 @@ export function AnimatedGradient({
   style,
   className,
 }: AnimatedGradientProps) {
+  const performanceMode = usePerformanceMode();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const frameIdRef = useRef<number | undefined>(undefined);
@@ -320,12 +322,16 @@ void main() {
 
       const getPixelRatio = () => {
         const isMobile = window.matchMedia("(max-width: 720px)").matches;
-        return Math.min(window.devicePixelRatio || 1, isMobile ? 1.15 : 1.25);
+        const cap = isMobile ? 1.15 : 1.25;
+        const scale = performanceMode === "full" ? 1 : performanceMode === "balanced" ? .88 : .72;
+        return Math.min(window.devicePixelRatio || 1, cap * scale);
       };
 
       const getFrameInterval = () => {
         const isMobile = window.matchMedia("(max-width: 720px)").matches;
-        return 1000 / (isMobile ? 24 : 30);
+        if (performanceMode === "reduced") return Number.POSITIVE_INFINITY;
+        const fps = isMobile ? 24 : 30;
+        return 1000 / (performanceMode === "balanced" ? Math.min(fps, 20) : fps);
       };
 
       const resize = () => {
@@ -359,7 +365,7 @@ void main() {
           return;
         }
 
-        if (time - lastDrawRef.current < getFrameInterval()) {
+        if (performanceMode !== "reduced" && time - lastDrawRef.current < getFrameInterval()) {
           frameIdRef.current = requestAnimationFrame(animate);
           return;
         }
@@ -393,6 +399,7 @@ void main() {
         );
 
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+        if (performanceMode === "reduced") return;
         frameIdRef.current = requestAnimationFrame(animate);
       };
 
@@ -413,7 +420,7 @@ void main() {
       setHasWebGLError(true);
       return;
     }
-  }, [hasWebGLError, isMounted, params]);
+  }, [hasWebGLError, isMounted, params, performanceMode]);
 
   if (hasWebGLError) {
     return <WebGLFallback className={joinClass("absolute inset-0 overflow-hidden", className)} />;

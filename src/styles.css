@@ -277,7 +277,6 @@ html[data-theme='light'] {
   --footer-link-bg: rgba(255,255,255,.58);
   --copyright: #6c7788;
 }
-
 * { box-sizing: border-box; }
 html { max-width: 100%; overflow-x: clip; scroll-behavior: smooth; background: var(--background); color-scheme: light; }
 html[data-theme='dark'] { color-scheme: dark; }
@@ -371,10 +370,12 @@ html[data-theme='light'] .signature-loading--backdrop {
 
 .signature-loading__script {
   display: inline-block;
+  padding: .08em .08em .22em;
+  margin-bottom: -.22em;
   font-family: 'Sacramento', 'Segoe Script', cursive;
   font-size: clamp(40px, 6vw, 66px);
   font-weight: 400;
-  line-height: 1.1;
+  line-height: 1.2;
   color: #cdc2b7;
   transform: rotate(-5deg);
   text-shadow: 0 0 24px rgba(224, 218, 212, .22);
@@ -922,8 +923,25 @@ html[data-theme='light'] .partners-network__hub-pulse { stroke: rgba(18, 99, 255
 .faq-answer > div { overflow: hidden; }
 .faq-item--open .faq-answer { grid-template-rows: 1fr; opacity: 1; transform: none; }
 .faq-answer p { margin: 0; padding: 0 72px 24px 24px; color: var(--body-copy); font-size: 14px; line-height: 1.65; }
-.faq-cta { margin-top: 52px; text-align: center; }
-.faq-cta p { margin: 0 0 20px; color: var(--body-copy); }
+.campaign-gateway { position: relative; width: min(100%, 1080px); margin: 0 auto clamp(72px, 8vw, 108px); padding: clamp(34px, 5vw, 58px); border: 1px solid rgba(221, 196, 152, .34); border-radius: 34px; color: #f8f3ea; text-align: center; background: radial-gradient(circle at 18% 18%, rgba(221, 196, 152, .22), transparent 34%), radial-gradient(circle at 82% 18%, rgba(18, 99, 255, .18), transparent 35%), linear-gradient(145deg, #05070c 0%, #101826 46%, #20160d 100%); box-shadow: 0 34px 90px rgba(0, 0, 0, .32), inset 0 1px rgba(255, 255, 255, .14); overflow: hidden; isolation: isolate; }
+.campaign-gateway::before { content: ''; position: absolute; inset: 1px; z-index: -1; border-radius: inherit; background: linear-gradient(115deg, rgba(255,255,255,.12), transparent 28%, rgba(221,196,152,.1) 58%, transparent); pointer-events: none; }
+.campaign-gateway::after { content: ''; position: absolute; left: 50%; bottom: -180px; z-index: -1; width: 520px; height: 260px; border-radius: 50%; background: rgba(221, 196, 152, .22); filter: blur(72px); transform: translateX(-50%); pointer-events: none; }
+.campaign-gateway__copy { max-width: 790px; margin: 0 auto clamp(30px, 4vw, 46px); }
+.campaign-gateway__eyebrow { margin: 0 0 14px; color: #d9c59d; font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+.campaign-gateway h2 { margin: 0; color: #fffaf2; font-size: clamp(34px, 5vw, 62px); font-weight: 800; line-height: .98; letter-spacing: -.035em; text-wrap: balance; }
+.campaign-gateway__copy > p:not(.campaign-gateway__eyebrow) { max-width: 730px; margin: 22px auto 0; color: rgba(248, 243, 234, .78); font-size: clamp(16px, 1.55vw, 19px); line-height: 1.65; text-wrap: balance; }
+.campaign-gateway__card { position: relative; max-width: 900px; margin: 0 auto; padding: clamp(26px, 4vw, 42px); border: 1px solid rgba(255,255,255,.14); border-radius: 26px; background: linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.045)); box-shadow: inset 0 1px rgba(255,255,255,.15), 0 24px 60px rgba(0,0,0,.24); backdrop-filter: blur(18px); transition: transform .28s var(--ease-out), border-color .28s var(--ease-out), box-shadow .28s var(--ease-out); }
+.campaign-gateway__card:hover { transform: translateY(-4px); border-color: rgba(221, 196, 152, .48); box-shadow: inset 0 1px rgba(255,255,255,.18), 0 32px 76px rgba(0,0,0,.32), 0 0 46px rgba(221,196,152,.12); }
+.campaign-gateway__seal { position: absolute; top: 0; left: 50%; padding: 9px 18px; border: 1px solid rgba(221,196,152,.46); border-radius: 999px; color: #1a1209; background: linear-gradient(180deg, #f4ead7, #d6bd86); box-shadow: 0 14px 30px rgba(0,0,0,.26); font-size: 11px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; transform: translate(-50%, -50%); white-space: nowrap; }
+.campaign-gateway__benefits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.campaign-gateway__benefits article { min-height: 168px; padding: 26px 18px 22px; border: 1px solid rgba(255,255,255,.1); border-radius: 18px; display: grid; align-content: center; justify-items: center; gap: 18px; background: rgba(4, 8, 15, .36); transition: transform .24s var(--ease-out), background .24s var(--ease-out), border-color .24s var(--ease-out); }
+.campaign-gateway__benefits article:hover { transform: translateY(-3px); border-color: rgba(221,196,152,.36); background: rgba(255,255,255,.08); }
+.campaign-gateway__benefits article > span { width: 50px; height: 50px; border: 1px solid rgba(221,196,152,.42); border-radius: 16px; display: grid; place-items: center; color: #f2d59b; background: linear-gradient(180deg, rgba(221,196,152,.18), rgba(221,196,152,.06)); box-shadow: 0 14px 30px rgba(0,0,0,.2), 0 0 24px rgba(221,196,152,.12); }
+.campaign-gateway__benefits .icon { width: 25px; height: 25px; }
+.campaign-gateway__benefits p { margin: 0; color: rgba(255,255,255,.84); font-size: 14px; font-weight: 750; line-height: 1.35; }
+.campaign-gateway__button { width: min(100%, 620px); min-height: 68px; margin-top: clamp(24px, 3vw, 34px); border: 0; color: #14110d; background: linear-gradient(180deg, #fff6e7, #d4b673); box-shadow: 0 18px 42px rgba(0,0,0,.36), 0 0 34px rgba(221,196,152,.2); font-size: clamp(15px, 1.8vw, 20px); font-weight: 950; letter-spacing: .035em; --cta-glow: rgba(221, 196, 152, .72); }
+.campaign-gateway__button:hover, .campaign-gateway__button:focus-visible { color: #14110d; background: linear-gradient(180deg, #fffaf0, #e6c985); filter: none; }
+html[data-theme='light'] .campaign-gateway { box-shadow: 0 34px 90px rgba(26, 40, 70, .22), inset 0 1px rgba(255, 255, 255, .18); }
 
 .footer { position: relative; margin-top: -1px; padding: clamp(92px, 10vw, 138px) 0 30px; overflow: hidden; isolation: isolate; background: var(--background); border-top: 1px solid var(--section-divider); }
 .footer::before { content: ''; position: absolute; inset: 0; z-index: -2; background: linear-gradient(180deg, rgba(18,99,255,.08), transparent 30%); pointer-events: none; }
@@ -1145,6 +1163,16 @@ html[data-theme='light'] .partners-network__hub-pulse { stroke: rgba(18, 99, 255
   .faq-intro { margin-top: -22px; margin-bottom: 38px; font-size: 14px; }
   .faq-item button { min-height: 64px; padding: 17px 18px; font-size: 15px; }
   .faq-answer p { padding: 0 56px 20px 18px; font-size: 13px; }
+  .campaign-gateway { width: 100%; margin-bottom: 58px; padding: 30px 16px 18px; border-radius: 26px; }
+  .campaign-gateway h2 { font-size: clamp(32px, 10vw, 46px); line-height: 1.02; }
+  .campaign-gateway__copy > p:not(.campaign-gateway__eyebrow) { font-size: 15px; line-height: 1.55; }
+  .campaign-gateway__card { padding: 28px 14px 16px; border-radius: 22px; }
+  .campaign-gateway__benefits { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .campaign-gateway__benefits article { min-height: 142px; padding: 20px 12px 18px; gap: 13px; border-radius: 15px; }
+  .campaign-gateway__benefits article > span { width: 44px; height: 44px; border-radius: 14px; }
+  .campaign-gateway__benefits .icon { width: 22px; height: 22px; }
+  .campaign-gateway__benefits p { font-size: 12.5px; }
+  .campaign-gateway__button { min-height: 60px; padding-inline: 16px; font-size: 13px; letter-spacing: .02em; white-space: normal; }
   .footer { padding-top: 78px; }
   .footer-statement { margin-bottom: 62px; }
   .footer h2 { font-size: clamp(36px, 11vw, 58px); line-height: 1.08; }
@@ -1228,13 +1256,17 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-story > *, .anniversary-offer > * { position: relative; z-index: 1; }
 .anniversary-story__intro { max-width: 790px; margin: 0 auto; text-align: center; }
 .anniversary-story__intro p { margin: 0 auto 24px; max-width: 740px; color: #37322c; font-size: clamp(15px, 1.55vw, 19px); line-height: 1.65; }
-.anniversary-story__intro h2 { margin: 68px 0 22px; color: #111; font-size: clamp(29px, 3.4vw, 46px); font-weight: 700; letter-spacing: -.035em; }
+.anniversary-story__intro h2 { margin: 82px auto 28px; max-width: 760px; display: grid; gap: 2px; color: #111; font-size: clamp(40px, 5.8vw, 72px); font-weight: 400; line-height: .98; letter-spacing: -.035em; text-wrap: balance; }
+.anniversary-story__intro h2 span, .anniversary-story__intro h2 strong { display: block; }
+.anniversary-story__intro h2 strong { color: #223d7c; font-weight: 850; }
 .anniversary-polaroids { margin-top: 78px; display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 4vw, 46px); align-items: start; }
 .anniversary-polaroids .reveal:nth-child(1) { transform: rotate(-2deg); }
 .anniversary-polaroids .reveal:nth-child(3) { transform: rotate(2deg); }
 .anniversary-polaroids article { position: relative; min-height: 330px; padding: 48px 26px 56px; border: 10px solid #f7f3ed; border-bottom-width: 48px; color: #f4f0e9; background: #101010; box-shadow: 0 24px 45px rgba(50,39,25,.22); }
 .anniversary-polaroids h3 { margin: 0 0 22px; color: #fff; font-size: clamp(18px, 2vw, 24px); line-height: 1.2; }
 .anniversary-polaroids p { margin: 0; color: rgba(255,255,255,.72); font-size: 13px; line-height: 1.55; }
+.anniversary-polaroids p strong { color: #fff; font-weight: 800; }
+.anniversary-polaroids .anniversary-vitalicio { display: inline-block; margin-top: 8px; color: #f1cf82; font-size: 22px; line-height: 1; text-transform: uppercase; }
 .anniversary-clip { position: absolute; z-index: 2; top: -31px; left: 50%; width: 24px; height: 60px; border-radius: 8px 8px 4px 4px; background: linear-gradient(90deg, #25211d, #5c5247 44%, #191714); box-shadow: 0 5px 8px rgba(0,0,0,.42); transform: translateX(-50%); }
 
 .anniversary-memories { position: relative; z-index: 2; padding: clamp(96px, 11vw, 150px) 0 clamp(96px, 11vw, 150px); overflow: visible; color: var(--anniversary-ink); background: var(--anniversary-paper); }
@@ -1246,18 +1278,39 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-offer__layout { display: grid; justify-items: center; }
 .anniversary-offer__copy { max-width: 800px; text-align: center; }
 .anniversary-offer__copy > p { margin: 0 auto 24px; max-width: 730px; color: #37322c; font-size: clamp(16px, 1.6vw, 20px); line-height: 1.6; }
+.anniversary-offer__intro { max-width: 790px; margin: 0 auto 18px; padding: 34px 42px; border-block: 1px solid rgba(34,61,124,.2); }
+.anniversary-offer__intro p { margin: 0 auto; color: #24201c; font-size: clamp(20px, 2.25vw, 28px); line-height: 1.38; text-wrap: balance; }
+.anniversary-offer__intro p + p { margin-top: 22px; }
+.anniversary-offer__intro strong { font-weight: 800; }
 .anniversary-offer__copy strong { color: #223d7c; }
 .anniversary-offer__copy h2 { max-width: 700px; margin: 72px auto 44px; color: #15120f; font-size: clamp(29px, 3.6vw, 48px); line-height: 1.12; letter-spacing: -.04em; }
 /* ===== Cards de planos: papel-selo rasgado (reprodução da arte oficial) ===== */
-.anniversary-plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(26px, 3.4vw, 52px); align-items: stretch; justify-items: center; width: min(100%, 1080px); margin: 0 auto; }
+.anniversary-plans { display: flex; flex-direction: column; align-items: center; gap: clamp(56px, 7vw, 84px); width: min(100%, 1080px); margin: 0 auto; }
 .anniversary-price-card { position: relative; overflow: visible; width: min(100%, 520px); display: flex; flex-direction: column; padding: 0; border: 0; background: none; box-shadow: none; color: #fff; filter: drop-shadow(0 34px 60px rgba(16,22,40,.42)); }
+.anniversary-price-card--annual { width: min(100%, 670px); min-height: 670px; filter: drop-shadow(0 34px 54px rgba(12,22,48,.46)) drop-shadow(0 0 18px rgba(52,113,218,.14)); transition: transform .35s ease; will-change: transform; }
+.anniversary-price-card--annual:hover { transform: translateY(-6px); }
+.anniversary-price-card--semester { width: min(82%, 520px); min-height: 520px; opacity: .78; filter: saturate(.7) drop-shadow(0 18px 28px rgba(16,22,40,.2)); transition: opacity .25s ease, transform .25s ease; }
+.anniversary-price-card--semester:hover { opacity: 1; transform: translateY(-3px); }
+.anniversary-price-card--semester .anniversary-price-card__paper, .anniversary-price-card--semester .anniversary-price-card__body { opacity: .8; transition: opacity .25s ease; }
+.anniversary-price-card--semester:hover .anniversary-price-card__paper, .anniversary-price-card--semester:hover .anniversary-price-card__body { opacity: 1; }
 .anniversary-price-card__paper { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.anniversary-price-card--annual::after { content: ''; position: absolute; z-index: 0; inset: 12px; border-radius: 12px; background: radial-gradient(circle at 16% 4%, rgba(112,167,255,.16), transparent 35%), linear-gradient(115deg, transparent 46%, rgba(255,224,154,.07) 56%, transparent 66%); background-size: 100% 100%, 240% 100%; pointer-events: none; animation: anniversary-premium-sheen 12s ease-in-out infinite; }
+@keyframes anniversary-premium-sheen { 0%, 34%, 100% { background-position: 0 0, 160% 0; } 58% { background-position: 0 0, -70% 0; } }
 .anniversary-price-card__body { position: relative; z-index: 1; flex: 1 1 auto; display: flex; flex-direction: column; padding: 52px 46px 46px; }
+.anniversary-price-card--annual .anniversary-price-card__body { padding: 68px 66px 58px; }
+.anniversary-price-card--semester .anniversary-price-card__body { padding: 46px 48px 42px; }
 
 .anniversary-offer__subtitle { margin: -26px auto 44px !important; max-width: 620px; }
+.anniversary-offer__subtitle a { color: #223d7c; font-weight: 850; text-decoration: underline; text-decoration-color: #d2a94e; text-decoration-thickness: 2px; text-underline-offset: 4px; transition: color .2s ease, text-decoration-color .2s ease; }
+.anniversary-offer__subtitle a:hover, .anniversary-offer__subtitle a:focus-visible { color: #0e58c9; text-decoration-color: #0e58c9; }
 
 .anniversary-price-card__plan { margin: 0; display: grid; gap: 5px; text-align: left; font-size: 25px; font-weight: 800; line-height: 1.05; }
 .anniversary-price-card__plan span { font-size: 15px; font-weight: 400; color: rgba(255,255,255,.74); }
+.anniversary-price-card__heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding-right: 104px; }
+.anniversary-price-card--annual .anniversary-price-card__plan { font-size: 31px; }
+.anniversary-price-card--annual .anniversary-price-card__plan span { margin-top: 4px; color: #f2dca8; font-size: 17px; font-weight: 700; }
+.anniversary-price-card__description { margin: 18px 0 0; max-width: 430px; color: rgba(255,255,255,.76); font-size: 15px; font-weight: 600; line-height: 1.45; }
+.anniversary-price-card__value-badge { flex: 0 0 auto; padding: 8px 12px; border: 1px solid rgba(242,220,168,.58); border-radius: 999px; color: #f6e7bd; background: rgba(9,20,43,.44); box-shadow: inset 0 1px rgba(255,255,255,.12); font-size: 11px; font-weight: 800; line-height: 1; letter-spacing: .06em; text-transform: uppercase; }
 
 /* Preço: "9" gigante com ,90 sobreposto e /mês na linha de base. */
 .anniversary-price { margin: 22px 0 6px; display: flex; align-items: flex-end; justify-content: flex-start; white-space: nowrap; }
@@ -1265,11 +1318,18 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-price strong { font-size: clamp(96px, 12vw, 132px); font-weight: 800; line-height: .72; letter-spacing: -.06em; }
 .anniversary-price sup { align-self: flex-start; margin: 6px 0 0 2px; font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
 .anniversary-price small { margin: 0 0 16px 6px; font-size: 19px; font-weight: 600; }
+.anniversary-price-card--annual .anniversary-price { margin: 38px 0 18px; }
+.anniversary-price-card--annual .anniversary-price strong { font-size: clamp(132px, 15vw, 164px); }
+.anniversary-price-card--annual .anniversary-price > span { font-size: 40px; margin-bottom: 25px; }
+.anniversary-price-card--annual .anniversary-price sup { font-size: 42px; }
+.anniversary-price-card--annual .anniversary-price small { font-size: 21px; margin-bottom: 21px; }
 
 .anniversary-price-card ul { margin: 34px 0 34px; padding: 0; display: grid; gap: 18px; list-style: none; }
-.anniversary-price-card li { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,.82); font-size: 14.5px; }
-.anniversary-check { flex: 0 0 auto; width: 22px; height: 22px; position: relative; }
-.anniversary-check::before { content: ''; position: absolute; left: 3px; top: 11px; width: 7px; height: 12px; border: solid #e9c489; border-width: 0 2.6px 2.6px 0; transform: rotate(43deg); transform-origin: center; }
+.anniversary-price-card--annual ul { margin-block: 27px; gap: 14px; }
+.anniversary-price-card li { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,.88); font-size: 14.5px; line-height: 1.4; }
+.anniversary-check { flex: 0 0 auto; width: 24px; height: 24px; position: relative; border: 1px solid rgba(166,255,195,.8); border-radius: 7px; background: linear-gradient(145deg, #35e376, #08a84d); box-shadow: 0 7px 14px rgba(3,134,57,.28), inset 0 1px rgba(255,255,255,.55), inset 0 -2px rgba(0,87,38,.28); }
+.anniversary-check::before { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 16px; font-style: normal; font-weight: 900; line-height: 1; text-shadow: 0 1px 2px rgba(0,62,28,.38); }
+.anniversary-benefit--lifetime { margin-top: 4px; padding: 13px 15px; border: 1px solid rgba(237,199,112,.5); border-radius: 10px; color: #ffe5a9 !important; background: rgba(228,181,72,.1); font-weight: 850; }
 
 /* Bilhete semestral: preço centralizado (demais estilos idênticos ao anual). */
 .anniversary-price--center { justify-content: center; }
@@ -1277,6 +1337,11 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 /* CTA contornado (pílula), como na arte. */
 .anniversary-price-card__cta { width: 100%; margin-top: auto; min-height: 56px; border: 1.6px solid rgba(233,222,205,.7); border-radius: 999px; color: #f2ece0; background: transparent; box-shadow: none; font-size: 15px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .anniversary-price-card__cta:hover, .anniversary-price-card__cta:focus-visible { color: #15120f; background: #ede5d9; border-color: #ede5d9; box-shadow: 0 14px 30px rgba(0,0,0,.3); }
+.anniversary-price-card--annual .anniversary-price-card__cta { min-height: 68px; border-color: #f1d492; color: #17130d; background: linear-gradient(180deg, #fff0c5, #d9ac51); box-shadow: 0 18px 38px rgba(0,0,0,.32), 0 0 22px rgba(235,193,99,.16), inset 0 1px rgba(255,255,255,.74); font-size: 16px; }
+.anniversary-price-card--annual .anniversary-price-card__cta:hover, .anniversary-price-card--annual .anniversary-price-card__cta:focus-visible { color: #0f0c08; border-color: #ffe5a6; background: linear-gradient(180deg, #fff6dc, #e8bc60); box-shadow: 0 22px 44px rgba(0,0,0,.38), 0 0 28px rgba(235,193,99,.24); transform: translateY(-2px); }
+.anniversary-price-card--semester .anniversary-price-card__cta { min-height: 50px; font-size: 13px; opacity: .84; }
+.anniversary-price-card--semester .anniversary-price { opacity: .82; transform: scale(.9); transform-origin: center; }
+.anniversary-price-card--semester .anniversary-price-card__plan span, .anniversary-price-card--semester li { color: rgba(255,255,255,.58); }
 
 /* Selo dourado tipo medalha (anel serrilhado + aro interno). */
 .anniversary-price-card__seal { position: absolute; top: -34px; right: 30px; z-index: 3; width: 104px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; align-content: center; gap: 1px; color: #2c2140; background: radial-gradient(circle at 34% 26%, #ffeeb8, #eabf56 54%, #c2912f); box-shadow: 0 12px 26px rgba(0,0,0,.34), inset 0 2px 3px rgba(255,255,255,.6); font-weight: 800; line-height: 1.05; text-align: center; text-transform: uppercase; transform: rotate(6deg); }
@@ -1292,9 +1357,8 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
    (@property), então o brilho segue a borda sem girar/distorcer o retângulo. */
 @property --aura-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 .anniversary-price-card__aura { position: absolute; inset: -11px; z-index: -1; border-radius: 20px; pointer-events: none; box-shadow: 0 0 30px 1px rgba(233,196,110,.14); }
-.anniversary-price-card__aura::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: conic-gradient(from var(--aura-angle), rgba(240,204,124,0) 0deg, rgba(240,204,124,0) 208deg, rgba(255,232,170,.85) 306deg, rgba(255,249,226,1) 338deg, rgba(255,232,170,.85) 360deg); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; filter: blur(.4px); animation: anniversary-card-aura 7.5s linear infinite; }
+.anniversary-price-card__aura::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: conic-gradient(from var(--aura-angle), rgba(240,204,124,0) 0deg, rgba(240,204,124,0) 208deg, rgba(255,232,170,.78) 306deg, rgba(255,249,226,.92) 338deg, rgba(255,232,170,.78) 360deg); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; animation: anniversary-card-aura 12s linear infinite; }
 @keyframes anniversary-card-aura { to { --aura-angle: 360deg; } }
-@media (prefers-reduced-motion: reduce) { .anniversary-price-card__aura::before { animation: none; } }
 
 /* Observação de baixa hierarquia abaixo dos dois cards. */
 .anniversary-offer__note { margin: 32px 0 0; color: var(--anniversary-ink); opacity: .5; font-size: 12px; letter-spacing: .01em; text-align: center; }
@@ -1308,6 +1372,9 @@ html[data-theme='dark'] .anniversary-page { --anniversary-paper: #12110f; --anni
 html[data-theme='dark'] .anniversary-story, html[data-theme='dark'] .anniversary-offer { background-color: #12110f; }
 html[data-theme='dark'] .anniversary-story__intro p, html[data-theme='dark'] .anniversary-offer__copy > p, html[data-theme='dark'] .anniversary-offer__closing p { color: #c8beb2; }
 html[data-theme='dark'] .anniversary-story__intro h2, html[data-theme='dark'] .anniversary-offer__copy h2, html[data-theme='dark'] .anniversary-offer__closing h2 { color: #f5eee5; }
+html[data-theme='dark'] .anniversary-story__intro h2 strong { color: #9bb8f2; }
+html[data-theme='dark'] .anniversary-offer__intro { border-color: rgba(143,176,239,.24); }
+html[data-theme='dark'] .anniversary-offer__intro p { color: #e0d8ce; }
 html[data-theme='dark'] .anniversary-offer__copy strong { color: #8fb0ef; }
 html[data-theme='dark'] .anniversary-polaroids article { border-color: #ded6cb; }
 html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70px rgba(0,0,0,.6)); }
@@ -1320,18 +1387,19 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
 
 /* Tablet/mobile: empilha os planos centralizados (anual acima, semestral abaixo). */
 @media (max-width: 900px) {
-  .anniversary-plans { grid-template-columns: minmax(0, 1fr); gap: clamp(46px, 8vw, 72px); max-width: 520px; }
-  .anniversary-price-card { width: 100%; }
+  .anniversary-plans { gap: clamp(46px, 8vw, 72px); max-width: 620px; }
+  .anniversary-price-card--annual { width: 100%; }
+  .anniversary-price-card--semester { width: min(88%, 500px); }
 }
 
 @media (max-width: 720px) {
   .nav a.nav__anniversary { justify-content: center; min-height: 46px; margin: 3px 0; }
-  .anniversary-hero { min-height: 760px; align-items: end; }
+  .anniversary-hero { min-height: min(760px, 100svh); padding-top: calc(92px + env(safe-area-inset-top)); align-items: center; }
   .anniversary-hero__gradient { opacity: .92; }
   .anniversary-hero__shade { background: linear-gradient(0deg, rgba(5,11,20,.94) 0%, rgba(5,11,20,.66) 48%, rgba(5,11,20,.12) 78%), linear-gradient(90deg, rgba(5,11,20,.28), transparent); }
   .anniversary-hero__glow { background: radial-gradient(circle at 74% 20%, rgba(201,169,106,.13), transparent 32%), radial-gradient(circle at 22% 68%, rgba(40,88,140,.24), transparent 42%); }
   .anniversary-hero__text-shield { width: 100%; background: linear-gradient(0deg, rgba(5,11,20,.88), rgba(5,11,20,.52) 62%, transparent); }
-  .anniversary-hero__content { width: min(100% - 36px, 560px); padding-bottom: 106px; display: block; text-align: center; }
+  .anniversary-hero__content { width: min(100% - 36px, 560px); padding-bottom: 48px; display: block; text-align: center; }
   .anniversary-hero h1 { font-size: clamp(44px, 13vw, 62px); }
   .anniversary-hero__cta { width: 100%; margin-top: 28px; }
   .anniversary-hero__portal { display: none; }
@@ -1339,6 +1407,7 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
   .anniversary-story { padding: 78px 0 90px; }
   .anniversary-offer { padding: 78px 0 200px; }
   .anniversary-story__intro h2 { margin-top: 50px; }
+  .anniversary-story__intro h2 { font-size: clamp(38px, 11vw, 54px); line-height: 1.02; }
   .anniversary-polaroids { margin-top: 64px; grid-template-columns: 1fr; gap: 46px; }
   .anniversary-polaroids .reveal { width: min(88%, 360px); margin-inline: auto; }
   .anniversary-polaroids article { min-height: 250px; padding: 42px 24px; border-width: 8px; border-bottom-width: 38px; }
@@ -1346,7 +1415,25 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
   .anniversary-memories { padding: 76px 0 84px; }
   .anniversary-memories h2 { margin-bottom: 42px; }
   .anniversary-price-card__body { padding: 44px 30px 38px; }
+  .anniversary-price-card--annual { min-height: 620px; }
+  .anniversary-price-card { filter: none; }
+  .anniversary-price-card--annual { box-shadow: 0 24px 46px rgba(12,22,48,.3), 0 0 20px rgba(52,113,218,.1); will-change: auto; }
+  .anniversary-price-card--annual:hover { transform: translateY(-3px); }
+  .anniversary-price-card--semester:hover { transform: translateY(-2px); }
+  .anniversary-price-card--annual::after { background-size: 100% 100%; animation: anniversary-premium-sheen-mobile 7s ease-in-out infinite; will-change: opacity, transform; }
+  .anniversary-price-card__aura { inset: -6px; box-shadow: 0 0 18px rgba(233,196,110,.11); }
+  .anniversary-price-card__aura::before { background: linear-gradient(135deg, rgba(255,238,192,.45), rgba(233,196,110,.08) 42%, rgba(112,167,255,.22)); animation: anniversary-card-aura-mobile 6s ease-in-out infinite; will-change: opacity, transform; }
+  .anniversary-price-card--annual .anniversary-price-card__body { padding: 58px 30px 42px; }
+  .anniversary-offer__intro { padding: 26px 8px; }
+  .anniversary-offer__intro p { font-size: 19px; line-height: 1.45; }
+  .anniversary-price-card__description { max-width: 250px; font-size: 14px; }
+  .anniversary-price-card--semester { width: 92%; min-height: 500px; }
+  .anniversary-price-card--semester .anniversary-price-card__body { padding: 42px 28px 36px; }
+  .anniversary-price-card__heading { display: grid; gap: 14px; padding-right: 82px; }
+  .anniversary-price-card--annual .anniversary-price-card__plan { font-size: 27px; }
+  .anniversary-price-card__value-badge { width: max-content; }
   .anniversary-price strong { font-size: clamp(88px, 30vw, 118px); }
+  .anniversary-price-card--annual .anniversary-price strong { font-size: clamp(112px, 37vw, 142px); }
   .anniversary-price > span { font-size: 28px; }
   .anniversary-price sup { font-size: 28px; }
   .anniversary-price small { font-size: 16px; }
@@ -1354,6 +1441,15 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
   .anniversary-price-card__seal { width: 92px; top: -28px; right: 18px; }
   .anniversary-offer__copy h2 { margin-top: 54px; }
   .anniversary-offer__closing { margin-top: 58px; }
+}
+@keyframes anniversary-premium-sheen-mobile {
+  0%, 100% { opacity: .5; transform: translate3d(-1.5%, 0, 0); }
+  50% { opacity: .9; transform: translate3d(1.5%, 0, 0); }
+}
+
+@keyframes anniversary-card-aura-mobile {
+  0%, 100% { opacity: .55; transform: scale(.997); }
+  50% { opacity: .9; transform: scale(1.003); }
 }
 
 /* ===== Campanha de 1 ano: primeira dobra da home ===== */
@@ -1386,7 +1482,7 @@ html[data-theme='light'] .hero--time { background: radial-gradient(circle at 62%
 .hero__content--time { position: relative; max-width: 660px; }
 
 .hero-script-kicker { margin: 0 0 14px; }
-.hero-script-kicker__text { display: inline-block; font-family: 'Sacramento', 'Segoe Script', cursive; font-size: clamp(30px, 3.4vw, 46px); font-weight: 400; line-height: 1; color: rgb(var(--hero-cream)); transform: rotate(-4deg); transform-origin: left bottom; text-shadow: 0 8px 28px rgba(0, 0, 0, .35); -webkit-mask: linear-gradient(100deg, #000 44%, transparent 56%) no-repeat 100% 0 / 320% 100%; mask: linear-gradient(100deg, #000 44%, transparent 56%) no-repeat 100% 0 / 320% 100%; animation: hero-signature 2s cubic-bezier(.42, 0, .3, 1) .4s both; }
+.hero-script-kicker__text { display: inline-block; padding: .08em .08em .22em; margin-bottom: -.22em; font-family: 'Sacramento', 'Segoe Script', cursive; font-size: clamp(30px, 3.4vw, 46px); font-weight: 400; line-height: 1.2; color: rgb(var(--hero-cream)); transform: rotate(-4deg); transform-origin: left bottom; text-shadow: 0 8px 28px rgba(0, 0, 0, .35); -webkit-mask: linear-gradient(100deg, #000 44%, transparent 56%) no-repeat 100% 0 / 320% 100%; mask: linear-gradient(100deg, #000 44%, transparent 56%) no-repeat 100% 0 / 320% 100%; animation: hero-signature 2s cubic-bezier(.42, 0, .3, 1) .4s both; }
 html[data-theme='light'] .hero-script-kicker__text { color: #7a5f3d; text-shadow: 0 6px 20px rgba(122, 95, 61, .2); }
 @keyframes hero-signature {
   from { -webkit-mask-position: 100% 0; mask-position: 100% 0; opacity: .2; }
@@ -1460,7 +1556,7 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 
 /* ===== Tira de filme com fotos reais (última dobra) ===== */
 .anniversary-filmreel { position: absolute; z-index: 2; left: -5%; right: -5%; bottom: 22px; transform: rotate(-2.4deg); pointer-events: none; }
-.anniversary-filmreel__strip { position: relative; padding: 30px clamp(8px, 2vw, 20px); background: #0c0b0a; border-block: 5px solid #040404; box-shadow: 0 30px 60px rgba(0, 0, 0, .45); overflow: hidden; transform: translateZ(0); backface-visibility: hidden; }
+.anniversary-filmreel__strip { position: relative; padding: 30px clamp(8px, 2vw, 20px); background: #0c0b0a; border-block: 5px solid #040404; box-shadow: 0 30px 60px rgba(0, 0, 0, .45); overflow: hidden; }
 .anniversary-filmreel__strip::before,
 .anniversary-filmreel__strip::after { content: ''; position: absolute; z-index: 2; left: 0; right: 0; height: 9px; background-image: repeating-linear-gradient(90deg, rgba(232, 228, 222, .9) 0 14px, transparent 14px 34px); border-radius: 2px; opacity: .85; }
 .anniversary-filmreel__strip::before { top: 8px; }
@@ -1469,10 +1565,9 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
    O espaçamento é margin-right em cada frame (não `gap`) para que o salto de
    translateX(-50%) case exatamente com o espaçamento interno — loop sem emenda. */
 .anniversary-filmreel__track { display: flex; width: max-content; will-change: transform; animation: anniversary-filmreel-scroll var(--reel-duration, 56s) linear infinite; }
-@keyframes anniversary-filmreel-scroll { from { transform: translate3d(-50%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
-@media (prefers-reduced-motion: reduce) { .anniversary-filmreel__track { animation-play-state: paused; } }
+@keyframes anniversary-filmreel-scroll { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 .anniversary-filmreel__frame { flex: 0 0 clamp(150px, 17vw, 250px); margin-right: clamp(10px, 1.6vw, 18px); aspect-ratio: 3 / 2; overflow: hidden; border-radius: 4px; }
-.anniversary-filmreel__frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.28) saturate(.72) brightness(.88) contrast(1.02); }
+.anniversary-filmreel__frame img { display: block; width: 100%; height: 100%; object-fit: cover; filter: sepia(.28) saturate(.72) brightness(.88) contrast(1.02); }
 
 /* ===== Bloco cinematográfico do comercial ===== */
 .anniversary-film { position: relative; padding: clamp(70px, 9vw, 120px) 0 0; }
@@ -1509,16 +1604,53 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
   .anniversary-filmreel__strip { padding-block: 22px; }
   .anniversary-filmreel__track { --reel-duration: 40s; }
   .anniversary-filmreel__frame { flex: 0 0 128px; margin-right: 8px; }
+  .anniversary-filmreel__frame img { filter: sepia(.2) saturate(.82) brightness(.94) contrast(1.02); }
   .anniversary-film__frame { border-width: 6px; border-radius: 14px; }
   .anniversary-film__label { bottom: 14px; font-size: 11px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .signature-loading__script { -webkit-mask: none; mask: none; animation: none; }
-  .portal-travel__portal { transition: none; }
-  .hero--time::before { animation: none; }
-  .hero-script-kicker__text { -webkit-mask: none; mask: none; animation: none; }
-  .cta-glow::before { animation: none; opacity: .5; }
-  .cta-sparks { display: none; }
-  .reveal { opacity: 1; transform: none; filter: none; transition: none; }
+/* Modos adaptativos: `full` mantém a experiência original; os demais só são
+   ativados por sinais combinados de hardware ou travamento persistente. */
+html[data-performance-mode='balanced'] .animated-gradient-fallback { animation-duration: 9s; }
+html[data-performance-mode='balanced'] .hero--time::before { animation-duration: 132s; }
+html[data-performance-mode='balanced'] .hero-monitor-cue { animation-duration: 8s; }
+html[data-performance-mode='balanced'] .hero-portal__photo { animation-duration: 22s; }
+html[data-performance-mode='balanced'] .cta-glow::before { animation-duration: 4.2s; filter: blur(9px); }
+html[data-performance-mode='balanced'] .cta-sparks i { animation-duration: 5.4s; }
+html[data-performance-mode='balanced'] .anniversary-filmreel__track { --reel-duration: 72s; }
+html[data-performance-mode='balanced'] .anniversary-price-card__aura::before { animation-duration: 18s; }
+html[data-performance-mode='balanced'] .site-header,
+html[data-performance-mode='balanced'] .nav { backdrop-filter: blur(12px); }
+html[data-performance-mode='balanced'] .campaign-gateway__card { backdrop-filter: blur(14px); }
+
+html[data-performance-mode='reduced'] .signature-loading__script {
+  animation: signature-write 1.7s cubic-bezier(.42, 0, .3, 1) .15s both;
 }
+html[data-performance-mode='reduced'] .hero-script-kicker__text {
+  animation: hero-signature 2s cubic-bezier(.42, 0, .3, 1) .4s both;
+}
+html[data-performance-mode='reduced'] .animated-gradient-fallback,
+html[data-performance-mode='reduced'] .hero--time::before,
+html[data-performance-mode='reduced'] .hero-monitor-cue,
+html[data-performance-mode='reduced'] .partners-network__route,
+html[data-performance-mode='reduced'] .partners-network__hub-pulse,
+html[data-performance-mode='reduced'] .partners-map-card--fallback::after,
+html[data-performance-mode='reduced'] .pp-brand__mark,
+html[data-performance-mode='reduced'] .pp-dot,
+html[data-performance-mode='reduced'] .pp-dot::after,
+html[data-performance-mode='reduced'] .anniversary-filmreel__track,
+html[data-performance-mode='reduced'] .anniversary-price-card__aura::before,
+html[data-performance-mode='reduced'] .anniversary-price-card--annual::after {
+  animation: none;
+}
+html[data-performance-mode='reduced'] .hero-portal__photo { animation: none; opacity: .28; }
+html[data-performance-mode='reduced'] .cta-glow::before { animation: none; opacity: .46; filter: blur(7px); }
+html[data-performance-mode='reduced'] .cta-sparks { display: none; }
+html[data-performance-mode='reduced'] .site-header,
+html[data-performance-mode='reduced'] .nav,
+html[data-performance-mode='reduced'] .campaign-gateway__card,
+html[data-performance-mode='reduced'] .pp-header,
+html[data-performance-mode='reduced'] .pp-banner__action { backdrop-filter: none; }
+html[data-performance-mode='reduced'] .campaign-gateway::after { filter: blur(36px); opacity: .7; }
+html[data-performance-mode='reduced'] .hero__glow,
+html[data-performance-mode='reduced'] .hero-monitor-stage__glow { filter: blur(12px); }
