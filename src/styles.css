@@ -1431,38 +1431,36 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
   .anniversary-polaroids .reveal:nth-child(1), .anniversary-polaroids .reveal:nth-child(3) { transform: none; }
   .anniversary-memories { padding: 76px 0 84px; }
   .anniversary-memories h2 { margin-bottom: 42px; }
-  .anniversary-plans { width: calc(100% - clamp(42px, 13vw, 62px)); gap: 64px; }
-  .anniversary-price-card { width: min(100%, 420px); }
-  .anniversary-price-card__body { padding: 50px clamp(28px, 8.5vw, 36px) 42px; }
-  .anniversary-price-card--annual { width: min(100%, 440px); min-height: 0; margin-bottom: 58px; }
+  .anniversary-price-card__body { padding: 48px clamp(22px, 7vw, 30px) 38px; }
+  .anniversary-price-card--annual { min-height: 0; margin-bottom: 52px; }
   .anniversary-price-card { filter: none; }
   .anniversary-price-card--annual { box-shadow: 0 24px 46px rgba(12,22,48,.3), 0 0 20px rgba(52,113,218,.1); will-change: auto; }
   .anniversary-price-card--annual:hover { transform: translateY(-3px); }
   .anniversary-price-card--semester:hover { transform: translateY(-2px); }
   .anniversary-price-card--annual::after { background-size: 100% 100%; animation: anniversary-premium-sheen-mobile 7s ease-in-out infinite; will-change: opacity, transform; }
   .anniversary-price-card__aura { inset: -6px; box-shadow: 0 0 18px rgba(233,196,110,.11); }
-  .anniversary-price-card--annual .anniversary-price-card__body { padding: 84px clamp(28px, 8.5vw, 36px) 44px; }
+  .anniversary-price-card--annual .anniversary-price-card__body { padding: 82px clamp(22px, 7vw, 30px) 38px; }
   .anniversary-offer__intro { padding: 0; }
   .anniversary-offer__intro p { font-size: 19px; line-height: 1.45; }
   .anniversary-price-card__heading { padding-right: 0; }
   .anniversary-price-card__title { max-width: 100%; font-size: clamp(24px, 6.8vw, 27px); line-height: 1.12; letter-spacing: -.02em; }
-  .anniversary-price-card__description { max-width: 32ch; margin-top: 18px; font-size: 14.5px; line-height: 1.6; }
-  .anniversary-price-card--semester { width: min(94%, 400px); min-height: 0; }
-  .anniversary-price-card--semester .anniversary-price-card__body { padding: 52px clamp(28px, 8vw, 34px) 42px; }
+  .anniversary-price-card__description { max-width: 32ch; margin-top: 16px; font-size: 14.5px; line-height: 1.55; }
+  .anniversary-price-card--semester { width: 94%; min-height: 0; }
+  .anniversary-price-card--semester .anniversary-price-card__body { padding: 48px clamp(22px, 6.5vw, 28px) 38px; }
   .anniversary-price strong { font-size: clamp(88px, 30vw, 118px); }
-  .anniversary-price-card--annual .anniversary-price { margin: 34px 0 18px; }
+  .anniversary-price-card--annual .anniversary-price { margin: 30px 0 14px; }
   .anniversary-price-card--annual .anniversary-price strong { font-size: clamp(108px, 35vw, 136px); }
   .anniversary-price > span { font-size: 28px; }
   .anniversary-price sup { font-size: 28px; }
   .anniversary-price small { font-size: 16px; }
-  .anniversary-price-card ul { margin: 30px 0 34px; gap: 17px; }
-  .anniversary-price-card--annual ul { margin-block: 28px 36px; gap: 17px; }
-  .anniversary-price-card li { align-items: flex-start; gap: 13px; font-size: 15px; line-height: 1.52; }
+  .anniversary-price-card ul { margin: 26px 0 30px; gap: 14px; }
+  .anniversary-price-card--annual ul { margin-block: 24px 30px; gap: 14px; }
+  .anniversary-price-card li { align-items: flex-start; gap: 12px; font-size: 15px; line-height: 1.48; }
   .anniversary-check { margin-top: 1px; }
-  .anniversary-price-card__actions { gap: 14px; }
-  .anniversary-price-card--annual .anniversary-price-card__cta { min-height: 62px; padding-inline: clamp(12px, 4vw, 18px); font-size: clamp(11px, 3.15vw, 14px); letter-spacing: .01em; text-wrap: balance; }
-  .anniversary-price-card__secondary { width: min(100%, 300px); min-height: 50px; padding-inline: 18px; font-size: 12px; }
-  .anniversary-price-card__scarcity { left: 7%; right: 7%; bottom: -54px; min-height: 54px; padding: 10px 14px; border-radius: 0 0 15px 15px; font-size: clamp(13px, 4vw, 15px); }
+  .anniversary-price-card__actions { gap: 12px; }
+  .anniversary-price-card--annual .anniversary-price-card__cta { min-height: 60px; padding-inline: clamp(10px, 4vw, 18px); font-size: clamp(11.25px, 3.3vw, 14px); letter-spacing: .018em; text-wrap: balance; }
+  .anniversary-price-card__secondary { width: min(100%, 300px); min-height: 48px; padding-inline: 16px; font-size: 12px; }
+  .anniversary-price-card__scarcity { left: 4%; right: 4%; bottom: -50px; min-height: 50px; padding: 9px 12px; border-radius: 0 0 15px 15px; font-size: clamp(13px, 4vw, 15px); }
   .anniversary-price-card__seal { width: 92px; top: -28px; right: 18px; }
   .anniversary-offer__copy h2 { margin-top: 54px; }
   .anniversary-offer__closing { margin-top: 58px; }
@@ -1470,13 +1468,6 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
 @keyframes anniversary-premium-sheen-mobile {
   0%, 100% { opacity: .5; transform: translate3d(-1.5%, 0, 0); }
   50% { opacity: .9; transform: translate3d(1.5%, 0, 0); }
-}
-
-@media (max-width: 360px) {
-  .anniversary-price-card--annual .anniversary-price strong { font-size: clamp(96px, 31vw, 108px); }
-  .anniversary-price-card--annual .anniversary-price > span { font-size: 25px; margin-right: 4px; }
-  .anniversary-price-card--annual .anniversary-price sup { font-size: 25px; margin-left: 1px; }
-  .anniversary-price-card--annual .anniversary-price small { margin-left: 4px; font-size: 14px; }
 }
 
 /* ===== Campanha de 1 ano: primeira dobra da home ===== */
