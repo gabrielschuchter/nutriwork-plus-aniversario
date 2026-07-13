@@ -896,7 +896,7 @@ const anniversaryBenefits = [
 ];
 
 const anniversarySemesterBenefits = [
-  'Acesso ao Nutriwork Plus pelo período escolhido.',
+  '6 meses de Nutriwork Plus',
   'Cursos, aulas e recursos da plataforma em um só lugar.',
   'Comunidade Nutriwork para dúvidas e trocas.',
   'Acesso pelo computador e celular.',
@@ -910,12 +910,6 @@ function StampPaper({ id = 'a' }: { id?: string }) {
   const isAnnual = id === 'annual';
   const w = 520;
   const h = 640;
-  const gap = 23;
-  const r = 6.5;
-  const m = 13;
-  const holes: Array<[number, number]> = [];
-  for (let x = m; x <= w - m; x += gap) { holes.push([x, m]); holes.push([x, h - m]); }
-  for (let y = m + gap; y <= h - m - gap; y += gap) { holes.push([m, y]); holes.push([w - m, y]); }
   const tearId = `stamp-tear-${id}`;
   const fillId = `stamp-fill-${id}`;
   const perfId = `stamp-perf-${id}`;
@@ -933,11 +927,10 @@ function StampPaper({ id = 'a' }: { id?: string }) {
         </radialGradient>
         <mask id={perfId}>
           <rect x="6" y="6" width={w - 12} height={h - 12} rx="9" fill="#fff" />
-          {holes.map(([x, y], i) => <circle key={i} cx={x} cy={y} r={r} fill="#000" />)}
         </mask>
       </defs>
       <rect x="6" y="6" width={w - 12} height={h - 12} rx="9" fill={`url(#${fillId})`} mask={`url(#${perfId})`} filter={`url(#${tearId})`} />
-      <rect className="anniversary-price-card__paper-border" x="13" y="13" width={w - 26} height={h - 26} rx="7" fill="none" stroke={isAnnual ? '#e8c576' : '#68717d'} strokeWidth={isAnnual ? '2.4' : '1'} opacity={isAnnual ? '.72' : '.28'} mask={`url(#${perfId})`} />
+      <rect className="anniversary-price-card__paper-border" x="13" y="13" width={w - 26} height={h - 26} rx="7" fill="none" stroke={isAnnual ? '#e8c576' : '#68717d'} strokeWidth={isAnnual ? '1.5' : '1'} opacity={isAnnual ? '.48' : '.2'} mask={`url(#${perfId})`} />
     </svg>
   );
 }
@@ -1107,7 +1100,7 @@ function AnniversaryPage() {
                 <span className="anniversary-price-card__seal" aria-hidden="true"><b>Mais</b><span>escolhido</span></span>
                 <div className="anniversary-price-card__body">
                   <div className="anniversary-price-card__heading">
-                    <h3 className="anniversary-price-card__title">Nutriwork Plus Anual + livro ESTUDE!</h3>
+                    <h3 className="anniversary-price-card__title">Plano Anual + ESTUDE!</h3>
                   </div>
                   <p className="anniversary-price-card__description">Acesso completo à formação que você sempre quis.</p>
                   <div className="anniversary-price"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
@@ -1117,12 +1110,11 @@ function AnniversaryPage() {
                     <Button href="/#/estude" variant="outline" className="anniversary-price-card__secondary">CONHECER O ESTUDE</Button>
                   </div>
                 </div>
-                <p className="anniversary-price-card__scarcity">🔥 últimas vagas restantes!</p>
               </Reveal>
               <Reveal className="anniversary-price-card anniversary-price-card--semester">
                 <StampPaper id="semester" />
                 <div className="anniversary-price-card__body">
-                  <p className="anniversary-price-card__plan">Plano semestral<span>Acesso ao Nutriwork plus</span></p>
+                  <p className="anniversary-price-card__plan">Plano semestral<span>Acesso ao Nutriwork Plus</span></p>
                   <div className="anniversary-price anniversary-price--center"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
                   <ul>{anniversarySemesterBenefits.map((benefit, index) => <li className={index === anniversarySemesterBenefits.length - 1 ? 'anniversary-benefit--lifetime' : undefined} key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
                   <Button href={checkout.semiannual} external className="anniversary-price-card__cta">Assinar</Button>

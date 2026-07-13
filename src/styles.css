@@ -1243,7 +1243,7 @@ html[data-theme='dark'] .campaign-gateway__light { background: radial-gradient(c
 html[data-theme='light'] .nav a.nav__anniversary { border-color: rgba(128,82,37,.24); color: #4b2d13; background: linear-gradient(110deg, #fff7e9, #ead4b6); box-shadow: inset 0 1px #fff, 0 8px 22px rgba(99,61,24,.12); }
 html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light'] .nav a.nav__anniversary.is-active { color: #301a08; background: linear-gradient(110deg, #ffefd6, #dfbc8a); }
 
-.anniversary-page { --anniversary-paper: #e0dad4; --anniversary-ink: #171512; --anniversary-sepia: #b89468; color: var(--anniversary-ink); background: var(--anniversary-paper); }
+.anniversary-page { --anniversary-paper: #e0dad4; --anniversary-ink: #171512; --anniversary-sepia: #b89468; --anniversary-stamp-hole: rgba(224,218,212,.78); color: var(--anniversary-ink); background: var(--anniversary-paper); }
 .anniversary-page .page-width--narrow { margin-inline: auto; }
 .animated-gradient-fallback { background: radial-gradient(circle at 76% 30%, rgba(201,169,106,.34), transparent 32%), radial-gradient(circle at 24% 72%, rgba(40,88,140,.34), transparent 40%), linear-gradient(135deg, #050b14, #10233d); background-size: 170% 170%; animation: animated-gradient-fallback-drift 6s ease-in-out infinite alternate; }
 @keyframes animated-gradient-fallback-drift { from { background-position: 0% 32%; filter: hue-rotate(0deg) saturate(1); } to { background-position: 100% 68%; filter: hue-rotate(10deg) saturate(1.08); } }
@@ -1284,13 +1284,13 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-polaroids .anniversary-vitalicio { display: inline-block; margin-top: 8px; color: #f1cf82; font-size: 22px; line-height: 1; text-transform: uppercase; }
 .anniversary-clip { position: absolute; z-index: 2; top: -31px; left: 50%; width: 24px; height: 60px; border-radius: 8px 8px 4px 4px; background: linear-gradient(90deg, #25211d, #5c5247 44%, #191714); box-shadow: 0 5px 8px rgba(0,0,0,.42); transform: translateX(-50%); }
 
-.anniversary-memories { position: relative; z-index: 2; padding: clamp(96px, 11vw, 150px) 0 clamp(96px, 11vw, 150px); overflow: visible; color: var(--anniversary-ink); background: var(--anniversary-paper); }
+.anniversary-memories { position: relative; z-index: 2; padding: clamp(96px, 11vw, 150px) 0 clamp(28px, 2.4vw, 36px); overflow: visible; color: var(--anniversary-ink); background: var(--anniversary-paper); }
 .anniversary-memories .page-width { position: relative; z-index: 1; }
 .anniversary-memories h2 { margin: 0 0 64px; color: var(--anniversary-ink); font-size: clamp(31px, 4vw, 52px); font-weight: 400; line-height: 1.15; text-align: center; letter-spacing: -.03em; }
 .anniversary-memories h2 strong { font-weight: 800; }
 
-.anniversary-offer { position: relative; overflow: hidden; padding: 112px 0 clamp(250px, 27vw, 350px); background: var(--anniversary-paper); }
-.anniversary-offer__layout { display: grid; justify-items: center; }
+.anniversary-offer { position: relative; overflow: hidden; padding: clamp(40px, 3vw, 48px) 0 clamp(250px, 27vw, 350px); background: var(--anniversary-paper); }
+.anniversary-offer__layout { width: min(1160px, calc(100% - 80px)); display: grid; justify-items: center; }
 .anniversary-offer__copy { max-width: 800px; text-align: center; }
 .anniversary-offer__copy > p { margin: 0 auto 24px; max-width: 690px; color: #302b26; font-size: clamp(17px, 1.6vw, 20px); font-weight: 500; line-height: 1.7; }
 .anniversary-offer__intro { max-width: 740px; margin: 0 auto 18px; padding: 0; }
@@ -1300,28 +1300,28 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-offer__copy strong { color: inherit; }
 .anniversary-offer__copy h2 { max-width: 700px; margin: 72px auto 44px; color: #15120f; font-size: clamp(29px, 3.6vw, 48px); line-height: 1.12; letter-spacing: -.04em; }
 /* ===== Cards de planos: papel-selo rasgado (reprodução da arte oficial) ===== */
-.anniversary-plans { display: flex; flex-direction: column; align-items: center; gap: clamp(44px, 6vw, 68px); width: min(100%, 1080px); margin: 0 auto; }
-.anniversary-price-card { position: relative; isolation: isolate; overflow: visible; width: min(100%, 520px); display: flex; flex-direction: column; padding: 0; border: 0; background: none; box-shadow: none; color: #fff; filter: drop-shadow(0 34px 60px rgba(16,22,40,.42)); }
-.anniversary-price-card--annual { width: min(100%, 670px); min-height: 670px; margin-bottom: 58px; filter: drop-shadow(0 34px 54px rgba(12,22,48,.46)) drop-shadow(0 0 18px rgba(52,113,218,.14)); transition: transform .35s ease; will-change: transform; }
-.anniversary-price-card--annual:hover { transform: translateY(-6px); }
-.anniversary-price-card--semester { width: min(82%, 520px); min-height: 520px; opacity: .78; filter: saturate(.7) drop-shadow(0 18px 28px rgba(16,22,40,.2)); transition: opacity .25s ease, transform .25s ease; }
+.anniversary-plans { width: min(100%, 1080px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); align-items: center; gap: clamp(26px, 3.2vw, 38px); }
+.anniversary-price-card { position: relative; isolation: isolate; overflow: visible; width: 100%; min-width: 0; display: flex; flex-direction: column; padding: 0; border: 0; background: none; box-shadow: none; color: #fff; filter: drop-shadow(0 34px 60px rgba(16,22,40,.42)); }
+.anniversary-price-card::before { content: ''; position: absolute; inset: 6px; z-index: 2; pointer-events: none; background: radial-gradient(circle, var(--anniversary-stamp-hole) 0 5px, transparent 5.7px) top left / 23px 13px repeat-x, radial-gradient(circle, var(--anniversary-stamp-hole) 0 5px, transparent 5.7px) bottom left / 23px 13px repeat-x, radial-gradient(circle, var(--anniversary-stamp-hole) 0 5px, transparent 5.7px) top left / 13px 23px repeat-y, radial-gradient(circle, var(--anniversary-stamp-hole) 0 5px, transparent 5.7px) top right / 13px 23px repeat-y; }
+.anniversary-price-card--annual { width: 100%; }
+.anniversary-price-card--semester { width: 100%; min-height: 520px; align-self: center; justify-self: center; opacity: .78; filter: saturate(.7) drop-shadow(0 18px 28px rgba(16,22,40,.2)); transition: opacity .25s ease, transform .25s ease; }
 .anniversary-price-card--semester:hover { opacity: 1; transform: translateY(-3px); }
 .anniversary-price-card--semester .anniversary-price-card__paper, .anniversary-price-card--semester .anniversary-price-card__body { opacity: .8; transition: opacity .25s ease; }
 .anniversary-price-card--semester:hover .anniversary-price-card__paper, .anniversary-price-card--semester:hover .anniversary-price-card__body { opacity: 1; }
 .anniversary-price-card__paper { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
-.anniversary-price-card--annual::after { content: ''; position: absolute; z-index: 0; inset: 12px; border-radius: 12px; background: radial-gradient(circle at 16% 4%, rgba(112,167,255,.16), transparent 35%), linear-gradient(115deg, transparent 46%, rgba(255,224,154,.07) 56%, transparent 66%); background-size: 100% 100%, 240% 100%; pointer-events: none; animation: anniversary-premium-sheen 12s ease-in-out infinite; }
+.anniversary-price-card--annual::after { content: none; }
 @keyframes anniversary-premium-sheen { 0%, 34%, 100% { background-position: 0 0, 160% 0; } 58% { background-position: 0 0, -70% 0; } }
 .anniversary-price-card__body { position: relative; z-index: 1; flex: 1 1 auto; display: flex; flex-direction: column; padding: 52px 46px 46px; }
-.anniversary-price-card--annual .anniversary-price-card__body { padding: 68px 66px 58px; }
-.anniversary-price-card--semester .anniversary-price-card__body { padding: 46px 48px 42px; }
+.anniversary-price-card--annual .anniversary-price-card__body { padding: 54px clamp(38px, 4vw, 50px) 46px; }
+.anniversary-price-card--semester .anniversary-price-card__body { padding: 48px clamp(34px, 3.5vw, 44px) 42px; }
 
-.anniversary-offer__subtitle { margin: -26px auto 44px !important; max-width: 620px; }
+.anniversary-offer__subtitle { margin: -26px auto 62px !important; max-width: 620px; }
 .anniversary-offer__subtitle a { color: inherit; font-weight: 850; text-decoration: underline; text-decoration-color: #b28635; text-decoration-thickness: 2px; text-underline-offset: 4px; transition: text-decoration-color .2s ease; }
 .anniversary-offer__subtitle a:hover, .anniversary-offer__subtitle a:focus-visible { color: inherit; text-decoration-color: currentColor; }
 
 .anniversary-price-card__plan { margin: 0; display: grid; gap: 5px; text-align: left; font-size: 25px; font-weight: 800; line-height: 1.05; }
 .anniversary-price-card__plan span { font-size: 15px; font-weight: 400; color: rgba(255,255,255,.74); }
-.anniversary-price-card__heading { padding-right: 118px; }
+.anniversary-price-card__heading { padding-right: 104px; }
 .anniversary-price-card__title { max-width: 440px; margin: 0; color: #fff; font-size: clamp(29px, 3.2vw, 34px); font-weight: 800; line-height: 1.1; letter-spacing: -.025em; text-align: left; text-wrap: balance; }
 .anniversary-price-card__description { margin: 20px 0 0; max-width: 430px; color: rgba(255,255,255,.92); font-size: 15.5px; font-weight: 600; line-height: 1.5; }
 
@@ -1332,7 +1332,7 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-price sup { align-self: flex-start; margin: 6px 0 0 2px; font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
 .anniversary-price small { margin: 0 0 16px 6px; font-size: 19px; font-weight: 600; }
 .anniversary-price-card--annual .anniversary-price { margin: 38px 0 18px; }
-.anniversary-price-card--annual .anniversary-price strong { font-size: clamp(132px, 15vw, 164px); }
+.anniversary-price-card--annual .anniversary-price strong { font-size: clamp(126px, 12vw, 156px); }
 .anniversary-price-card--annual .anniversary-price > span { font-size: 40px; margin-bottom: 25px; }
 .anniversary-price-card--annual .anniversary-price sup { font-size: 42px; }
 .anniversary-price-card--annual .anniversary-price small { font-size: 21px; margin-bottom: 21px; }
@@ -1340,8 +1340,8 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-price-card ul { margin: 34px 0 34px; padding: 0; display: grid; gap: 18px; list-style: none; }
 .anniversary-price-card--annual ul { margin-block: 27px; gap: 14px; }
 .anniversary-price-card li { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,.94); font-size: 15.5px; font-weight: 500; line-height: 1.46; }
-.anniversary-check { flex: 0 0 auto; width: 24px; height: 24px; position: relative; border: 1px solid rgba(166,255,195,.8); border-radius: 7px; background: linear-gradient(145deg, #35e376, #08a84d); box-shadow: 0 7px 14px rgba(3,134,57,.28), inset 0 1px rgba(255,255,255,.55), inset 0 -2px rgba(0,87,38,.28); }
-.anniversary-check::before { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 16px; font-style: normal; font-weight: 900; line-height: 1; text-shadow: 0 1px 2px rgba(0,62,28,.38); }
+.anniversary-check { flex: 0 0 auto; width: 19px; height: 19px; position: relative; border: 1px solid rgba(232,197,118,.72); border-radius: 50%; background: rgba(232,197,118,.07); box-shadow: inset 0 0 0 1px rgba(255,244,213,.04); }
+.anniversary-check::before { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; color: #f0cf82; font-size: 12px; font-style: normal; font-weight: 800; line-height: 1; }
 .anniversary-benefit--lifetime { margin-top: 4px; padding: 13px 15px; border: 1px solid rgba(237,199,112,.5); border-radius: 10px; color: #ffe5a9 !important; background: rgba(228,181,72,.1); font-weight: 850; }
 
 /* Bilhete semestral: preço centralizado (demais estilos idênticos ao anual). */
@@ -1355,7 +1355,6 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-price-card--annual .anniversary-price-card__cta:hover, .anniversary-price-card--annual .anniversary-price-card__cta:focus-visible { color: #0f0c08; border-color: #ffe5a6; background: linear-gradient(180deg, #fff6dc, #e8bc60); box-shadow: 0 22px 44px rgba(0,0,0,.38), 0 0 28px rgba(235,193,99,.24); transform: translateY(-2px); }
 .anniversary-price-card__secondary { width: min(82%, 340px); min-height: 48px; padding-inline: 22px; border-color: rgba(242,220,168,.62); color: #f5e7c5; background: rgba(5,15,36,.22); box-shadow: inset 0 1px rgba(255,255,255,.06); font-size: 12.5px; font-weight: 800; letter-spacing: .055em; line-height: 1.2; text-align: center; }
 .anniversary-price-card__secondary:hover, .anniversary-price-card__secondary:focus-visible { color: #17130d; border-color: #f0d594; background: #efe2c6; box-shadow: 0 12px 26px rgba(0,0,0,.24); }
-.anniversary-price-card__scarcity { position: absolute; z-index: 2; left: 8%; right: 8%; bottom: -54px; min-height: 54px; margin: 0; padding: 10px 18px; border: 1px solid rgba(242,205,115,.58); border-top: 0; border-radius: 0 0 18px 18px; display: grid; place-items: center; color: #ffe7aa; background: linear-gradient(180deg, rgba(9,29,66,.94), rgba(7,20,47,.98)); box-shadow: 0 16px 28px rgba(7,17,37,.24), inset 0 -1px rgba(255,255,255,.08); font-size: 18px; font-weight: 800; line-height: 1.25; text-align: center; text-shadow: 0 0 14px rgba(255,189,62,.38); }
 .anniversary-price-card--semester .anniversary-price-card__cta { min-height: 50px; font-size: 13px; opacity: .84; }
 .anniversary-price-card--semester .anniversary-price { opacity: .82; transform: scale(.9); transform-origin: center; }
 .anniversary-price-card--semester .anniversary-price-card__plan span, .anniversary-price-card--semester li { color: rgba(255,255,255,.58); }
@@ -1374,7 +1373,7 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
    (@property), então o brilho segue a borda sem girar/distorcer o retângulo. */
 @property --aura-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 .anniversary-price-card__aura { position: absolute; inset: -11px; z-index: -1; border-radius: 20px; pointer-events: none; box-shadow: 0 0 30px 1px rgba(233,196,110,.14); }
-.anniversary-price-card__aura::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: conic-gradient(from var(--aura-angle), rgba(240,204,124,0) 0deg, rgba(240,204,124,0) 208deg, rgba(255,232,170,.78) 306deg, rgba(255,249,226,.92) 338deg, rgba(255,232,170,.78) 360deg); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; animation: anniversary-card-aura 12s linear infinite; }
+.anniversary-price-card__aura::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: conic-gradient(from var(--aura-angle), rgba(240,204,124,0) 0deg, rgba(240,204,124,0) 208deg, rgba(255,232,170,.85) 306deg, rgba(255,249,226,1) 338deg, rgba(255,232,170,.85) 360deg); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; filter: blur(.4px); animation: anniversary-card-aura 7.5s linear infinite; }
 @keyframes anniversary-card-aura { to { --aura-angle: 360deg; } }
 
 /* Observação de baixa hierarquia abaixo dos dois cards. */
@@ -1385,7 +1384,7 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-offer__closing p { margin: 0; color: #37322c; font-size: clamp(18px, 2vw, 24px); }
 
 /* Identidade dark da página dedicada (papel/texto invertidos, fundos escuros). */
-html[data-theme='dark'] .anniversary-page { --anniversary-paper: #12110f; --anniversary-ink: #f3eee7; }
+html[data-theme='dark'] .anniversary-page { --anniversary-paper: #12110f; --anniversary-ink: #f3eee7; --anniversary-stamp-hole: rgba(18,17,15,.82); }
 html[data-theme='dark'] .anniversary-story, html[data-theme='dark'] .anniversary-offer { background-color: #12110f; }
 html[data-theme='dark'] .anniversary-story__intro p, html[data-theme='dark'] .anniversary-offer__copy > p, html[data-theme='dark'] .anniversary-offer__closing p { color: #e1dad1; }
 html[data-theme='dark'] .anniversary-story__intro h2, html[data-theme='dark'] .anniversary-offer__copy h2, html[data-theme='dark'] .anniversary-offer__closing h2 { color: #f5eee5; }
@@ -1402,9 +1401,10 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
   .nav a { padding-inline: 7px; font-size: 12px; }
 }
 
-/* Tablet/mobile: empilha os planos centralizados (anual acima, semestral abaixo). */
-@media (max-width: 900px) {
-  .anniversary-plans { gap: clamp(48px, 8vw, 64px); max-width: 620px; }
+/* Empilha somente quando as duas colunas deixariam preços e benefícios comprimidos. */
+@media (max-width: 860px) {
+  .anniversary-offer__layout { width: min(100% - 40px, 620px); }
+  .anniversary-plans { max-width: 620px; grid-template-columns: 1fr; align-items: center; gap: clamp(50px, 8vw, 68px); }
   .anniversary-price-card--annual { width: 100%; }
   .anniversary-price-card--semester { width: min(88%, 500px); }
 }
@@ -1422,24 +1422,27 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
   .anniversary-hero__portal { display: none; }
   .anniversary-filmstrip { height: 44px; padding: 8px 5px; gap: 9px; border-block-width: 4px; }
   .anniversary-story { padding: 78px 0 90px; }
-  .anniversary-offer { padding: 78px 0 200px; }
+  .anniversary-offer { padding: 42px 0 200px; }
   .anniversary-story__intro h2 { margin-top: 50px; }
   .anniversary-story__intro h2 { font-size: clamp(38px, 11vw, 54px); line-height: 1.02; }
   .anniversary-polaroids { margin-top: 64px; grid-template-columns: 1fr; gap: 46px; }
   .anniversary-polaroids .reveal { width: min(88%, 360px); margin-inline: auto; }
   .anniversary-polaroids article { min-height: 250px; padding: 42px 24px; border-width: 8px; border-bottom-width: 38px; }
   .anniversary-polaroids .reveal:nth-child(1), .anniversary-polaroids .reveal:nth-child(3) { transform: none; }
-  .anniversary-memories { padding: 76px 0 84px; }
+  .anniversary-memories { padding: 76px 0 32px; }
   .anniversary-memories h2 { margin-bottom: 42px; }
+  .anniversary-offer__layout { width: min(100% - 40px, 560px); }
+  .anniversary-plans { width: 100%; gap: clamp(48px, 13vw, 64px); }
+  .anniversary-offer__subtitle { margin-bottom: 54px !important; }
   .anniversary-price-card__body { padding: 48px clamp(22px, 7vw, 30px) 38px; }
-  .anniversary-price-card--annual { min-height: 0; margin-bottom: 52px; }
+  .anniversary-price-card--annual { min-height: 0; }
   .anniversary-price-card { filter: none; }
-  .anniversary-price-card--annual { box-shadow: 0 24px 46px rgba(12,22,48,.3), 0 0 20px rgba(52,113,218,.1); will-change: auto; }
-  .anniversary-price-card--annual:hover { transform: translateY(-3px); }
+  .anniversary-price-card--annual { box-shadow: none; will-change: auto; }
+  .anniversary-price-card--annual:hover { transform: none; }
   .anniversary-price-card--semester:hover { transform: translateY(-2px); }
   .anniversary-price-card--annual::after { background-size: 100% 100%; animation: anniversary-premium-sheen-mobile 7s ease-in-out infinite; will-change: opacity, transform; }
   .anniversary-price-card__aura { inset: -6px; box-shadow: 0 0 18px rgba(233,196,110,.11); }
-  .anniversary-price-card--annual .anniversary-price-card__body { padding: 82px clamp(22px, 7vw, 30px) 38px; }
+  .anniversary-price-card--annual .anniversary-price-card__body { padding: 44px 30px 38px; }
   .anniversary-offer__intro { padding: 0; }
   .anniversary-offer__intro p { font-size: 19px; line-height: 1.45; }
   .anniversary-price-card__heading { padding-right: 0; }
@@ -1457,10 +1460,8 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
   .anniversary-price-card--annual ul { margin-block: 24px 30px; gap: 14px; }
   .anniversary-price-card li { align-items: flex-start; gap: 12px; font-size: 15px; line-height: 1.48; }
   .anniversary-check { margin-top: 1px; }
-  .anniversary-price-card__actions { gap: 12px; }
   .anniversary-price-card--annual .anniversary-price-card__cta { min-height: 60px; padding-inline: clamp(10px, 4vw, 18px); font-size: clamp(11.25px, 3.3vw, 14px); letter-spacing: .018em; text-wrap: balance; }
   .anniversary-price-card__secondary { width: min(100%, 300px); min-height: 48px; padding-inline: 16px; font-size: 12px; }
-  .anniversary-price-card__scarcity { left: 4%; right: 4%; bottom: -50px; min-height: 50px; padding: 9px 12px; border-radius: 0 0 15px 15px; font-size: clamp(13px, 4vw, 15px); }
   .anniversary-price-card__seal { width: 92px; top: -28px; right: 18px; }
   .anniversary-offer__copy h2 { margin-top: 54px; }
   .anniversary-offer__closing { margin-top: 58px; }
