@@ -19,11 +19,11 @@ import type { GalleryItem } from './components/PartnersEventsGallery';
 import { usePerformanceMode } from './performanceMode';
 
 const checkout = {
-  complete: 'https://pay.kiwify.com.br/nyBH9vq',
+  complete: 'https://pay.kiwify.com.br/GS3PDk8',
   guide: 'https://pay.kiwify.com.br/fPEAkDX',
   monthly: 'https://pay.kiwify.com.br/pO6p0QM',
   quarterly: 'https://pay.kiwify.com.br/bfYt1Pt',
-  semiannual: 'https://pay.kiwify.com.br/TbFu6TD'
+  semiannual: 'https://pay.kiwify.com.br/8hYyxj2'
 };
 
 const contactEmail = 'equipenutriwork@gmail.com';
