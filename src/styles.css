@@ -1580,12 +1580,11 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 .anniversary-filmreel__strip::after { content: ''; position: absolute; z-index: 2; left: 0; right: 0; height: 9px; background-image: repeating-linear-gradient(90deg, rgba(232, 228, 222, .9) 0 14px, transparent 14px 34px); border-radius: 2px; opacity: .85; }
 .anniversary-filmreel__strip::before { top: 8px; }
 .anniversary-filmreel__strip::after { bottom: 8px; }
-/* Track das fotos: desliza continuamente (moldura/perfurações permanecem fixas).
-   O espaçamento é margin-right em cada frame (não `gap`) para que o salto de
-   translateX(-50%) case exatamente com o espaçamento interno — loop sem emenda. */
-.anniversary-filmreel__track { display: flex; width: max-content; transform: translate3d(-50%, 0, 0); backface-visibility: hidden; will-change: transform; animation: anniversary-filmreel-scroll var(--reel-duration, 56s) linear infinite; }
-@keyframes anniversary-filmreel-scroll { from { transform: translate3d(-50%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
-.anniversary-filmreel__frame { flex: 0 0 clamp(150px, 17vw, 250px); margin-right: clamp(10px, 1.6vw, 18px); aspect-ratio: 3 / 2; overflow: hidden; border-radius: 4px; }
+/* Track das fotos: desliza continuamente a distância medida de uma sequência. */
+.anniversary-filmreel__track { --reel-gap: clamp(10px, 1.6vw, 18px); --reel-distance: 0px; --reel-duration: 104s; display: flex; width: max-content; min-width: max-content; transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform; animation: anniversary-filmreel-scroll var(--reel-duration) linear infinite; }
+.anniversary-filmreel__group { flex: 0 0 auto; display: flex; gap: var(--reel-gap); padding-right: var(--reel-gap); }
+@keyframes anniversary-filmreel-scroll { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(calc(-1 * var(--reel-distance)), 0, 0); } }
+.anniversary-filmreel__frame { flex: 0 0 clamp(150px, 17vw, 250px); aspect-ratio: 3 / 2; overflow: hidden; border-radius: 4px; }
 .anniversary-filmreel__frame img { display: block; width: 100%; height: 100%; object-fit: cover; filter: sepia(.28) saturate(.72) brightness(.88) contrast(1.02); }
 
 /* ===== Bloco cinematográfico do comercial ===== */
@@ -1619,10 +1618,10 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
   .hero-time-cta { width: 100%; }
   .hero-portal { top: 104px; left: 50%; width: min(128vw, 560px); opacity: 1; transform: translateX(-50%); }
   .anniversary-ink { width: 200px; opacity: .4; }
-  .anniversary-filmreel { bottom: 12px; }
+  .anniversary-filmreel { left: 0; right: 0; bottom: 12px; transform: none; }
   .anniversary-filmreel__strip { padding-block: 22px; }
-  .anniversary-filmreel__track { --reel-duration: 82s; }
-  .anniversary-filmreel__frame { flex: 0 0 128px; margin-right: 8px; }
+  .anniversary-filmreel__track { --reel-gap: 8px; }
+  .anniversary-filmreel__frame { flex-basis: 128px; }
   .anniversary-filmreel__frame img { filter: sepia(.2) saturate(.82) brightness(.94) contrast(1.02); }
   .anniversary-film__frame { border-width: 6px; border-radius: 14px; }
   .anniversary-film__label { bottom: 14px; font-size: 11px; }
@@ -1636,7 +1635,6 @@ html[data-performance-mode='balanced'] .hero-monitor-cue { animation-duration: 8
 html[data-performance-mode='balanced'] .hero-portal__photo { animation-duration: 22s; }
 html[data-performance-mode='balanced'] .cta-glow::before { animation-duration: 4.2s; filter: blur(9px); }
 html[data-performance-mode='balanced'] .cta-sparks i { animation-duration: 5.4s; }
-html[data-performance-mode='balanced'] .anniversary-filmreel__track { --reel-duration: 96s; }
 html[data-performance-mode='balanced'] .anniversary-price-card__aura::before { animation-duration: 18s; }
 html[data-performance-mode='balanced'] .site-header,
 html[data-performance-mode='balanced'] .nav { backdrop-filter: blur(12px); }
@@ -1659,7 +1657,6 @@ html[data-performance-mode='reduced'] .pp-dot::after,
 html[data-performance-mode='reduced'] .anniversary-price-card--annual::after {
   animation: none;
 }
-html[data-performance-mode='reduced'] .anniversary-filmreel__track { --reel-duration: 120s; }
 html[data-performance-mode='reduced'] .anniversary-price-card__aura::before { animation-duration: 24s; }
 html[data-performance-mode='reduced'] .hero-portal__photo { animation: none; opacity: .28; }
 html[data-performance-mode='reduced'] .cta-glow::before { animation: none; opacity: .46; filter: blur(7px); }

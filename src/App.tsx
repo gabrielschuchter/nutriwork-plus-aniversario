@@ -964,16 +964,50 @@ function FilmStrip() {
 }
 
 function FilmReel() {
-  // Sequência duplicada para o loop contínuo (translateX -50% → 0), sem emenda.
-  const frames = [...anniversaryFilmReelPhotos, ...anniversaryFilmReelPhotos];
+  // A faixa mede a primeira sequência real e anima exatamente essa distância.
+  const trackRef = useRef<HTMLDivElement>(null);
+  const groupRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const track = trackRef.current;
+    const group = groupRef.current;
+    if (!track || !group) return;
+
+    const syncReel = () => {
+      const distance = group.getBoundingClientRect().width;
+      if (distance <= 0) return;
+
+      const isMobile = window.matchMedia('(max-width: 720px)').matches;
+      const pixelsPerSecond = isMobile ? 15 : 23;
+      const duration = Math.min(Math.max(distance / pixelsPerSecond, isMobile ? 90 : 96), isMobile ? 108 : 124);
+
+      track.style.setProperty('--reel-distance', `${distance}px`);
+      track.style.setProperty('--reel-duration', `${duration}s`);
+    };
+
+    syncReel();
+    const observer = new ResizeObserver(syncReel);
+    observer.observe(group);
+    window.addEventListener('resize', syncReel);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', syncReel);
+    };
+  }, []);
+
   return (
     <div className="anniversary-filmreel" aria-hidden="true">
       <div className="anniversary-filmreel__strip">
-        <div className="anniversary-filmreel__track">
-          {frames.map((src, i) => (
-            <span className="anniversary-filmreel__frame" key={`${src}-${i}`}>
-              <img src={src} alt="" width="280" height="187" loading="eager" decoding="async" draggable="false" />
-            </span>
+        <div className="anniversary-filmreel__track" ref={trackRef}>
+          {[0, 1].map((groupIndex) => (
+            <div className="anniversary-filmreel__group" ref={groupIndex === 0 ? groupRef : undefined} key={groupIndex}>
+              {anniversaryFilmReelPhotos.map((src, i) => (
+                <span className="anniversary-filmreel__frame" key={`${groupIndex}-${src}-${i}`}>
+                  <img src={src} alt="" width="280" height="187" loading="eager" decoding="async" draggable="false" />
+                </span>
+              ))}
+            </div>
           ))}
         </div>
       </div>
