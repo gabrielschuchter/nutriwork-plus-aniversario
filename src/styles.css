@@ -1580,10 +1580,12 @@ html[data-theme='light'] .hero-time-cta { color: #f4f1ea; background: linear-gra
 .anniversary-filmreel__strip::after { content: ''; position: absolute; z-index: 2; left: 0; right: 0; height: 9px; background-image: repeating-linear-gradient(90deg, rgba(232, 228, 222, .9) 0 14px, transparent 14px 34px); border-radius: 2px; opacity: .85; }
 .anniversary-filmreel__strip::before { top: 8px; }
 .anniversary-filmreel__strip::after { bottom: 8px; }
-/* Track das fotos: desliza continuamente a distância medida de uma sequência. */
-.anniversary-filmreel__track { --reel-gap: clamp(10px, 1.6vw, 18px); --reel-distance: 0px; --reel-duration: 104s; display: flex; width: max-content; min-width: max-content; transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform; animation: anniversary-filmreel-scroll var(--reel-duration) linear infinite; }
-.anniversary-filmreel__group { flex: 0 0 auto; display: flex; gap: var(--reel-gap); padding-right: var(--reel-gap); }
-@keyframes anniversary-filmreel-scroll { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(calc(-1 * var(--reel-distance)), 0, 0); } }
+/* Track das fotos: dois grupos idênticos, sem encolhimento, com deslocamento
+   medido exatamente entre o início de cada sequência. */
+.anniversary-filmreel__track { --reel-gap: clamp(10px, 1.6vw, 18px); --reel-distance: 0px; --reel-offset: 0px; --reel-duration: 1s; display: flex; flex-wrap: nowrap; width: max-content; min-width: max-content; transform: translateX(0); }
+.anniversary-filmreel__track[data-reel-ready='true'] { animation: anniversary-filmreel-scroll var(--reel-duration) linear infinite; }
+.anniversary-filmreel__group { flex: 0 0 auto; display: flex; width: max-content; min-width: max-content; gap: var(--reel-gap); padding-right: var(--reel-gap); }
+@keyframes anniversary-filmreel-scroll { from { transform: translateX(0); } to { transform: translateX(var(--reel-offset)); } }
 .anniversary-filmreel__frame { flex: 0 0 clamp(150px, 17vw, 250px); aspect-ratio: 3 / 2; overflow: hidden; border-radius: 4px; }
 .anniversary-filmreel__frame img { display: block; width: 100%; height: 100%; object-fit: cover; filter: sepia(.28) saturate(.72) brightness(.88) contrast(1.02); }
 

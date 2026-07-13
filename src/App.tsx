@@ -964,35 +964,97 @@ function FilmStrip() {
 }
 
 function FilmReel() {
-  // A faixa mede a primeira sequência real e anima exatamente essa distância.
   const trackRef = useRef<HTMLDivElement>(null);
-  const groupRef = useRef<HTMLDivElement>(null);
+  const firstGroupRef = useRef<HTMLDivElement>(null);
+  const secondGroupRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const track = trackRef.current;
-    const group = groupRef.current;
-    if (!track || !group) return;
+    const firstGroup = firstGroupRef.current;
+    const secondGroup = secondGroupRef.current;
+    if (!track || !firstGroup || !secondGroup) return;
 
-    const syncReel = () => {
-      const distance = group.getBoundingClientRect().width;
-      if (distance <= 0) return;
+    let active = true;
+    let initialized = false;
+    let resourcesReady = false;
+    let resizeFrame = 0;
+    let readyFrame = 0;
+    let currentDistance = 0;
 
-      const isMobile = window.matchMedia('(max-width: 720px)').matches;
-      const pixelsPerSecond = isMobile ? 15 : 23;
-      const duration = Math.min(Math.max(distance / pixelsPerSecond, isMobile ? 90 : 96), isMobile ? 108 : 124);
+    const waitForImage = async (image: HTMLImageElement) => {
+      if (!image.complete) {
+        await new Promise<void>((resolve) => {
+          image.addEventListener('load', () => resolve(), { once: true });
+          image.addEventListener('error', () => resolve(), { once: true });
+        });
+      }
 
-      track.style.setProperty('--reel-distance', `${distance}px`);
-      track.style.setProperty('--reel-duration', `${duration}s`);
+      if (image.decode && image.naturalWidth > 0) {
+        await image.decode().catch(() => undefined);
+      }
     };
 
-    syncReel();
-    const observer = new ResizeObserver(syncReel);
-    observer.observe(group);
-    window.addEventListener('resize', syncReel);
+    const syncReel = () => {
+      if (!active || !resourcesReady) return;
+
+      // A diferença entre os inícios dos grupos já inclui exatamente o espaço
+      // entre as duas sequências, sem depender da largura da viewport.
+      const distance = secondGroup.offsetLeft - firstGroup.offsetLeft;
+      if (distance <= 0) return;
+
+      const duration = distance / 18;
+      const distanceChanged = Math.abs(distance - currentDistance) > 0.5;
+      if (initialized && !distanceChanged) return;
+
+      const firstMeasurement = !initialized;
+      track.style.setProperty('--reel-distance', `${distance}px`);
+      track.style.setProperty('--reel-offset', `-${distance}px`);
+      track.style.setProperty('--reel-duration', `${duration}s`);
+      currentDistance = distance;
+      initialized = true;
+
+      if (firstMeasurement) {
+        cancelAnimationFrame(readyFrame);
+        readyFrame = requestAnimationFrame(() => {
+          if (active) track.dataset.reelReady = 'true';
+        });
+      }
+    };
+
+    const scheduleSync = () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(syncReel);
+    };
+
+    const initialize = async () => {
+      const images = Array.from(track.querySelectorAll('img'));
+      await Promise.all([
+        ...images.map(waitForImage),
+        document.fonts?.ready ?? Promise.resolve()
+      ]);
+
+      if (!active) return;
+      resourcesReady = true;
+      requestAnimationFrame(() => requestAnimationFrame(syncReel));
+    };
+
+    void initialize();
+
+    const observer = new ResizeObserver(scheduleSync);
+    observer.observe(firstGroup);
+    observer.observe(secondGroup);
+    window.addEventListener('resize', scheduleSync);
+    window.addEventListener('orientationchange', scheduleSync);
+    window.visualViewport?.addEventListener('resize', scheduleSync);
 
     return () => {
+      active = false;
       observer.disconnect();
-      window.removeEventListener('resize', syncReel);
+      cancelAnimationFrame(resizeFrame);
+      cancelAnimationFrame(readyFrame);
+      window.removeEventListener('resize', scheduleSync);
+      window.removeEventListener('orientationchange', scheduleSync);
+      window.visualViewport?.removeEventListener('resize', scheduleSync);
     };
   }, []);
 
@@ -1001,7 +1063,12 @@ function FilmReel() {
       <div className="anniversary-filmreel__strip">
         <div className="anniversary-filmreel__track" ref={trackRef}>
           {[0, 1].map((groupIndex) => (
-            <div className="anniversary-filmreel__group" ref={groupIndex === 0 ? groupRef : undefined} key={groupIndex}>
+            <div
+              className="anniversary-filmreel__group"
+              ref={groupIndex === 0 ? firstGroupRef : secondGroupRef}
+              aria-hidden={groupIndex === 1 ? 'true' : undefined}
+              key={groupIndex}
+            >
               {anniversaryFilmReelPhotos.map((src, i) => (
                 <span className="anniversary-filmreel__frame" key={`${groupIndex}-${src}-${i}`}>
                   <img src={src} alt="" width="280" height="187" loading="eager" decoding="async" draggable="false" />
