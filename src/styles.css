@@ -1325,17 +1325,24 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-price-card__title { max-width: 440px; margin: 0; color: #fff; font-size: clamp(29px, 3.2vw, 34px); font-weight: 800; line-height: 1.1; letter-spacing: -.025em; text-align: left; text-wrap: balance; }
 .anniversary-price-card__description { margin: 20px 0 0; max-width: 430px; color: rgba(255,255,255,.92); font-size: 15.5px; font-weight: 600; line-height: 1.5; }
 
-/* Preço: "9" gigante com ,90 sobreposto e /mês na linha de base. */
-.anniversary-price { margin: 22px 0 6px; display: flex; align-items: flex-end; justify-content: flex-start; white-space: nowrap; }
-.anniversary-price > span { margin: 0 6px 20px 0; font-size: 34px; font-weight: 800; }
-.anniversary-price strong { font-size: clamp(96px, 12vw, 132px); font-weight: 800; line-height: .72; letter-spacing: -.06em; }
-.anniversary-price sup { align-self: flex-start; margin: 6px 0 0 2px; font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
-.anniversary-price small { margin: 0 0 16px 6px; font-size: 19px; font-weight: 600; }
-.anniversary-price-card--annual .anniversary-price { margin: 38px 0 18px; }
-.anniversary-price-card--annual .anniversary-price strong { font-size: clamp(126px, 12vw, 156px); }
-.anniversary-price-card--annual .anniversary-price > span { font-size: 40px; margin-bottom: 25px; }
-.anniversary-price-card--annual .anniversary-price sup { font-size: 42px; }
-.anniversary-price-card--annual .anniversary-price small { font-size: 21px; margin-bottom: 21px; }
+/* Agrupamento comercial dos planos: valor principal, à vista e parcelamento. */
+.anniversary-price-block { margin: 26px 0 4px; display: grid; justify-items: start; color: #fff; }
+.anniversary-price { display: flex; align-items: flex-end; justify-content: flex-start; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.anniversary-price > span { margin: 0 6px 15px 0; font-size: 30px; font-weight: 800; }
+.anniversary-price strong { font-size: clamp(88px, 9vw, 112px); font-weight: 800; line-height: .76; letter-spacing: -.06em; }
+.anniversary-price sup { align-self: flex-start; margin: 4px 0 0 2px; font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
+.anniversary-price small { margin: 0 0 11px 7px; font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
+.anniversary-price-block p { margin: 0; line-height: 1.35; }
+.anniversary-price-block__context { margin-top: 11px !important; color: rgba(255,255,255,.88); font-size: 14px; font-weight: 600; }
+.anniversary-price-block__cash { margin-top: 10px !important; font-size: 21px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.anniversary-price-block__installments { margin-top: 7px !important; color: rgba(255,255,255,.92); font-size: 15px; font-weight: 600; }
+.anniversary-price-block__installments span { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.anniversary-price-block__interest { margin-top: 3px !important; color: rgba(255,255,255,.78); font-size: 13px; font-weight: 600; }
+.anniversary-price-card--annual .anniversary-price-block { margin-top: 32px; }
+.anniversary-price-card--annual .anniversary-price strong { font-size: clamp(114px, 11.5vw, 150px); }
+.anniversary-price-card--annual .anniversary-price > span { margin-bottom: 22px; font-size: 38px; }
+.anniversary-price-card--annual .anniversary-price sup { font-size: 40px; }
+.anniversary-price-card--annual .anniversary-price small { margin-bottom: 17px; font-size: 22px; }
 
 .anniversary-price-card ul { margin: 34px 0 34px; padding: 0; display: grid; gap: 18px; list-style: none; }
 .anniversary-price-card--annual ul { margin-block: 27px; gap: 14px; }
@@ -1344,8 +1351,9 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-check::before { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; color: #f0cf82; font-size: 12px; font-style: normal; font-weight: 800; line-height: 1; }
 .anniversary-benefit--lifetime { margin-top: 4px; padding: 13px 15px; border: 1px solid rgba(237,199,112,.5); border-radius: 10px; color: #ffe5a9 !important; background: rgba(228,181,72,.1); font-weight: 850; }
 
-/* Bilhete semestral: preço centralizado (demais estilos idênticos ao anual). */
+/* Bilhete semestral: valor total centralizado, sem equivalente mensal. */
 .anniversary-price--center { justify-content: center; }
+.anniversary-price-block--semester { justify-items: center; text-align: center; }
 
 /* CTA contornado (pílula), como na arte. */
 .anniversary-price-card__actions { margin-top: auto; display: grid; gap: 12px; justify-items: center; }
@@ -1356,7 +1364,7 @@ html[data-theme='light'] .nav a.nav__anniversary:hover, html[data-theme='light']
 .anniversary-price-card__secondary { width: min(82%, 340px); min-height: 48px; padding-inline: 22px; border-color: rgba(242,220,168,.62); color: #f5e7c5; background: rgba(5,15,36,.22); box-shadow: inset 0 1px rgba(255,255,255,.06); font-size: 12.5px; font-weight: 800; letter-spacing: .055em; line-height: 1.2; text-align: center; }
 .anniversary-price-card__secondary:hover, .anniversary-price-card__secondary:focus-visible { color: #17130d; border-color: #f0d594; background: #efe2c6; box-shadow: 0 12px 26px rgba(0,0,0,.24); }
 .anniversary-price-card--semester .anniversary-price-card__cta { min-height: 50px; font-size: 13px; opacity: .84; }
-.anniversary-price-card--semester .anniversary-price { opacity: .82; transform: scale(.9); transform-origin: center; }
+.anniversary-price-card--semester .anniversary-price-block { opacity: .82; }
 .anniversary-price-card--semester .anniversary-price-card__plan span, .anniversary-price-card--semester li { color: rgba(255,255,255,.58); }
 
 /* Selo dourado tipo medalha (anel serrilhado + aro interno). */
@@ -1450,12 +1458,17 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
   .anniversary-price-card__description { max-width: 32ch; margin-top: 16px; font-size: 14.5px; line-height: 1.55; }
   .anniversary-price-card--semester { width: 94%; min-height: 0; }
   .anniversary-price-card--semester .anniversary-price-card__body { padding: 48px clamp(22px, 6.5vw, 28px) 38px; }
-  .anniversary-price strong { font-size: clamp(88px, 30vw, 118px); }
-  .anniversary-price-card--annual .anniversary-price { margin: 30px 0 14px; }
-  .anniversary-price-card--annual .anniversary-price strong { font-size: clamp(108px, 35vw, 136px); }
-  .anniversary-price > span { font-size: 28px; }
-  .anniversary-price sup { font-size: 28px; }
-  .anniversary-price small { font-size: 16px; }
+  .anniversary-price-block { margin-top: 24px; }
+  .anniversary-price strong { font-size: clamp(78px, 24vw, 104px); }
+  .anniversary-price-card--annual .anniversary-price-block { margin-top: 26px; }
+  .anniversary-price-card--annual .anniversary-price strong { font-size: clamp(100px, 31vw, 128px); }
+  .anniversary-price > span, .anniversary-price-card--annual .anniversary-price > span { margin-bottom: 14px; font-size: 26px; }
+  .anniversary-price sup, .anniversary-price-card--annual .anniversary-price sup { font-size: 27px; }
+  .anniversary-price small, .anniversary-price-card--annual .anniversary-price small { margin-bottom: 10px; font-size: 16px; }
+  .anniversary-price-block__context { margin-top: 9px !important; font-size: 13.5px; }
+  .anniversary-price-block__cash { margin-top: 9px !important; font-size: 19px; }
+  .anniversary-price-block__installments { font-size: 14px; }
+  .anniversary-price-block__interest { font-size: 12.5px; }
   .anniversary-price-card ul { margin: 26px 0 30px; gap: 14px; }
   .anniversary-price-card--annual ul { margin-block: 24px 30px; gap: 14px; }
   .anniversary-price-card li { align-items: flex-start; gap: 12px; font-size: 15px; line-height: 1.48; }
@@ -1469,6 +1482,13 @@ html[data-theme='dark'] .anniversary-price-card { filter: drop-shadow(0 34px 70p
 @keyframes anniversary-premium-sheen-mobile {
   0%, 100% { opacity: .5; transform: translate3d(-1.5%, 0, 0); }
   50% { opacity: .9; transform: translate3d(1.5%, 0, 0); }
+}
+
+@media (max-width: 360px) {
+  .anniversary-price-block--semester .anniversary-price strong { font-size: 68px; }
+  .anniversary-price-block--semester .anniversary-price > span { margin-bottom: 12px; font-size: 22px; }
+  .anniversary-price-block--semester .anniversary-price sup { font-size: 23px; }
+  .anniversary-price-block--semester .anniversary-price small { margin: 0 0 9px 5px; font-size: 14px; }
 }
 
 /* ===== Campanha de 1 ano: primeira dobra da home ===== */

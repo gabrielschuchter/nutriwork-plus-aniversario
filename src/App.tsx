@@ -1204,7 +1204,12 @@ function AnniversaryPage() {
                     <h3 className="anniversary-price-card__title">Plano Anual + ESTUDE!</h3>
                   </div>
                   <p className="anniversary-price-card__description">Acesso completo à formação que você sempre quis.</p>
-                  <div className="anniversary-price"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
+                  <div className="anniversary-price-block anniversary-price-block--annual">
+                    <div className="anniversary-price" aria-label="R$ 9,90/mês"><span>R$</span><strong>9</strong><sup>,90</sup><small>/mês</small></div>
+                    <p className="anniversary-price-block__cash">ou R$ 118,80 à vista</p>
+                    <p className="anniversary-price-block__installments"><span>12x de R$ 12,29</span> no cartão</p>
+                    <p className="anniversary-price-block__interest">parcelamento com juros</p>
+                  </div>
                   <ul>{anniversaryBenefits.map((benefit, index) => <li className={index === anniversaryBenefits.length - 1 ? 'anniversary-benefit--lifetime' : undefined} key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
                   <div className="anniversary-price-card__actions">
                     <Button href={checkout.complete} external className="anniversary-price-card__cta">QUERO A EXPERIÊNCIA COMPLETA</Button>
@@ -1216,7 +1221,11 @@ function AnniversaryPage() {
                 <StampPaper id="semester" />
                 <div className="anniversary-price-card__body">
                   <p className="anniversary-price-card__plan">Plano semestral<span>Acesso ao Nutriwork Plus</span></p>
-                  <div className="anniversary-price anniversary-price--center"><span>R$</span><strong>9</strong><sup>,90</sup><small>/ mês</small></div>
+                  <div className="anniversary-price-block anniversary-price-block--semester">
+                    <div className="anniversary-price anniversary-price--center" aria-label="R$ 59,40 à vista"><span>R$</span><strong>59</strong><sup>,40</sup><small>à vista</small></div>
+                    <p className="anniversary-price-block__installments">ou <span>6x de R$ 11,14</span> no cartão</p>
+                    <p className="anniversary-price-block__interest">parcelamento com juros</p>
+                  </div>
                   <ul>{anniversarySemesterBenefits.map((benefit, index) => <li className={index === anniversarySemesterBenefits.length - 1 ? 'anniversary-benefit--lifetime' : undefined} key={benefit}><i className="anniversary-check" aria-hidden="true" />{benefit}</li>)}</ul>
                   <Button href={checkout.semiannual} external className="anniversary-price-card__cta">Assinar</Button>
                 </div>
